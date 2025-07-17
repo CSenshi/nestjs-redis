@@ -18,5 +18,5 @@ export default {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: 'test-output/jest/coverage',
-  testMatch: ['**/*.spec.ts', '!**/*.int.spec.ts'], // exclude integration tests
+  testMatch: ['**/*.int.spec.ts'],
 };

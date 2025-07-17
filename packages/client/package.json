@@ -17,6 +17,13 @@
   "nx": {
     "name": "client",
     "targets": {
+      "test:int": {
+        "executor": "@nx/jest:jest",
+        "options": {
+          "jestConfig": "packages/client/jest.int.config.ts",
+          "passWithNoTests": true
+        }
+      },
       "build": {
         "executor": "@nx/js:tsc",
         "outputs": [
