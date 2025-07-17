@@ -109,7 +109,7 @@ importers:
         specifier: ^11.0.0
         version: 11.1.4(reflect-metadata@0.1.14)(rxjs@7.8.1)
       redis:
-        specifier: 5.0.0
+        specifier: ^5.0.0
         version: 5.0.0
       tslib:
         specifier: ^2.3.0
