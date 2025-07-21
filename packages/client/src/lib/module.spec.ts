@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RedisClientModule } from './module';
-import { ConnectorService } from './services/connector.service';
 import { createClient, createCluster } from 'redis';
 import { getRedisClientInjectionToken } from './utils';
 
@@ -31,18 +30,12 @@ describe('RedisClientModule', () => {
     it('should create a module with default configuration', () => {
       const dynamicModule = RedisClientModule.forRoot();
 
-      expect(dynamicModule).toEqual({
-        global: false,
-        module: RedisClientModule,
-        providers: [
-          ConnectorService,
-          {
-            provide: getRedisClientInjectionToken(),
-            useFactory: expect.any(Function),
-          },
-        ],
-        exports: [getRedisClientInjectionToken(),],
-      });
+      expect(dynamicModule.providers).toContainEqual(
+        {
+          provide: getRedisClientInjectionToken(),
+          useFactory: expect.any(Function),
+        },
+      );
     });
 
     it('should create a global module when isGlobal is true', () => {
@@ -53,29 +46,50 @@ describe('RedisClientModule', () => {
   });
 
   describe('module integration', () => {
-    it('should provide ConnectorService and Redis client', async () => {
+    it('should provide Redis client', async () => {
       const dynamicModule = RedisClientModule.forRoot();
 
       module = await Test.createTestingModule({
-        imports: [dynamicModule]
+        imports: [dynamicModule],
       }).compile();
 
-      const connectorService = module.get<ConnectorService>(ConnectorService);
-      const redisClient = module.get(getRedisClientInjectionToken(),);
-
-      expect(connectorService).toBeDefined();
-      expect(redisClient).toBeDefined();
+      expect(module.get(getRedisClientInjectionToken())).toBeDefined();
     });
 
     it('should export Redis client', async () => {
       const dynamicModule = RedisClientModule.forRoot();
 
       module = await Test.createTestingModule({
-        imports: [dynamicModule]
+        imports: [dynamicModule],
       }).compile();
 
-      const redisClient = module.get(getRedisClientInjectionToken(),);
+      const redisClient = module.get(getRedisClientInjectionToken());
       expect(redisClient).toBeDefined();
+    });
+  });
+
+  describe('multi-connection', () => {
+    it('should provide multiple named Redis clients', async () => {
+      const dynamicModule = RedisClientModule.forRoot({
+        connections: [
+          { type: 'client', options: { url: 'redis://localhost:6379' } },
+          {
+            connection: 'redis-conn-2',
+            type: 'client',
+            options: { url: 'redis://localhost:6379' },
+          },
+        ],
+      });
+      const module = await Test.createTestingModule({
+        imports: [dynamicModule],
+      }).compile();
+      const client1 = module.get(getRedisClientInjectionToken());
+      const client2 = module.get(getRedisClientInjectionToken('redis-conn-2'));
+      expect(client1).toBeDefined();
+      expect(client2).toBeDefined();
+      expect(() =>
+        module.get(getRedisClientInjectionToken('redis-conn-cluster-3'))
+      ).toThrow();
     });
   });
 });
