@@ -6,12 +6,12 @@
   "private": true,
   "devDependencies": {
     "@nestjs/schematics": "^11.0.0",
-    "@nx/js": "21.2.4",
-    "@nx/nest": "21.2.4",
+    "@nx/js": "21.3.2",
+    "@nx/nest": "21.3.2",
     "@swc-node/register": "~1.9.1",
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
-    "nx": "21.2.4",
+    "nx": "21.3.2",
     "prettier": "^2.6.2",
     "tslib": "^2.3.0",
     "typescript": "~5.8.2"
