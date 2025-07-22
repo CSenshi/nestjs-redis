@@ -1,6 +1,7 @@
 {
   "name": "@nestjs-redis/client",
-  "version": "0.0.1",
+  "version": "0.0.0",
+  "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/client",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -14,7 +15,7 @@
     }
   },
   "files": [
-    "dist",
+    "src",
     "!**/*.tsbuildinfo"
   ],
   "nx": {
