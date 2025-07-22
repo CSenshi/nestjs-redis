@@ -30,12 +30,10 @@ describe('RedisClientModule', () => {
     it('should create a module with default configuration', () => {
       const dynamicModule = RedisClientModule.forRoot();
 
-      expect(dynamicModule.providers).toContainEqual(
-        {
-          provide: getRedisClientInjectionToken(),
-          useFactory: expect.any(Function),
-        },
-      );
+      expect(dynamicModule.providers).toContainEqual({
+        provide: getRedisClientInjectionToken(),
+        useFactory: expect.any(Function),
+      });
     });
 
     it('should create a global module when isGlobal is true', () => {
