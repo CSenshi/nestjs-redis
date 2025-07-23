@@ -1,4 +1,4 @@
-import { createClient, RedisClientType } from 'redis';
+import { createClient } from 'redis';
 import { Injectable } from '@nestjs/common';
 import { ThrottlerStorage } from '@nestjs/throttler';
 import { ThrottlerStorageRecord } from '@nestjs/throttler/dist/throttler-storage-record.interface';
@@ -46,8 +46,8 @@ export class ThrottlerStorageComparator implements ThrottlerStorage {
   }
 }
 
-describe('ThrottlerStorageComparator - Exact Implementation Comparison', () => {
-  let redisClient: RedisClientType;
+describe('RedisThrottlerStorage - Exact Implementation Comparison', () => {
+  let redisClient: ReturnType<typeof createClient>;
   let redisStorage: RedisThrottlerStorage;
   let memoryStorage: ThrottlerStorageService;
   let comparator: ThrottlerStorageComparator;
@@ -60,7 +60,7 @@ describe('ThrottlerStorageComparator - Exact Implementation Comparison', () => {
     await redisClient.connect();
 
     // Initialize both implementations
-    redisStorage = new RedisThrottlerStorage(redisClient);
+    redisStorage = RedisThrottlerStorage.fromClient(redisClient);
     memoryStorage = new ThrottlerStorageService();
     comparator = new ThrottlerStorageComparator(redisStorage, memoryStorage);
   });
@@ -236,6 +236,150 @@ describe('ThrottlerStorageComparator - Exact Implementation Comparison', () => {
 
       // For some reason, the memory storage will return 1 for totalHits instead of 2
       await comparator.increment(key, ttl, limit, blockDuration, throttlerName, { ignoreTotalHits: true });
+    });
+  });
+});
+
+describe('RedisThrottlerStorage - Factory Methods Integration', () => {
+  const testKey = 'factory-test-key';
+  const throttlerName = 'factory-test';
+  const limit = 3;
+  const ttl = 60000; // 60 seconds
+  const blockDuration = 30000; // 30 seconds
+
+  let activeStorages: { storage: RedisThrottlerStorage; bootstrapped: boolean }[] = [];
+  let activeClients: ReturnType<typeof createClient>[] = [];
+
+  afterEach(async () => {
+    activeStorages = [];
+
+    // Clean up active clients
+    for (const client of activeClients) {
+      if (client.isReady) {
+        await client.quit();
+      }
+    }
+    activeClients = [];
+
+    // Clean up Redis data
+    const cleanupClient = createClient({
+      url: process.env.REDIS_URL || 'redis://localhost:6379',
+    });
+    await cleanupClient.connect();
+    await cleanupClient.flushDb();
+    await cleanupClient.quit();
+  });
+
+  describe('create() - Default client', () => {
+    it('should create storage with default client and perform increment operations', async () => {
+      const storage = RedisThrottlerStorage.create();
+      activeStorages.push({ storage, bootstrapped: false });
+
+      // Bootstrap to connect
+      await expect(storage.increment(testKey, ttl, limit, blockDuration, throttlerName)).rejects.toThrow(
+        'The client is closed'
+      );
+
+      await storage.onApplicationBootstrap();
+      activeStorages[activeStorages.length - 1].bootstrapped = true;
+
+      // Test increment operations
+      const result1 = await storage.increment(testKey, ttl, limit, blockDuration, throttlerName);
+      expect(result1.totalHits).toBe(1);
+      expect(result1.isBlocked).toBe(false);
+
+      const result2 = await storage.increment(testKey, ttl, limit, blockDuration, throttlerName);
+      expect(result2.totalHits).toBe(2);
+      expect(result2.isBlocked).toBe(false);
+
+      const result3 = await storage.increment(testKey, ttl, limit, blockDuration, throttlerName);
+      expect(result3.totalHits).toBe(3);
+      expect(result3.isBlocked).toBe(false);
+
+      // Should block on 4th request
+      const result4 = await storage.increment(testKey, ttl, limit, blockDuration, throttlerName);
+      expect(result4.totalHits).toBe(4);
+      expect(result4.isBlocked).toBe(true);
+    });
+  });
+
+  describe('fromClientOptions() - Client from options', () => {
+    it('should create storage from client options and perform increment operations', async () => {
+      const storage = RedisThrottlerStorage.fromClientOptions({
+        url: process.env.REDIS_URL || 'redis://localhost:6379',
+      });
+      activeStorages.push({ storage, bootstrapped: false });
+
+      await expect(storage.increment(testKey, ttl, limit, blockDuration, throttlerName)).rejects.toThrow(
+        'The client is closed'
+      );
+      
+      await storage.onApplicationBootstrap();
+      activeStorages[activeStorages.length - 1].bootstrapped = true;
+
+      const result1 = await storage.increment(testKey, ttl, limit, blockDuration, throttlerName);
+      expect(result1.totalHits).toBe(1);
+      expect(result1.isBlocked).toBe(false);
+
+      const result2 = await storage.increment(testKey, ttl, limit, blockDuration, throttlerName);
+      expect(result2.totalHits).toBe(2);
+      expect(result2.isBlocked).toBe(false);
+    });
+  });
+
+  describe('fromClient() - Existing client', () => {
+    it('should use existing client and perform increment operations', async () => {
+      const client = createClient({
+        url: process.env.REDIS_URL || 'redis://localhost:6379',
+      });
+      activeClients.push(client);
+      await client.connect();
+
+      // Verify client is connected
+      expect(client.isReady).toBe(true);
+
+      const storage = RedisThrottlerStorage.fromClient(client);
+
+      const result1 = await storage.increment(testKey, ttl, limit, blockDuration, throttlerName);
+      expect(result1.totalHits).toBe(1);
+      expect(result1.isBlocked).toBe(false);
+
+      const result2 = await storage.increment(testKey, ttl, limit, blockDuration, throttlerName);
+      expect(result2.totalHits).toBe(2);
+      expect(result2.isBlocked).toBe(false);
+
+      const result3 = await storage.increment(testKey, ttl, limit, blockDuration, throttlerName);
+      expect(result3.totalHits).toBe(3);
+      expect(result3.isBlocked).toBe(false);
+
+      // Should block on 4th request
+      const result4 = await storage.increment(testKey, ttl, limit, blockDuration, throttlerName);
+      expect(result4.totalHits).toBe(4);
+      expect(result4.isBlocked).toBe(true);
+    });
+
+    it('should not manage client lifecycle when using existing client', async () => {
+      const client = createClient({
+        url: process.env.REDIS_URL || 'redis://localhost:6379',
+      });
+      activeClients.push(client);
+      await client.connect();
+
+      // Verify client is connected
+      expect(client.isReady).toBe(true);
+
+      const storage = RedisThrottlerStorage.fromClient(client);
+
+      // These should not throw errors and should not connect/disconnect
+      await storage.onApplicationBootstrap();
+      await storage.onApplicationShutdown();
+
+      // Client should still be connected after shutdown
+      expect(client.isReady).toBe(true);
+
+      // Should still be able to use the client
+      const ping = await client.ping();
+      expect(ping).toBe('PONG');
     });
   });
 }); 
