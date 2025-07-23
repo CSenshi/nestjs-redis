@@ -1,0 +1,43 @@
+{
+  "name": "@nestjs-redis/throttler-storage",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "!**/*.tsbuildinfo"
+  ],
+  "nx": {
+    "name": "throttler-storage",
+    "targets": {
+      "build": {
+        "executor": "@nx/js:tsc",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "outputPath": "dist/packages/throttler-storage",
+          "tsConfig": "packages/throttler-storage/tsconfig.lib.json",
+          "packageJson": "packages/throttler-storage/package.json",
+          "main": "packages/throttler-storage/src/index.ts",
+          "assets": [
+            "packages/throttler-storage/*.md"
+          ]
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  }
+}

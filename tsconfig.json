@@ -5,6 +5,9 @@
   "references": [
     {
       "path": "./packages/client"
+    },
+    {
+      "path": "./packages/throttler-storage"
     }
   ]
 }
