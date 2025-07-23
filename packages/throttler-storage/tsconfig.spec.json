@@ -10,7 +10,7 @@
     "src/**/*.test.ts",
     "src/**/*.spec.ts",
     "src/**/*.d.ts"
-  ],
+, "src/lib/throttler-storage-comparator.service.ts"  ],
   "references": [
     {
       "path": "./tsconfig.lib.json"
