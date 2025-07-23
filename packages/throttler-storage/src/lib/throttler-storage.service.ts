@@ -5,7 +5,7 @@ import { RedisClientType } from 'redis';
 
 @Injectable()
 export class RedisThrottlerStorage implements ThrottlerStorage, OnApplicationBootstrap, OnApplicationShutdown {
-  private readonly prefix = 'throttle:';
+  private readonly prefix = '_throttler';
 
   constructor(private readonly client: RedisClientType) { }
   /**
@@ -24,7 +24,7 @@ export class RedisThrottlerStorage implements ThrottlerStorage, OnApplicationBoo
     const ttlMilliseconds = ttl;
     const blockDurationMilliseconds = blockDuration;
 
-    const redisKey = `${this.prefix}${key}`;
+    const redisKey = `${this.prefix}:${key}`;
     const blockKey = `${redisKey}:block:${throttlerName}`;
 
     const luaScript = `

@@ -1,1 +1,1 @@
-export * from './lib/throttler-storage.module';
+export * from './lib/throttler-storage.service';
