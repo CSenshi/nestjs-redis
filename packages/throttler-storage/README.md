@@ -1,11 +1,65 @@
-# throttler-storage
+# @nestjs-redis/throttler-storage
 
-This library was generated with [Nx](https://nx.dev).
+Redis storage implementation for [NestJS Throttler](https://github.com/nestjs/throttler).
 
-## Building
+## Features
 
-Run `nx build throttler-storage` to build the library.
+- **Production ready**: Tested and used in production
+- **Fully compatible**: Tested against official NestJS in-memory storage provider
+- **Drop-in replacement**: Works with existing throttler setup
+- **Distributed**: Share rate limiting across multiple app instances
 
-## Running unit tests
+## Installation
 
-Run `nx test throttler-storage` to execute the unit tests via [Jest](https://jestjs.io).
+```bash
+npm install @nestjs-redis/throttler-storage redis
+```
+
+> **Note:** `@nestjs/common` and `redis` are required as peer dependencies.
+
+## Usage
+
+### Basic usage
+
+```ts
+import { Module } from '@nestjs/common';
+import { ThrottlerModule, seconds } from '@nestjs/throttler';
+import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
+import { createClient } from 'redis';
+
+@Module({
+  imports: [
+    ThrottlerModule.forRoot({
+      throttlers: [{ limit: 5, ttl: seconds(60) }],
+      storage: new RedisThrottlerStorage(createClient({ url: 'redis://localhost:6379' })),
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+### With existing Redis connection
+
+```ts
+import { RedisClientModule, getRedisClientInjectionToken } from '@nestjs-redis/client';
+
+@Module({
+  imports: [
+    RedisClientModule.forRoot({
+      url: 'redis://localhost:6379'
+    }),
+    ThrottlerModule.forRootAsync({
+      inject: [getRedisClientInjectionToken()],
+      useFactory: (redis) => ({
+        throttlers: [{ limit: 5, ttl: seconds(60) }],
+        storage: new RedisThrottlerStorage(redis),
+      }),
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+## License
+
+MIT
