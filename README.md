@@ -15,6 +15,7 @@ A unified set of high-quality, production-ready [NestJS](https://nestjs.com/) mo
 ## Packages
 
 - [`@nestjs-redis/client`](./packages/client) — Flexible Redis client module for NestJS (single/multi-connection, cluster, sentinel)
+- [`@nestjs-redis/throttler-storage`](./packages/throttler-storage) — Redis storage for NestJS Throttler with distributed rate limiting support
 - `@nestjs-redis/redlock` — Distributed lock manager for Redis (coming soon)
 - _More modules coming soon!_
 
@@ -25,6 +26,7 @@ Each package is published independently. **For installation and usage, see the R
 ## Toolkit Structure
 
 - `packages/client` — Redis client module
+- `packages/throttler-storage` — Redis storage for NestJS Throttler
 - `packages/redlock` — Redlock module (planned)
 - `packages/*` — Additional modules in the future
 
