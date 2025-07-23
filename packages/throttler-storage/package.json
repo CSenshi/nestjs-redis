@@ -1,6 +1,7 @@
 {
   "name": "@nestjs-redis/throttler-storage",
   "version": "0.0.1",
+  "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/throttler-storage",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -45,15 +46,21 @@
     }
   },
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "@nestjs/throttler": "^6.0.0"
   },
   "peerDependencies": {
     "redis": "^5.0.0",
     "@nestjs/common": "^11.0.0"
   },
   "devDependencies": {
-    "@nestjs/throttler": "^6.4.0",
+    "@nestjs/throttler": "^6.0.0",
     "redis": "^5.0.0",
     "ts-node": "^10.9.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CSenshi/nestjs-redis",
+    "directory": "packages/throttler-storage"
   }
 }
