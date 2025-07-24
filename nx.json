@@ -32,7 +32,17 @@
     { "plugin": "@nx/jest/plugin", "options": { "targetName": "test" } }
   ],
   "targetDefaults": {
-    "test": { "dependsOn": ["^build"], "options": { "passWithNoTests": true } }
+    "build": {
+      "cache": true,
+      "inputs": ["production", "^production"],
+      "outputs": ["{options.outputPath}"]
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "options": {
+        "passWithNoTests": true
+      }
+    }
   },
   "release": {
     "version": { "preVersionCommand": "pnpm dlx nx run-many -t build" }
