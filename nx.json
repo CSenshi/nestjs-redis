@@ -14,14 +14,12 @@
     ],
     "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
   },
-  "nxCloudId": "6877d06eb5e73d29c1911c80",
+  "nxCloudId": "6882747a78cbb7bf264d72ab",
   "plugins": [
     {
       "plugin": "@nx/js/typescript",
       "options": {
-        "typecheck": {
-          "targetName": "typecheck"
-        },
+        "typecheck": { "targetName": "typecheck" },
         "build": {
           "targetName": "build",
           "configName": "tsconfig.lib.json",
@@ -30,30 +28,13 @@
         }
       }
     },
-    {
-      "plugin": "@nx/eslint/plugin",
-      "options": {
-        "targetName": "lint"
-      }
-    },
-    {
-      "plugin": "@nx/jest/plugin",
-      "options": {
-        "targetName": "test"
-      }
-    }
+    { "plugin": "@nx/eslint/plugin", "options": { "targetName": "lint" } },
+    { "plugin": "@nx/jest/plugin", "options": { "targetName": "test" } }
   ],
   "targetDefaults": {
-    "test": {
-      "dependsOn": ["^build"],
-      "options": {
-        "passWithNoTests": true
-      }
-    }
+    "test": { "dependsOn": ["^build"], "options": { "passWithNoTests": true } }
   },
   "release": {
-    "version": {
-      "preVersionCommand": "pnpm dlx nx run-many -t build"
-    }
+    "version": { "preVersionCommand": "pnpm dlx nx run-many -t build" }
   }
 }
