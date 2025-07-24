@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RedisClientModule } from './module';
-import { getRedisClientInjectionToken } from './utils';
+import { RedisToken } from './utils';
 import { Redis, RedisModuleOptions } from './types';
 
 describe('RedisClientModule Integration', () => {
@@ -22,7 +22,7 @@ describe('RedisClientModule Integration', () => {
     }).compile();
     await module.init();
 
-    redisClient = module.get<Redis>(getRedisClientInjectionToken());
+    redisClient = module.get<Redis>(RedisToken());
   });
 
   afterEach(async () => {
@@ -180,9 +180,7 @@ describe('RedisClientModule Integration', () => {
       }).compile();
       await defaultModule.init();
 
-      const defaultRedisClient = defaultModule.get<Redis>(
-        getRedisClientInjectionToken()
-      );
+      const defaultRedisClient = defaultModule.get<Redis>(RedisToken());
 
       // Test basic operation
       const ping = await defaultRedisClient.ping();
@@ -207,9 +205,7 @@ describe('RedisClientModule Integration', () => {
       }).compile();
       await customModule.init();
 
-      const customRedisClient = customModule.get<Redis>(
-        getRedisClientInjectionToken()
-      );
+      const customRedisClient = customModule.get<Redis>(RedisToken());
 
       // Test basic operation
       const ping = await customRedisClient.ping();
@@ -290,10 +286,8 @@ describe('Multi-connection Integration', () => {
       ],
     }).compile();
     await module.init();
-    redisClient1 = module.get<Redis>(getRedisClientInjectionToken());
-    redisClient2 = module.get<Redis>(
-      getRedisClientInjectionToken('redis-conn-2')
-    );
+    redisClient1 = module.get<Redis>(RedisToken());
+    redisClient2 = module.get<Redis>(RedisToken('redis-conn-2'));
   });
 
   afterAll(async () => {

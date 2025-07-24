@@ -12,10 +12,7 @@ import {
   isRedisArrayConfiguration,
 } from './types';
 import { createClient, createCluster, createSentinel } from 'redis';
-import {
-  getRedisClientInjectionToken,
-  getRedisConnectionNamesInjectionToken,
-} from './utils';
+import { RedisToken, getRedisConnectionNamesInjectionToken } from './utils';
 import { ModuleRef } from '@nestjs/core';
 
 @Module({})
@@ -74,7 +71,7 @@ export class RedisClientModule
     config?: RedisConnectionConfig
   ): FactoryProvider {
     return {
-      provide: getRedisClientInjectionToken(config?.connection),
+      provide: RedisToken(config?.connection),
       useFactory: (): Redis => {
         if (!config) return createClient();
         switch (config.type) {

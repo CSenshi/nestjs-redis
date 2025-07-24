@@ -24,19 +24,20 @@ npm install @nestjs-redis/throttler-storage redis
 ### With existing Redis connection (Recommended)
 
 **Single connection:**
+
 ```ts
 import { Module } from '@nestjs/common';
 import { ThrottlerModule, seconds } from '@nestjs/throttler';
-import { RedisClientModule, getRedisClientInjectionToken } from '@nestjs-redis/client';
+import { RedisClientModule, RedisToken } from '@nestjs-redis/client';
 import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
 
 @Module({
   imports: [
     RedisClientModule.forRoot({
-      url: 'redis://localhost:6379'
+      url: 'redis://localhost:6379',
     }),
     ThrottlerModule.forRootAsync({
-      inject: [getRedisClientInjectionToken()],
+      inject: [RedisToken()],
       useFactory: (redis) => ({
         throttlers: [{ limit: 5, ttl: seconds(60) }],
         storage: RedisThrottlerStorage.fromClient(redis),
@@ -48,22 +49,31 @@ export class AppModule {}
 ```
 
 **Named connection (multi-connection):**
+
 ```ts
 import { Module } from '@nestjs/common';
 import { ThrottlerModule, seconds } from '@nestjs/throttler';
-import { RedisClientModule, getRedisClientInjectionToken } from '@nestjs-redis/client';
+import { RedisClientModule, RedisToken } from '@nestjs-redis/client';
 import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
 
 @Module({
   imports: [
     RedisClientModule.forRoot({
       connections: [
-        { connection: 'cache', type: 'client', options: { url: 'redis://localhost:6379' } },
-        { connection: 'throttling', type: 'client', options: { url: 'redis://localhost:6380' } },
-      ]
+        {
+          connection: 'cache',
+          type: 'client',
+          options: { url: 'redis://localhost:6379' },
+        },
+        {
+          connection: 'throttling',
+          type: 'client',
+          options: { url: 'redis://localhost:6380' },
+        },
+      ],
     }),
     ThrottlerModule.forRootAsync({
-      inject: [getRedisClientInjectionToken('throttling')],
+      inject: [RedisToken('throttling')],
       useFactory: (redis) => ({
         throttlers: [{ limit: 5, ttl: seconds(60) }],
         storage: RedisThrottlerStorage.fromClient(redis),
@@ -93,8 +103,8 @@ import { createClient, createCluster, createSentinel } from 'redis';
       storage: RedisThrottlerStorage.create(),
 
       // Redis client from options
-      storage: RedisThrottlerStorage.fromClientOptions({ 
-        url: 'redis://localhost:6379' 
+      storage: RedisThrottlerStorage.fromClientOptions({
+        url: 'redis://localhost:6379',
       }),
 
       // Existing Redis client (lifecycle NOT managed)
@@ -103,8 +113,8 @@ import { createClient, createCluster, createSentinel } from 'redis';
       ),
 
       // Redis cluster from options
-      storage: RedisThrottlerStorage.fromClusterOptions({ 
-        rootNodes: [{ url: 'redis://localhost:7000' }] 
+      storage: RedisThrottlerStorage.fromClusterOptions({
+        rootNodes: [{ url: 'redis://localhost:7000' }],
       }),
 
       // Existing Redis cluster (lifecycle NOT managed)
@@ -113,16 +123,16 @@ import { createClient, createCluster, createSentinel } from 'redis';
       ),
 
       // Redis sentinel from options
-      storage: RedisThrottlerStorage.fromSentinelOptions({ 
+      storage: RedisThrottlerStorage.fromSentinelOptions({
         sentinels: [{ host: 'localhost', port: 26379 }],
-        name: 'mymaster'
+        name: 'mymaster',
       }),
 
       // Existing Redis sentinel (lifecycle NOT managed)
       storage: RedisThrottlerStorage.fromSentinel(
-        createSentinel({ 
+        createSentinel({
           sentinels: [{ host: 'localhost', port: 26379 }],
-          name: 'mymaster'
+          name: 'mymaster',
         })
       ),
     }),
@@ -133,15 +143,15 @@ export class AppModule {}
 
 ## Factory Methods Reference
 
-| Method | Description | Lifecycle Management |
-|--------|-------------|---------------------|
-| `create()` | Creates default Redis client (localhost:6379) | ✅ Managed |
-| `fromClientOptions(options)` | Creates Redis client from options | ✅ Managed |
-| `fromClient(client)` | Uses existing Redis client | ❌ Not managed |
-| `fromClusterOptions(options)` | Creates Redis cluster from options | ✅ Managed |
-| `fromCluster(cluster)` | Uses existing Redis cluster | ❌ Not managed |
-| `fromSentinelOptions(options)` | Creates Redis sentinel from options | ✅ Managed |
-| `fromSentinel(sentinel)` | Uses existing Redis sentinel | ❌ Not managed |
+| Method                         | Description                                   | Lifecycle Management |
+| ------------------------------ | --------------------------------------------- | -------------------- |
+| `create()`                     | Creates default Redis client (localhost:6379) | ✅ Managed           |
+| `fromClientOptions(options)`   | Creates Redis client from options             | ✅ Managed           |
+| `fromClient(client)`           | Uses existing Redis client                    | ❌ Not managed       |
+| `fromClusterOptions(options)`  | Creates Redis cluster from options            | ✅ Managed           |
+| `fromCluster(cluster)`         | Uses existing Redis cluster                   | ❌ Not managed       |
+| `fromSentinelOptions(options)` | Creates Redis sentinel from options           | ✅ Managed           |
+| `fromSentinel(sentinel)`       | Uses existing Redis sentinel                  | ❌ Not managed       |
 
 **Lifecycle Management**: When marked as "Managed", the storage instance will automatically connect/disconnect the Redis instance during application bootstrap/shutdown.
 

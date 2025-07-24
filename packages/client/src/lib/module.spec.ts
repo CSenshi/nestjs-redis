@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RedisClientModule } from './module';
 import { createClient, createCluster } from 'redis';
-import { getRedisClientInjectionToken } from './utils';
+import { RedisToken } from './utils';
 
 // Mock redis module
 jest.mock('redis', () => ({
@@ -31,7 +31,7 @@ describe('RedisClientModule', () => {
       const dynamicModule = RedisClientModule.forRoot();
 
       expect(dynamicModule.providers).toContainEqual({
-        provide: getRedisClientInjectionToken(),
+        provide: RedisToken(),
         useFactory: expect.any(Function),
       });
     });
@@ -51,7 +51,7 @@ describe('RedisClientModule', () => {
         imports: [dynamicModule],
       }).compile();
 
-      expect(module.get(getRedisClientInjectionToken())).toBeDefined();
+      expect(module.get(RedisToken())).toBeDefined();
     });
 
     it('should export Redis client', async () => {
@@ -61,7 +61,7 @@ describe('RedisClientModule', () => {
         imports: [dynamicModule],
       }).compile();
 
-      const redisClient = module.get(getRedisClientInjectionToken());
+      const redisClient = module.get(RedisToken());
       expect(redisClient).toBeDefined();
     });
   });
@@ -81,13 +81,11 @@ describe('RedisClientModule', () => {
       const module = await Test.createTestingModule({
         imports: [dynamicModule],
       }).compile();
-      const client1 = module.get(getRedisClientInjectionToken());
-      const client2 = module.get(getRedisClientInjectionToken('redis-conn-2'));
+      const client1 = module.get(RedisToken());
+      const client2 = module.get(RedisToken('redis-conn-2'));
       expect(client1).toBeDefined();
       expect(client2).toBeDefined();
-      expect(() =>
-        module.get(getRedisClientInjectionToken('redis-conn-cluster-3'))
-      ).toThrow();
+      expect(() => module.get(RedisToken('redis-conn-cluster-3'))).toThrow();
     });
   });
 });
