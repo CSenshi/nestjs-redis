@@ -1,27 +1,206 @@
-# NestJS Redis Toolkit
+<div align="center">
 
-A unified set of high-quality, production-ready [NestJS](https://nestjs.com/) modules for working with [Redis](https://redis.io/). This toolkit provides idiomatic, type-safe, and scalable Redis integrations for your NestJS applications.
+<img src="docs/images/logo.png" alt="NestJS Redis Toolkit Logo" width="200" height="200">
 
-> **Note:** This toolkit is built on the new [node-redis](https://github.com/redis/node-redis) client. [ioredis](https://github.com/luin/ioredis) is being deprecated, so this project provides a modern, future-proof foundation for Redis in NestJS.
+# 🚀 NestJS Redis Toolkit
+
+**The modern, production-ready Redis integration for NestJS applications**
+
+[![Build Status](https://github.com/CSenshi/nestjs-redis/workflows/CI/badge.svg)](https://github.com/CSenshi/nestjs-redis/actions)
+[![npm version](https://badge.fury.io/js/%40nestjs-redis%2Fclient.svg)](https://www.npmjs.com/package/@nestjs-redis/client)
+[![npm downloads](https://img.shields.io/npm/dm/@nestjs-redis/client.svg)](https://www.npmjs.com/package/@nestjs-redis/client)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-11+-red.svg)](https://nestjs.com/)
+[![Redis](https://img.shields.io/badge/Redis-5+-red.svg)](https://redis.io/)
+
+*Built on the modern [node-redis](https://github.com/redis/node-redis) client • Future-proof • Type-safe • Production-tested*
+
+</div>
+
+---
+
+## 📋 Table of Contents
+
+- [🎯 Why NestJS Redis Toolkit?](#-why-nestjs-redis-toolkit)
+- [✨ Features](#-features)
+- [🚀 Quick Start](#-quick-start)
+- [📦 Packages](#-packages)
+- [📊 Compatibility](#-compatibility)
+- [🔄 Migration Guide](#-migration-guide)
+- [🤝 Contributing](#-contributing)
+- [🆘 Support](#-support)
+- [📄 License](#-license)
 
 ---
 
-## Vision
+## 🎯 Why NestJS Redis Toolkit?
 
-**NestJS Redis Toolkit** aims to be the go-to solution for all Redis-related needs in the NestJS ecosystem. Whether you need a simple client, distributed locks, pub/sub, or advanced Redis features, this toolkit provides a consistent, well-documented, and extensible foundation.
+The Redis ecosystem for NestJS has been fragmented, with most solutions built on the now-deprecated `ioredis` library. **NestJS Redis Toolkit** provides a modern, unified approach built on the official [node-redis](https://github.com/redis/node-redis) client.
+
+### The Problem
+- **Outdated Dependencies**: Most existing solutions rely on `ioredis`, which is being deprecated
+- **Inconsistent APIs**: Different packages use different patterns and conventions
+- **Limited Features**: Existing solutions often lack advanced Redis features like clustering and sentinel support
+- **Poor TypeScript Support**: Many packages have incomplete or outdated type definitions
+- **Compatibility Issues**: Libraries often have problems being compatible with each other, leading to version conflicts and integration challenges
+
+### Our Solution
+- **🔮 Future-Proof**: Built on the official, actively maintained `node-redis` client that will receive long-term support and updates
+- **🎯 Consistent API**: Unified patterns across all packages following NestJS best practices
+- **⚡ Full Feature Set**: Complete support for Redis client, cluster, and sentinel modes
+- **🛡️ Type-Safe**: First-class TypeScript support with comprehensive type definitions
+- **🏭 Production-Ready**: Battle-tested in production environments
+
+## ✨ Features
+
+- **Multi-Connection Support** — Handle multiple Redis connections with named instances
+- **Flexible Architecture** — Support for Redis client, cluster, and sentinel configurations
+- **Dependency Injection** — Seamless integration with NestJS's DI container
+- **Lifecycle Management** — Automatic connection handling and cleanup
+- **TypeScript First** — Comprehensive type definitions and IntelliSense support
+- **Production Tested** — Used in high-traffic production applications
+- **Extensible Design** — Easy to extend with custom functionality
+
+## 📊 Compatibility
+
+| Package | Node.js | NestJS | Redis | Status |
+|---------|---------|--------|-------|--------|
+| `@nestjs-redis/client` | 18+ | 10+ | 5+ | ✅ Stable |
+| `@nestjs-redis/throttler-storage` | 18+ | 10+ | 5+ | ✅ Stable |
+| `@nestjs-redis/redlock` | 18+ | 10+ | 5+ | 🚧 Coming Soon |
+
+
 
 ---
 
-## Packages
+## 🚀 Quick Start
 
-- [`@nestjs-redis/client`](./packages/client) — Flexible Redis client module for NestJS (single/multi-connection, cluster, sentinel)
-- [`@nestjs-redis/throttler-storage`](./packages/throttler-storage) — Redis storage for NestJS Throttler with distributed rate limiting support
-- `@nestjs-redis/redlock` — Distributed lock manager for Redis (coming soon)
-- _More modules coming soon!_
+Get up and running with Redis in your NestJS application in minutes.
 
-Each package is published independently. **For installation and usage, see the README in each package directory.**
+### Installation
 
----
+```bash
+# Install the client package
+npm install @nestjs-redis/client redis
+
+# Or install specific packages as needed
+npm install @nestjs-redis/throttler-storage redis
+```
+
+### Basic Usage
+
+```typescript
+// app.module.ts
+import { Module } from '@nestjs/common';
+import { RedisClientModule } from '@nestjs-redis/client';
+
+@Module({
+  imports: [
+    RedisClientModule.forRoot({
+      url: 'redis://localhost:6379',
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+```typescript
+// app.service.ts
+import { Injectable } from '@nestjs/common';
+import { InjectRedis, type Redis } from '@nestjs-redis/client';
+
+@Injectable()
+export class AppService {
+  constructor(@InjectRedis() private readonly redis: Redis) {}
+
+  async setValue(key: string, value: string) {
+    await this.redis.set(key, value);
+  }
+
+  async getValue(key: string) {
+    return this.redis.get(key);
+  }
+}
+```
+
+### Multi-Connection Setup
+
+```typescript
+// app.module.ts
+@Module({
+  imports: [
+    RedisClientModule.forRoot({
+      connections: [
+        { type: 'client', options: { url: 'redis://localhost:6379' } }, // default
+        { connection: 'cache', type: 'client', options: { url: 'redis://cache:6379' } },
+        { connection: 'sessions', type: 'client', options: { url: 'redis://sessions:6379' } },
+      ],
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+```typescript
+// multi.service.ts
+@Injectable()
+export class MultiService {
+  constructor(
+    @InjectRedis() private readonly defaultRedis: Redis,
+    @InjectRedis('cache') private readonly cacheRedis: Redis,
+    @InjectRedis('sessions') private readonly sessionRedis: Redis,
+  ) {}
+
+  async cacheData(key: string, data: any) {
+    await this.cacheRedis.setEx(key, 300, JSON.stringify(data));
+  }
+
+  async storeSession(sessionId: string, session: any) {
+    await this.sessionRedis.setEx(`session:${sessionId}`, 1800, JSON.stringify(session));
+  }
+}
+```
+
+### Complete Example with All Packages
+
+Here's a comprehensive example showing how to use all of the available packages
+
+```typescript
+// app.module.ts
+import { Module } from '@nestjs/common';
+import { ThrottlerModule, seconds } from '@nestjs/throttler';
+import { RedisClientModule, RedisToken } from '@nestjs-redis/client';
+import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
+
+@Module({
+  imports: [
+    // Configure Redis client
+    RedisClientModule.forRoot({
+      url: 'redis://localhost:6379',
+    }),
+    // Configure throttling with Redis storage
+    ThrottlerModule.forRootAsync({
+      inject: [RedisToken()],
+      useFactory: (redis) => ({
+        throttlers: [{ limit: 10, ttl: seconds(60) }],
+        storage: RedisThrottlerStorage.fromClient(redis),
+      }),
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+## 📦 Packages
+
+| Package | Status | Description | Use Cases |
+|---------|--------|-------------|-----------|
+| [`@nestjs-redis/client`](./packages/client) | ✅ **Stable** | Flexible Redis client module supporting single/multi-connection, cluster, and sentinel modes | Caching, session storage, pub/sub, queues |
+| [`@nestjs-redis/throttler-storage`](./packages/throttler-storage) | ✅ **Stable** | Redis storage for NestJS Throttler with distributed rate limiting | API rate limiting, DDoS protection, quota management |
+| `@nestjs-redis/redlock` | 🚧 **Coming Soon** | Distributed lock manager using Redis | Preventing race conditions, exclusive operations |
+
+Each package is published independently with comprehensive documentation. **Click the package links above for detailed installation and usage instructions.**
 
 ## Toolkit Structure
 
@@ -32,26 +211,112 @@ Each package is published independently. **For installation and usage, see the R
 
 ---
 
-## Contributing
+## 🔄 Migration Guide
 
-Contributions are welcome! Please open issues or pull requests for bug fixes, features, or documentation improvements.
+### From ioredis-based Solutions
 
-For local development:
+Migrating from `ioredis`-based NestJS Redis packages is straightforward:
 
-```bash
-pnpm install
-pnpm build
+#### Before (ioredis)
+```typescript
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import { Redis } from 'ioredis';
+
+@Injectable()
+export class MyService {
+  constructor(@InjectRedis() private readonly redis: Redis) {}
+  
+  async setValue(key: string, value: string) {
+    await this.redis.set(key, value);
+  }
+}
 ```
 
+#### After (NestJS Redis Toolkit)
+```typescript
+import { InjectRedis, type Redis } from '@nestjs-redis/client';
+
+@Injectable()
+export class MyService {
+  constructor(@InjectRedis() private readonly redis: Redis) {}
+  
+  async setValue(key: string, value: string) {
+    await this.redis.set(key, value);
+  }
+}
+```
+
+### Key Differences
+- **Import Path**: Change from `@liaoliaots/nestjs-redis` to `@nestjs-redis/client`
+- **Type Import**: Use `type Redis` from our package instead of `ioredis`
+- **Configuration**: Module configuration syntax is similar but uses `node-redis` options
+- **Commands**: Most Redis commands have the same API, but check [node-redis documentation](https://github.com/redis/node-redis) for specifics
+
 ---
 
-## Community & Support
+## 🤝 Contributing
 
-- [GitHub Issues](https://github.com/your-org/nestjs-redis/issues) — Bug reports & feature requests
-- _Discord/Community link here (if available)_
+We welcome contributions! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and development process.
+
+### Ways to Contribute
+
+- 🐛 **Bug Reports**: Found a bug? [Open an issue](https://github.com/CSenshi/nestjs-redis/issues/new?template=bug_report.md)
+- 💡 **Feature Requests**: Have an idea? [Request a feature](https://github.com/CSenshi/nestjs-redis/issues/new?template=feature_request.md)
+- 📖 **Documentation**: Improve docs, add examples, or fix typos
+- 🔧 **Code**: Submit pull requests for bug fixes or new features
+- 🧪 **Testing**: Add test cases or improve test coverage
+
+### Development Guidelines
+
+- Follow existing code style and conventions
+- Add tests for new features and bug fixes
+- Update documentation for API changes
+- Ensure all tests pass before submitting PR
+- Use conventional commit messages
+
+### Code of Conduct
+
+This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold this code.
 
 ---
 
-## License
+## 🆘 Support
 
-MIT
+### Community Resources
+
+- **[GitHub Issues](https://github.com/CSenshi/nestjs-redis/issues)** — Bug reports & feature requests
+- **[GitHub Discussions](https://github.com/CSenshi/nestjs-redis/discussions)** — Questions, ideas, and community chat
+- **[Stack Overflow](https://stackoverflow.com/questions/tagged/nestjs-redis)** — Technical questions with `nestjs-redis` tag
+
+### Getting Help
+
+1. **Check Documentation**: Start with package-specific READMEs
+2. **Search Issues**: Look for existing solutions in GitHub issues
+3. **Ask Questions**: Use GitHub Discussions for general questions
+4. **Report Bugs**: Create detailed issue reports with reproduction steps
+
+---
+
+## 🙏 Acknowledgments
+
+Special thanks to:
+- The [NestJS team](https://nestjs.com/) for creating an amazing framework
+- The [Redis team](https://redis.io/) for the powerful data store
+- The [node-redis](https://github.com/redis/node-redis) maintainers for the excellent client library
+- All contributors and community members who help improve this toolkit
+
+---
+
+## 📄 License
+
+MIT © [CSenshi](https://github.com/CSenshi)
+
+---
+
+<div align="center">
+
+**[⭐ Star this repo](https://github.com/CSenshi/nestjs-redis) • [🐛 Report Bug](https://github.com/CSenshi/nestjs-redis/issues) • [💡 Request Feature](https://github.com/CSenshi/nestjs-redis/discussions)**
+
+Made with ❤️ for the NestJS community
+
+</div>
