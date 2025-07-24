@@ -1,25 +1,82 @@
+<div align="center">
+
+<img src="../../docs/images/logo.png" alt="NestJS Redis Toolkit Logo" width="120" height="120">
+
 # @nestjs-redis/throttler-storage
 
-Redis storage implementation for [NestJS Throttler](https://github.com/nestjs/throttler) with support for Redis Client, Cluster, and Sentinel configurations.
+**Redis storage for NestJS Throttler with distributed rate limiting**
 
-## Features
+[![npm version](https://badge.fury.io/js/%40nestjs-redis%2Fthrottler-storage.svg)](https://www.npmjs.com/package/@nestjs-redis/throttler-storage)
+[![npm downloads](https://img.shields.io/npm/dm/@nestjs-redis/throttler-storage.svg)](https://www.npmjs.com/package/@nestjs-redis/throttler-storage)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-11+-red.svg)](https://nestjs.com/)
+[![Redis](https://img.shields.io/badge/Redis-5+-red.svg)](https://redis.io/)
 
-- **Production ready**: Tested and used in production
-- **Fully compatible**: Tested against official NestJS in-memory storage provider
-- **Drop-in replacement**: Works with existing throttler setup
-- **Distributed**: Share rate limiting across multiple app instances
-- **Multi-Redis support**: Works with Redis Client, Cluster, and Sentinel
-- **Clean API**: Explicit static factory methods for clear initialization
+_Built on [node-redis](https://github.com/redis/node-redis) • Drop-in replacement • Distributed rate limiting_
 
-## Installation
+</div>
+
+---
+
+## 📋 Table of Contents
+
+- [🎯 Why This Package?](#-why-this-package)
+- [✨ Features](#-features)
+- [📦 Installation](#-installation)
+- [🚀 Quick Start](#-quick-start)
+- [🔧 Configuration](#-configuration)
+- [📚 API Reference](#-api-reference)
+- [🔄 Migration Guide](#-migration-guide)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+
+---
+
+## 🎯 Why This Package?
+
+The `@nestjs-redis/throttler-storage` package provides Redis-based storage for NestJS Throttler, enabling distributed rate limiting across multiple application instances. Key benefits:
+
+- **Distributed Rate Limiting**: Share rate limits across multiple app instances and servers
+- **Production Tested**: Battle-tested in high-traffic production environments
+- **Drop-in Replacement**: Seamlessly replaces the default in-memory throttler storage
+- **Future-Proof**: Built on the modern `node-redis` client for long-term reliability
+
+---
+
+## ✨ Features
+
+- **🚀 Production Ready** — Tested and used in high-traffic production environments
+- **🔄 Drop-in Replacement** — Works seamlessly with existing NestJS Throttler setup
+- **🌐 Distributed Rate Limiting** — Share rate limits across multiple application instances
+- **🏗️ Multi-Redis Support** — Compatible with Redis Client, Cluster, and Sentinel
+- **🎯 Clean Factory API** — Explicit static methods for clear initialization
+- **⚡ Lifecycle Management** — Automatic connection handling and cleanup
+- **🛡️ Type Safe** — Full TypeScript support with comprehensive type definitions
+
+## 📦 Installation
 
 ```bash
+# Install the package and dependencies
 npm install @nestjs-redis/throttler-storage redis
+
+# Or with yarn
+yarn add @nestjs-redis/throttler-storage redis
+
+# Or with pnpm
+pnpm add @nestjs-redis/throttler-storage redis
 ```
 
-> **Note:** `@nestjs/common` and `redis` are required as peer dependencies.
+### Requirements
 
-## Usage
+| Dependency          | Version | Required   |
+| ------------------- | ------- | ---------- |
+| `@nestjs/common`    | ^11.0.0 | ✅ Peer    |
+| `@nestjs/throttler` | ^6.0.0  | ✅ Peer    |
+| `redis`             | ^5.0.0  | ✅ Peer    |
+| `Node.js`           | 18+     | ✅ Runtime |
+
+## 🚀 Quick Start
 
 ### With existing Redis connection (Recommended)
 
@@ -84,9 +141,11 @@ import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
 export class AppModule {}
 ```
 
+## 🔧 Configuration
+
 ### Static Factory Methods
 
-```ts
+```typescript
 import { Module } from '@nestjs/common';
 import { ThrottlerModule, seconds } from '@nestjs/throttler';
 import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
@@ -96,8 +155,6 @@ import { createClient, createCluster, createSentinel } from 'redis';
   imports: [
     ThrottlerModule.forRoot({
       throttlers: [{ limit: 5, ttl: seconds(60) }],
-
-      // Below are all available factory methods for creating storage instances
 
       // Default Redis client (localhost:6379)
       storage: RedisThrottlerStorage.create(),
@@ -141,7 +198,30 @@ import { createClient, createCluster, createSentinel } from 'redis';
 export class AppModule {}
 ```
 
-## Factory Methods Reference
+### Async Configuration
+
+```typescript
+@Module({
+  imports: [
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        throttlers: [{ limit: 10, ttl: seconds(60) }],
+        storage: RedisThrottlerStorage.fromClientOptions({
+          url: configService.get('REDIS_URL'),
+          password: configService.get('REDIS_PASSWORD'),
+        }),
+      }),
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+## 📚 API Reference
+
+### Factory Methods
 
 | Method                         | Description                                   | Lifecycle Management |
 | ------------------------------ | --------------------------------------------- | -------------------- |
@@ -155,6 +235,65 @@ export class AppModule {}
 
 **Lifecycle Management**: When marked as "Managed", the storage instance will automatically connect/disconnect the Redis instance during application bootstrap/shutdown.
 
-## License
+### Storage Interface
 
-MIT
+The `RedisThrottlerStorage` implements the NestJS `ThrottlerStorage` interface:
+
+```typescript
+interface ThrottlerStorage {
+  increment(
+    key: string,
+    ttl: number,
+    limit: number,
+    blockDuration: number
+  ): Promise<ThrottlerStorageRecord>;
+}
+
+interface ThrottlerStorageRecord {
+  totalHits: number;
+  timeToExpire: number;
+  isBlocked: boolean;
+}
+```
+
+## 🔄 Migration Guide
+
+### From In-Memory Storage
+
+```typescript
+// Before (in-memory)
+@Module({
+  imports: [
+    ThrottlerModule.forRoot({
+      throttlers: [{ limit: 10, ttl: seconds(60) }],
+      // No storage specified - uses in-memory by default
+    }),
+  ],
+})
+export class AppModule {}
+
+// After (Redis storage)
+@Module({
+  imports: [
+    ThrottlerModule.forRoot({
+      throttlers: [{ limit: 10, ttl: seconds(60) }],
+      storage: RedisThrottlerStorage.fromClientOptions({
+        url: 'redis://localhost:6379',
+      }),
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please see the [main repository](https://github.com/CSenshi/nestjs-redis) for contributing guidelines.
+
+---
+
+## 📄 License
+
+MIT © [CSenshi](https://github.com/CSenshi)
