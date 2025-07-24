@@ -1,0 +1,66 @@
+{
+  "name": "@nestjs-redis/throttler-storage",
+  "version": "0.0.1",
+  "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/throttler-storage",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "!**/*.tsbuildinfo"
+  ],
+  "nx": {
+    "name": "throttler-storage",
+    "targets": {
+      "test:int": {
+        "executor": "@nx/jest:jest",
+        "options": {
+          "jestConfig": "packages/throttler-storage/jest.int.config.ts",
+          "passWithNoTests": true
+        }
+      },
+      "build": {
+        "executor": "@nx/js:tsc",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "outputPath": "dist/packages/throttler-storage",
+          "tsConfig": "packages/throttler-storage/tsconfig.lib.json",
+          "packageJson": "packages/throttler-storage/package.json",
+          "main": "packages/throttler-storage/src/index.ts",
+          "assets": [
+            "packages/throttler-storage/*.md"
+          ]
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "@nestjs/throttler": "^6.0.0"
+  },
+  "peerDependencies": {
+    "redis": "^5.0.0",
+    "@nestjs/common": "^11.0.0"
+  },
+  "devDependencies": {
+    "@nestjs/throttler": "^6.0.0",
+    "redis": "^5.0.0",
+    "ts-node": "^10.9.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CSenshi/nestjs-redis",
+    "directory": "packages/throttler-storage"
+  }
+}
