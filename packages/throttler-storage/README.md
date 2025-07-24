@@ -97,7 +97,7 @@ import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
       inject: [RedisToken()],
       useFactory: (redis) => ({
         throttlers: [{ limit: 5, ttl: seconds(60) }],
-        storage: RedisThrottlerStorage.fromClient(redis),
+        storage: RedisThrottlerStorage.from(redis),
       }),
     }),
   ],
@@ -133,7 +133,7 @@ import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
       inject: [RedisToken('throttling')],
       useFactory: (redis) => ({
         throttlers: [{ limit: 5, ttl: seconds(60) }],
-        storage: RedisThrottlerStorage.fromClient(redis),
+        storage: RedisThrottlerStorage.from(redis),
       }),
     }),
   ],
@@ -163,6 +163,11 @@ import { createClient, createCluster, createSentinel } from 'redis';
       storage: RedisThrottlerStorage.fromClientOptions({
         url: 'redis://localhost:6379',
       }),
+
+      // Generic method for existing Redis client/cluster/sentinel
+      storage: RedisThrottlerStorage.from(
+        createClient({ url: 'redis://localhost:6379' })
+      ),
 
       // Existing Redis client (lifecycle NOT managed)
       storage: RedisThrottlerStorage.fromClient(
@@ -223,17 +228,22 @@ export class AppModule {}
 
 ### Factory Methods
 
-| Method                         | Description                                   | Lifecycle Management |
-| ------------------------------ | --------------------------------------------- | -------------------- |
-| `create()`                     | Creates default Redis client (localhost:6379) | ✅ Managed           |
-| `fromClientOptions(options)`   | Creates Redis client from options             | ✅ Managed           |
-| `fromClient(client)`           | Uses existing Redis client                    | ❌ Not managed       |
-| `fromClusterOptions(options)`  | Creates Redis cluster from options            | ✅ Managed           |
-| `fromCluster(cluster)`         | Uses existing Redis cluster                   | ❌ Not managed       |
-| `fromSentinelOptions(options)` | Creates Redis sentinel from options           | ✅ Managed           |
-| `fromSentinel(sentinel)`       | Uses existing Redis sentinel                  | ❌ Not managed       |
+| Method                         | Description                                                                                  | Lifecycle Management |
+| ------------------------------ | -------------------------------------------------------------------------------------------- | -------------------- |
+| `create()`                     | Creates default Redis client (localhost:6379)                                                | ✅ Managed           |
+| `from(client)`                 | Generic method for existing Redis client/cluster/sentinel with optional lifecycle management | ❌ Not managed       |
+| `fromClientOptions(options)`   | Creates Redis client from options                                                            | ✅ Managed           |
+| `fromClient(client)`           | Uses existing Redis client                                                                   | ❌ Not managed       |
+| `fromClusterOptions(options)`  | Creates Redis cluster from options                                                           | ✅ Managed           |
+| `fromCluster(cluster)`         | Uses existing Redis cluster                                                                  | ❌ Not managed       |
+| `fromSentinelOptions(options)` | Creates Redis sentinel from options                                                          | ✅ Managed           |
+| `fromSentinel(sentinel)`       | Uses existing Redis sentinel                                                                 | ❌ Not managed       |
 
-**Lifecycle Management**: When marked as "Managed", the storage instance will automatically connect/disconnect the Redis instance during application bootstrap/shutdown.
+**Lifecycle Management**:
+
+- ✅ **Managed**: The storage instance will automatically connect/disconnect the Redis instance during application bootstrap/shutdown.
+- ❌ **Not managed**: You are responsible for managing the Redis connection lifecycle.
+- 🔧 **Configurable**: Lifecycle management can be controlled via the optional `manageClientLifecycle` parameter (defaults to `false`).
 
 ### Storage Interface
 

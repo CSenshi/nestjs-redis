@@ -1,4 +1,8 @@
-import { Injectable, OnApplicationBootstrap, OnApplicationShutdown } from '@nestjs/common';
+import {
+  Injectable,
+  OnApplicationBootstrap,
+  OnApplicationShutdown,
+} from '@nestjs/common';
 import type { ThrottlerStorage } from '@nestjs/throttler';
 import type { ThrottlerStorageRecord } from '@nestjs/throttler/dist/throttler-storage-record.interface';
 import { createClient, createCluster, createSentinel } from 'redis';
@@ -14,7 +18,9 @@ type RedisClusterOptions = Parameters<typeof createCluster>[0];
 type RedisSentinelOptions = Parameters<typeof createSentinel>[0];
 
 @Injectable()
-export class RedisThrottlerStorage implements ThrottlerStorage, OnApplicationBootstrap, OnApplicationShutdown {
+export class RedisThrottlerStorage
+  implements ThrottlerStorage, OnApplicationBootstrap, OnApplicationShutdown
+{
   private readonly prefix = '_throttler';
   private readonly manageClientLifecycle: boolean;
   private readonly client: Redis;
@@ -35,12 +41,28 @@ export class RedisThrottlerStorage implements ThrottlerStorage, OnApplicationBoo
   }
 
   /**
+   * Creates a Redis throttler storage from an existing Redis client, cluster, or sentinel
+   * The client lifecycle will NOT be managed by this storage instance by default
+   * @param client The existing Redis client, cluster, or sentinel
+   * @param manageClientLifecycle Optional boolean to control whether the storage manages client connection/disconnection. Defaults to false.
+   */
+  static from(
+    client: Redis,
+    manageClientLifecycle = false
+  ): RedisThrottlerStorage {
+    return new RedisThrottlerStorage(client, manageClientLifecycle);
+  }
+
+  /**
    * Creates a Redis throttler storage from an existing Redis client
    * The client lifecycle will NOT be managed by this storage instance by default
    * @param client The existing Redis client
    * @param manageClientLifecycle Optional boolean to control whether the storage manages client connection/disconnection. Defaults to false.
    */
-  static fromClient(client: RedisClient, manageClientLifecycle = false): RedisThrottlerStorage {
+  static fromClient(
+    client: RedisClient,
+    manageClientLifecycle = false
+  ): RedisThrottlerStorage {
     return new RedisThrottlerStorage(client, manageClientLifecycle);
   }
 
@@ -50,8 +72,14 @@ export class RedisThrottlerStorage implements ThrottlerStorage, OnApplicationBoo
    * @param options Redis client configuration options
    * @param manageClientLifecycle Optional boolean to control whether the storage manages client connection/disconnection. Defaults to true.
    */
-  static fromClientOptions(options: RedisClientOptions, manageClientLifecycle = true): RedisThrottlerStorage {
-    return new RedisThrottlerStorage(createClient(options), manageClientLifecycle);
+  static fromClientOptions(
+    options: RedisClientOptions,
+    manageClientLifecycle = true
+  ): RedisThrottlerStorage {
+    return new RedisThrottlerStorage(
+      createClient(options),
+      manageClientLifecycle
+    );
   }
 
   /**
@@ -60,7 +88,10 @@ export class RedisThrottlerStorage implements ThrottlerStorage, OnApplicationBoo
    * @param cluster The existing Redis cluster
    * @param manageClientLifecycle Optional boolean to control whether the storage manages cluster connection/disconnection. Defaults to false.
    */
-  static fromCluster(cluster: RedisCluster, manageClientLifecycle = false): RedisThrottlerStorage {
+  static fromCluster(
+    cluster: RedisCluster,
+    manageClientLifecycle = false
+  ): RedisThrottlerStorage {
     return new RedisThrottlerStorage(cluster, manageClientLifecycle);
   }
 
@@ -70,8 +101,14 @@ export class RedisThrottlerStorage implements ThrottlerStorage, OnApplicationBoo
    * @param options Redis cluster configuration options
    * @param manageClientLifecycle Optional boolean to control whether the storage manages cluster connection/disconnection. Defaults to true.
    */
-  static fromClusterOptions(options: RedisClusterOptions, manageClientLifecycle = true): RedisThrottlerStorage {
-    return new RedisThrottlerStorage(createCluster(options), manageClientLifecycle);
+  static fromClusterOptions(
+    options: RedisClusterOptions,
+    manageClientLifecycle = true
+  ): RedisThrottlerStorage {
+    return new RedisThrottlerStorage(
+      createCluster(options),
+      manageClientLifecycle
+    );
   }
 
   /**
@@ -80,7 +117,10 @@ export class RedisThrottlerStorage implements ThrottlerStorage, OnApplicationBoo
    * @param sentinel The existing Redis sentinel
    * @param manageClientLifecycle Optional boolean to control whether the storage manages sentinel connection/disconnection. Defaults to false.
    */
-  static fromSentinel(sentinel: RedisSentinel, manageClientLifecycle = false): RedisThrottlerStorage {
+  static fromSentinel(
+    sentinel: RedisSentinel,
+    manageClientLifecycle = false
+  ): RedisThrottlerStorage {
     return new RedisThrottlerStorage(sentinel, manageClientLifecycle);
   }
 
@@ -90,14 +130,20 @@ export class RedisThrottlerStorage implements ThrottlerStorage, OnApplicationBoo
    * @param options Redis sentinel configuration options
    * @param manageClientLifecycle Optional boolean to control whether the storage manages sentinel connection/disconnection. Defaults to true.
    */
-  static fromSentinelOptions(options: RedisSentinelOptions, manageClientLifecycle = true): RedisThrottlerStorage {
-    return new RedisThrottlerStorage(createSentinel(options), manageClientLifecycle);
+  static fromSentinelOptions(
+    options: RedisSentinelOptions,
+    manageClientLifecycle = true
+  ): RedisThrottlerStorage {
+    return new RedisThrottlerStorage(
+      createSentinel(options),
+      manageClientLifecycle
+    );
   }
 
   /**
    * This logic is modeled after the official NestJS in-memory storage implementation:
    * https://github.com/nestjs/throttler/blob/27bf8212/src/throttler.service.ts#L74
-   * 
+   *
    * It has been adapted for Redis with full atomicity using Lua scripting.
    */
   async increment(
@@ -105,7 +151,7 @@ export class RedisThrottlerStorage implements ThrottlerStorage, OnApplicationBoo
     ttl: number,
     limit: number,
     blockDuration: number,
-    throttlerName: string,
+    throttlerName: string
   ): Promise<ThrottlerStorageRecord> {
     const ttlMilliseconds = ttl;
     const blockDurationMilliseconds = blockDuration;
@@ -148,10 +194,16 @@ export class RedisThrottlerStorage implements ThrottlerStorage, OnApplicationBoo
       end
     `;
 
-    const [totalHits, timeToExpireMs, timeToBlockExpireMs, isBlocked] = await this.client.eval(luaScript, {
-      keys: [redisKey, blockKey],
-      arguments: [throttlerName, ttlMilliseconds.toString(), limit.toString(), blockDurationMilliseconds.toString()],
-    }) as [number, number, number, number];
+    const [totalHits, timeToExpireMs, timeToBlockExpireMs, isBlocked] =
+      (await this.client.eval(luaScript, {
+        keys: [redisKey, blockKey],
+        arguments: [
+          throttlerName,
+          ttlMilliseconds.toString(),
+          limit.toString(),
+          blockDurationMilliseconds.toString(),
+        ],
+      })) as [number, number, number, number];
 
     return {
       totalHits,
