@@ -156,47 +156,26 @@ import { createClient, createCluster, createSentinel } from 'redis';
     ThrottlerModule.forRoot({
       throttlers: [{ limit: 5, ttl: seconds(60) }],
 
-      // Default Redis client (localhost:6379)
-      storage: RedisThrottlerStorage.create(),
+      // Generic method for existing Redis client/cluster/sentinel
+      storage: RedisThrottlerStorage.from(
+        createClient({ url: 'redis://localhost:6379' })
+      ),
 
       // Redis client from options
       storage: RedisThrottlerStorage.fromClientOptions({
         url: 'redis://localhost:6379',
       }),
 
-      // Generic method for existing Redis client/cluster/sentinel
-      storage: RedisThrottlerStorage.from(
-        createClient({ url: 'redis://localhost:6379' })
-      ),
-
-      // Existing Redis client (lifecycle NOT managed)
-      storage: RedisThrottlerStorage.fromClient(
-        createClient({ url: 'redis://localhost:6379' })
-      ),
-
       // Redis cluster from options
       storage: RedisThrottlerStorage.fromClusterOptions({
         rootNodes: [{ url: 'redis://localhost:7000' }],
       }),
-
-      // Existing Redis cluster (lifecycle NOT managed)
-      storage: RedisThrottlerStorage.fromCluster(
-        createCluster({ rootNodes: [{ url: 'redis://localhost:7000' }] })
-      ),
 
       // Redis sentinel from options
       storage: RedisThrottlerStorage.fromSentinelOptions({
         sentinels: [{ host: 'localhost', port: 26379 }],
         name: 'mymaster',
       }),
-
-      // Existing Redis sentinel (lifecycle NOT managed)
-      storage: RedisThrottlerStorage.fromSentinel(
-        createSentinel({
-          sentinels: [{ host: 'localhost', port: 26379 }],
-          name: 'mymaster',
-        })
-      ),
     }),
   ],
 })
@@ -230,14 +209,10 @@ export class AppModule {}
 
 | Method                         | Description                                                                                  | Lifecycle Management |
 | ------------------------------ | -------------------------------------------------------------------------------------------- | -------------------- |
-| `create()`                     | Creates default Redis client (localhost:6379)                                                | ✅ Managed           |
-| `from(client)`                 | Generic method for existing Redis client/cluster/sentinel with optional lifecycle management | ❌ Not managed       |
+| `from(client)`                 | Unified method for existing Redis client/cluster/sentinel with optional lifecycle management | ❌ Not managed       |
 | `fromClientOptions(options)`   | Creates Redis client from options                                                            | ✅ Managed           |
-| `fromClient(client)`           | Uses existing Redis client                                                                   | ❌ Not managed       |
 | `fromClusterOptions(options)`  | Creates Redis cluster from options                                                           | ✅ Managed           |
-| `fromCluster(cluster)`         | Uses existing Redis cluster                                                                  | ❌ Not managed       |
 | `fromSentinelOptions(options)` | Creates Redis sentinel from options                                                          | ✅ Managed           |
-| `fromSentinel(sentinel)`       | Uses existing Redis sentinel                                                                 | ❌ Not managed       |
 
 **Lifecycle Management**:
 

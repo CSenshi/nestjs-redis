@@ -31,36 +31,34 @@ export class RedisThrottlerStorage
     this.manageClientLifecycle = manageClientLifecycle;
   }
 
-  /**
-   * Creates a Redis throttler storage with default client configuration
-   * (connects to localhost:6379)
-   * @param manageClientLifecycle Optional boolean to control whether the storage manages client connection/disconnection. Defaults to true.
-   */
-  static create(manageClientLifecycle = true): RedisThrottlerStorage {
-    return new RedisThrottlerStorage(createClient(), manageClientLifecycle);
-  }
 
   /**
-   * Creates a Redis throttler storage from an existing Redis client, cluster, or sentinel
-   * The client lifecycle will NOT be managed by this storage instance by default
+   * Creates a Redis throttler storage from an existing Redis client, cluster, or sentinel.
+   * This is the unified method that accepts any Redis connection type, providing a single
+   * entry point for all Redis configurations.
+   * 
+   * The client lifecycle will NOT be managed by this storage instance by default.
+   * 
    * @param client The existing Redis client, cluster, or sentinel
    * @param manageClientLifecycle Optional boolean to control whether the storage manages client connection/disconnection. Defaults to false.
+   * 
+   * @example
+   * ```typescript
+   * // With Redis client
+   * const storage = RedisThrottlerStorage.from(createClient({ url: 'redis://localhost:6379' }));
+   * 
+   * // With Redis cluster
+   * const storage = RedisThrottlerStorage.from(createCluster({ rootNodes: [{ url: 'redis://localhost:7000' }] }));
+   * 
+   * // With Redis sentinel
+   * const storage = RedisThrottlerStorage.from(createSentinel({ sentinels: [{ host: 'localhost', port: 26379 }], name: 'mymaster' }));
+   * 
+   * // With lifecycle management enabled
+   * const storage = RedisThrottlerStorage.from(redisClient, true);
+   * ```
    */
   static from(
     client: Redis,
-    manageClientLifecycle = false
-  ): RedisThrottlerStorage {
-    return new RedisThrottlerStorage(client, manageClientLifecycle);
-  }
-
-  /**
-   * Creates a Redis throttler storage from an existing Redis client
-   * The client lifecycle will NOT be managed by this storage instance by default
-   * @param client The existing Redis client
-   * @param manageClientLifecycle Optional boolean to control whether the storage manages client connection/disconnection. Defaults to false.
-   */
-  static fromClient(
-    client: RedisClient,
     manageClientLifecycle = false
   ): RedisThrottlerStorage {
     return new RedisThrottlerStorage(client, manageClientLifecycle);
@@ -83,19 +81,6 @@ export class RedisThrottlerStorage
   }
 
   /**
-   * Creates a Redis throttler storage from an existing Redis cluster
-   * The cluster lifecycle will NOT be managed by this storage instance by default
-   * @param cluster The existing Redis cluster
-   * @param manageClientLifecycle Optional boolean to control whether the storage manages cluster connection/disconnection. Defaults to false.
-   */
-  static fromCluster(
-    cluster: RedisCluster,
-    manageClientLifecycle = false
-  ): RedisThrottlerStorage {
-    return new RedisThrottlerStorage(cluster, manageClientLifecycle);
-  }
-
-  /**
    * Creates a Redis throttler storage from Redis cluster options
    * A new cluster will be created and its lifecycle managed by this storage instance by default
    * @param options Redis cluster configuration options
@@ -109,19 +94,6 @@ export class RedisThrottlerStorage
       createCluster(options),
       manageClientLifecycle
     );
-  }
-
-  /**
-   * Creates a Redis throttler storage from an existing Redis sentinel
-   * The sentinel lifecycle will NOT be managed by this storage instance by default
-   * @param sentinel The existing Redis sentinel
-   * @param manageClientLifecycle Optional boolean to control whether the storage manages sentinel connection/disconnection. Defaults to false.
-   */
-  static fromSentinel(
-    sentinel: RedisSentinel,
-    manageClientLifecycle = false
-  ): RedisThrottlerStorage {
-    return new RedisThrottlerStorage(sentinel, manageClientLifecycle);
   }
 
   /**
