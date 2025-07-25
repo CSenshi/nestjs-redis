@@ -1,3 +1,27 @@
+## 0.2.2 (2025-07-25)
+
+### 🚀 Features
+
+- **nx-cloud:** setup nx cloud workspace ([5bf3b8c](https://github.com/CSenshi/nestjs-redis/commit/5bf3b8c))
+- **throttler-storage:** init ([b8589f3](https://github.com/CSenshi/nestjs-redis/commit/b8589f3))
+- **throttler-storage:** implement Redis throttler storage and add integration tests ([1a2d6ea](https://github.com/CSenshi/nestjs-redis/commit/1a2d6ea))
+- **throttler-storage:** add integration test configuration and update test dependencies ([063abfd](https://github.com/CSenshi/nestjs-redis/commit/063abfd))
+- **throttler-storage:** enhance RedisThrottlerStorage with static factory methods for improved client management ([5ccc513](https://github.com/CSenshi/nestjs-redis/commit/5ccc513))
+
+### 🩹 Fixes
+
+- invalid pnpm lock file ([4e5e632](https://github.com/CSenshi/nestjs-redis/commit/4e5e632))
+- add missing build target defaults in nx.json ([6a25d5a](https://github.com/CSenshi/nestjs-redis/commit/6a25d5a))
+- update image source in README files for consistency ([dd89070](https://github.com/CSenshi/nestjs-redis/commit/dd89070))
+- change package building logic ([e9c979e](https://github.com/CSenshi/nestjs-redis/commit/e9c979e))
+- **eslint:** update ignoredFiles to include all spec.ts files ([38836f3](https://github.com/CSenshi/nestjs-redis/commit/38836f3))
+- **package.json:** update homepage and repository fields and correct throttler dependency version ([3f73178](https://github.com/CSenshi/nestjs-redis/commit/3f73178))
+
+### ❤️ Thank You
+
+- CSenshi
+- Saba Pochkhua
+
 ## 0.1.0 (2025-07-22)
 
 ### 🚀 Features

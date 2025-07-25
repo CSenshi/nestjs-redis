@@ -1,6 +1,6 @@
 {
   "name": "@nestjs-redis/throttler-storage",
-  "version": "0.0.1",
+  "version": "0.2.2",
   "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/throttler-storage",
   "main": "./dist/src/index.js",
   "module": "./dist/src/index.js",
