@@ -184,7 +184,7 @@ import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
       inject: [RedisToken()],
       useFactory: (redis) => ({
         throttlers: [{ limit: 10, ttl: seconds(60) }],
-        storage: RedisThrottlerStorage.fromClient(redis),
+        storage: RedisThrottlerStorage.from(redis),
       }),
     }),
   ],

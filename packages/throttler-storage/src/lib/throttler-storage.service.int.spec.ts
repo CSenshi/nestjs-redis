@@ -60,7 +60,7 @@ describe('RedisThrottlerStorage - Exact Implementation Comparison', () => {
     await redisClient.connect();
 
     // Initialize both implementations
-    redisStorage = RedisThrottlerStorage.fromClient(redisClient);
+    redisStorage = RedisThrottlerStorage.from(redisClient);
     memoryStorage = new ThrottlerStorageService();
     comparator = new ThrottlerStorageComparator(redisStorage, memoryStorage);
   });
@@ -270,38 +270,7 @@ describe('RedisThrottlerStorage - Factory Methods Integration', () => {
     await cleanupClient.quit();
   });
 
-  describe('create() - Default client', () => {
-    it('should create storage with default client and perform increment operations', async () => {
-      const storage = RedisThrottlerStorage.create();
-      activeStorages.push({ storage, bootstrapped: false });
 
-      // Bootstrap to connect
-      await expect(storage.increment(testKey, ttl, limit, blockDuration, throttlerName)).rejects.toThrow(
-        'The client is closed'
-      );
-
-      await storage.onApplicationBootstrap();
-      activeStorages[activeStorages.length - 1].bootstrapped = true;
-
-      // Test increment operations
-      const result1 = await storage.increment(testKey, ttl, limit, blockDuration, throttlerName);
-      expect(result1.totalHits).toBe(1);
-      expect(result1.isBlocked).toBe(false);
-
-      const result2 = await storage.increment(testKey, ttl, limit, blockDuration, throttlerName);
-      expect(result2.totalHits).toBe(2);
-      expect(result2.isBlocked).toBe(false);
-
-      const result3 = await storage.increment(testKey, ttl, limit, blockDuration, throttlerName);
-      expect(result3.totalHits).toBe(3);
-      expect(result3.isBlocked).toBe(false);
-
-      // Should block on 4th request
-      const result4 = await storage.increment(testKey, ttl, limit, blockDuration, throttlerName);
-      expect(result4.totalHits).toBe(4);
-      expect(result4.isBlocked).toBe(true);
-    });
-  });
 
   describe('fromClientOptions() - Client from options', () => {
     it('should create storage from client options and perform increment operations', async () => {
@@ -327,7 +296,7 @@ describe('RedisThrottlerStorage - Factory Methods Integration', () => {
     });
   });
 
-  describe('fromClient() - Existing client', () => {
+  describe('from() - Existing client', () => {
     it('should use existing client and perform increment operations', async () => {
       const client = createClient({
         url: process.env.REDIS_URL || 'redis://localhost:6379',
@@ -338,7 +307,7 @@ describe('RedisThrottlerStorage - Factory Methods Integration', () => {
       // Verify client is connected
       expect(client.isReady).toBe(true);
 
-      const storage = RedisThrottlerStorage.fromClient(client);
+      const storage = RedisThrottlerStorage.from(client);
 
       const result1 = await storage.increment(testKey, ttl, limit, blockDuration, throttlerName);
       expect(result1.totalHits).toBe(1);
@@ -368,7 +337,7 @@ describe('RedisThrottlerStorage - Factory Methods Integration', () => {
       // Verify client is connected
       expect(client.isReady).toBe(true);
 
-      const storage = RedisThrottlerStorage.fromClient(client);
+      const storage = RedisThrottlerStorage.from(client);
 
       // These should not throw errors and should not connect/disconnect
       await storage.onApplicationBootstrap();
