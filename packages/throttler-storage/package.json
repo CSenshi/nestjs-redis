@@ -40,7 +40,8 @@
           "packageJson": "packages/throttler-storage/package.json",
           "main": "packages/throttler-storage/src/index.ts",
           "assets": [
-            "packages/throttler-storage/*.md"
+            "packages/throttler-storage/*.md",
+            "LICENSE"
           ]
         }
       }

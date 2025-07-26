@@ -40,7 +40,8 @@
           "packageJson": "packages/client/package.json",
           "main": "packages/client/src/index.ts",
           "assets": [
-            "packages/client/*.md"
+            "packages/client/*.md",
+            "LICENSE"
           ]
         }
       }
