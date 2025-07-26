@@ -1,8 +1,17 @@
 {
   "name": "@nestjs-redis/throttler-storage",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Redis storage for NestJS Throttler enabling distributed rate limiting across multiple application instances",
-  "keywords": ["nestjs", "redis", "throttler", "rate-limiting", "storage", "distributed", "typescript", "throttling"],
+  "keywords": [
+    "nestjs",
+    "redis",
+    "throttler",
+    "rate-limiting",
+    "storage",
+    "distributed",
+    "typescript",
+    "throttling"
+  ],
   "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/throttler-storage",
   "main": "./dist/src/index.js",
   "module": "./dist/src/index.js",
@@ -22,7 +31,14 @@
   ],
   "nx": {
     "name": "throttler-storage",
-    "tags": ["scope:throttler", "type:library", "platform:node", "framework:nestjs", "database:redis", "feature:rate-limiting"],
+    "tags": [
+      "scope:throttler",
+      "type:library",
+      "platform:node",
+      "framework:nestjs",
+      "database:redis",
+      "feature:rate-limiting"
+    ],
     "targets": {
       "test:int": {
         "executor": "@nx/jest:jest",

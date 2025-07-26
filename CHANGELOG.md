@@ -1,3 +1,14 @@
+## 0.3.2 (2025-07-26)
+
+### 🩹 Fixes
+
+- **package:** include LICENSE file in assets for client and throttler-storage packages ([6c638fe](https://github.com/CSenshi/nestjs-redis/commit/6c638fe))
+- **package:** add keywords and tags to client and throttler-storage packages ([bba1fbf](https://github.com/CSenshi/nestjs-redis/commit/bba1fbf))
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 0.3.1 (2025-01-10)
 
 ### 🩹 Fixes
