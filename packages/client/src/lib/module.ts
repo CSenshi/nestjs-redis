@@ -12,7 +12,7 @@ import {
   isRedisArrayConfiguration,
 } from './types';
 import { createClient, createCluster, createSentinel } from 'redis';
-import { RedisToken, getRedisConnectionNamesInjectionToken } from './utils';
+import { RedisToken, getRedisConnectionNamesInjectionToken } from './tokens';
 import { ModuleRef } from '@nestjs/core';
 
 @Module({})
