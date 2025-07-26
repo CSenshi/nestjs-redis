@@ -196,8 +196,8 @@ export class AppModule {}
 
 | Package | Status | Description | Use Cases |
 |---------|--------|-------------|-----------|
-| [`@nestjs-redis/client`](./packages/client) | ✅ **Stable** | Flexible Redis client module supporting single/multi-connection, cluster, and sentinel modes | Caching, session storage, pub/sub, queues |
-| [`@nestjs-redis/throttler-storage`](./packages/throttler-storage) | ✅ **Stable** | Redis storage for NestJS Throttler with distributed rate limiting | API rate limiting, DDoS protection, quota management |
+| [`@nestjs-redis/client`](https://www.npmjs.com/package/@nestjs-redis/client) | ✅ **Stable** | Flexible, production-ready Redis client module for NestJS with multi-connection support, built on the modern node-redis client | Caching, session storage, pub/sub, queues |
+| [`@nestjs-redis/throttler-storage`](https://www.npmjs.com/package/@nestjs-redis/throttler-storage) | ✅ **Stable** | Redis storage for NestJS Throttler with distributed rate limiting | API rate limiting, DDoS protection, quota management |
 | `@nestjs-redis/redlock` | 🚧 **Coming Soon** | Distributed lock manager using Redis | Preventing race conditions, exclusive operations |
 
 Each package is published independently with comprehensive documentation. **Click the package links above for detailed installation and usage instructions.**

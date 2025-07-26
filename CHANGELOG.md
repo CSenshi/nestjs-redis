@@ -1,3 +1,13 @@
+## 0.3.1 (2025-01-10)
+
+### 🩹 Fixes
+
+- **readme:** fix logo image paths for npm package publishing by using absolute GitHub URLs instead of relative paths ([packages/client](packages/client/README.md), [packages/throttler-storage](packages/throttler-storage/README.md))
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 0.3.0 (2025-07-25)
 
 This was a version bump only, there were no code changes.

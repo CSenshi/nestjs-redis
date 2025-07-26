@@ -1,6 +1,7 @@
 {
   "name": "@nestjs-redis/throttler-storage",
   "version": "0.3.0",
+  "description": "Redis storage for NestJS Throttler enabling distributed rate limiting across multiple application instances",
   "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/throttler-storage",
   "main": "./dist/src/index.js",
   "module": "./dist/src/index.js",
