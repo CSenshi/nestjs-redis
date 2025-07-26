@@ -2,6 +2,16 @@
   "name": "@nestjs-redis/client",
   "version": "0.3.1",
   "description": "Flexible, production-ready Redis client module for NestJS with multi-connection support, built on the modern node-redis client",
+  "keywords": [
+    "nestjs",
+    "redis",
+    "client",
+    "database",
+    "cache",
+    "typescript",
+    "node-redis",
+    "multi-connection"
+  ],
   "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/client",
   "main": "./dist/src/index.js",
   "module": "./dist/src/index.js",
@@ -21,6 +31,13 @@
   ],
   "nx": {
     "name": "client",
+    "tags": [
+      "scope:client",
+      "type:library",
+      "platform:node",
+      "framework:nestjs",
+      "database:redis"
+    ],
     "targets": {
       "test:int": {
         "executor": "@nx/jest:jest",
