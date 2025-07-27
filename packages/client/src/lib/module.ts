@@ -5,67 +5,103 @@ import {
   OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '@nestjs/common';
-import { Redis, RedisModuleOptions, RedisConnectionConfig } from './types';
+import { Redis, RedisModuleOptions, RedisModuleForRootOptions } from './types';
+import { RedisModuleAsyncOptions } from './interfaces';
 import { createClient, createCluster, createSentinel } from 'redis';
 import { RedisToken } from './tokens';
 import { ModuleRef } from '@nestjs/core';
+import {
+  ConfigurableModuleClass,
+  MODULE_OPTIONS_TOKEN,
+} from './redis-client.module-definition';
 
 @Module({})
 export class RedisClientModule
+  extends ConfigurableModuleClass
   implements OnApplicationBootstrap, OnApplicationShutdown
 {
   protected connectionToken?: string;
 
-  constructor(private moduleRef: ModuleRef) {}
+  constructor(private moduleRef: ModuleRef) {
+    super();
+  }
 
-  public static forRoot(options?: RedisModuleOptions): DynamicModule {
-    const provider = this.getRedisClientProvider(options);
-    const token = RedisToken(options?.connectionName);
+  public static forRoot(
+    options: RedisModuleForRootOptions = {}
+  ): DynamicModule {
+    const baseModule = super.forRoot(options);
 
     return {
       global: options?.isGlobal ?? false,
       module: class extends RedisClientModule {
-        override connectionToken = token;
+        override connectionToken = RedisToken(options?.connectionName);
       },
-      providers: [provider],
-      exports: [provider.provide],
+      providers: [
+        ...(baseModule.providers || []),
+        this.getRedisClientProvider(options?.connectionName),
+      ],
+      exports: [RedisToken(options?.connectionName)],
+    };
+  }
+
+  public static forRootAsync(options: RedisModuleAsyncOptions): DynamicModule {
+    const baseModule = super.forRootAsync(options);
+
+    return {
+      global: options.isGlobal ?? false,
+      module: class extends RedisClientModule {
+        override connectionToken = RedisToken(options.connectionName);
+      },
+      providers: [
+        ...(baseModule.providers || []),
+        this.getRedisClientProvider(options.connectionName),
+      ],
+      exports: [RedisToken(options.connectionName)],
     };
   }
 
   private static getRedisClientProvider(
-    config?: RedisConnectionConfig
+    connectionName?: string
   ): FactoryProvider {
     return {
-      provide: RedisToken(config?.connectionName),
-      useFactory: (): Redis => {
-        if (!config) return createClient();
-        switch (config.type) {
+      provide: RedisToken(connectionName),
+      useFactory: (config: RedisModuleOptions): Redis => {
+        switch (config?.type) {
           case 'client':
           case undefined:
-            return createClient(config.options);
+            return createClient(config?.options);
           case 'cluster':
             return createCluster(config.options);
           case 'sentinel':
             return createSentinel(config.options);
           default:
-            throw new Error('Invalid configuration');
+            throw new Error(
+              // @ts-expect-error check for config type
+              `Unsupported Redis type: ${config?.type}. Supported types are 'client', 'cluster' and 'sentinel'`
+            );
         }
       },
+      inject: [MODULE_OPTIONS_TOKEN],
     };
   }
 
   async onApplicationBootstrap() {
-    await this.getRedisClient().connect();
+    if (!this.connectionToken) {
+      throw new Error(
+        'Connection token is not defined. Ensure to call forRoot or forRootAsync.'
+      );
+    }
+
+    await this.moduleRef.get<Redis>(this.connectionToken).connect();
   }
 
   async onApplicationShutdown() {
-    await this.getRedisClient().quit();
-  }
-
-  private getRedisClient(): Redis {
-    if(!this.connectionToken){
-      throw new Error('Connection token is not defined. Ensure RedisClientModule is properly configured.');
+    if (!this.connectionToken) {
+      throw new Error(
+        'Connection token is not defined. Ensure to call forRoot or forRootAsync.'
+      );
     }
-    return this.moduleRef.get<Redis>(this.connectionToken, { strict: false });
+
+    await this.moduleRef.get<Redis>(this.connectionToken).quit();
   }
 }

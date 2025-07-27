@@ -2,8 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RedisClientModule } from './module';
 import { RedisToken } from './tokens';
 import { Redis, RedisModuleOptions } from './types';
+import { RedisModuleAsyncOptions } from './interfaces';
 
-describe('RedisClientModule Integration', () => {
+describe('RedisClientModule Integration forRoot', () => {
   let module: TestingModule;
   let redisClient: Redis;
 
@@ -255,6 +256,64 @@ describe('RedisClientModule Integration', () => {
       const delPromises = testKeys.map((key) => redisClient.del(key));
       await Promise.all(delPromises);
     });
+  });
+});
+
+describe('RedisClientModule Integration forRootAsync', () => {
+  let module: TestingModule;
+  let redisClient: Redis;
+
+  // Test Redis configuration - using default Redis instance
+  const testRedisAsyncConfig: RedisModuleAsyncOptions = {
+    useFactory: () => ({
+      type: 'client',
+      options: {
+        url: process.env.REDIS_URL || 'redis://localhost:6379',
+      },
+    }),
+    connectionName: 'testAsyncConnection',
+  };
+
+  beforeEach(async () => {
+    // Create the testing module with real Redis connection
+    console.log('Creating module with async options:', testRedisAsyncConfig);
+    module = await Test.createTestingModule({
+      imports: [RedisClientModule.forRootAsync(testRedisAsyncConfig)],
+    }).compile();
+
+    await module.init();
+
+    redisClient = module.get<Redis>(RedisToken('testAsyncConnection'));
+  });
+
+  afterEach(async () => {
+    await module.close();
+  });
+
+  describe('Real Redis Connection', () => {
+    it('should connect to Redis successfully', async () => {
+      // The connection should be established during module initialization
+      expect(redisClient).toBeDefined();
+    });
+
+    // it('should perform basic Redis operations', async () => {
+    //   const testKey = 'test:async-integration:key';
+    //   const testValue = 'test-value-' + Date.now();
+
+    //   // Set a value
+    //   await redisClient.set(testKey, testValue);
+
+    //   // Get the value
+    //   const retrievedValue = await redisClient.get(testKey);
+    //   expect(retrievedValue).toBe(testValue);
+
+    //   // Delete the key
+    //   await redisClient.del(testKey);
+
+    //   // Verify deletion
+    //   const deletedValue = await redisClient.get(testKey);
+    //   expect(deletedValue).toBeNull();
+    // });
   });
 });
 

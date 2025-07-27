@@ -58,6 +58,7 @@ The Redis ecosystem for NestJS has been fragmented, with most solutions built on
 
 - **Multi-Connection Support** — Handle multiple Redis connections with named instances
 - **Flexible Architecture** — Support for Redis client, cluster, and sentinel configurations
+- **Async Configuration** — Full support for dynamic configuration with `forRootAsync`
 - **Dependency Injection** — Seamless integration with NestJS's DI container
 - **Lifecycle Management** — Automatic connection handling and cleanup
 - **TypeScript First** — Comprehensive type definitions and IntelliSense support
@@ -127,18 +128,52 @@ export class AppService {
 }
 ```
 
+### Async Configuration
+
+Use `forRootAsync` for dynamic configuration with dependency injection:
+
+```typescript
+// app.module.ts
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { RedisClientModule } from '@nestjs-redis/client';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot(),
+    RedisClientModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'client',
+        options: {
+          url: configService.get('REDIS_URL') || 'redis://localhost:6379',
+          password: configService.get('REDIS_PASSWORD'),
+          database: configService.get('REDIS_DB') || 0,
+        },
+      }),
+    }),
+  ],
+})
+export class AppModule {}
+```
+
 ### Multi-Connection Setup
 
 ```typescript
 // app.module.ts
 @Module({
   imports: [
-    // Default connection
-    RedisClientModule.forRoot({
-      type: 'client',
-      options: {
-        url: 'redis://localhost:6379',
-      },
+    // Default connection with async config
+    RedisClientModule.forRootAsync({
+      isGlobal: true,
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'client',
+        options: {
+          url: configService.get('REDIS_URL'),
+        },
+      }),
     }),
     // Named connections using separate forRoot calls
     RedisClientModule.forRoot({
@@ -148,12 +183,19 @@ export class AppService {
         url: 'redis://cache:6379',
       },
     }),
-    RedisClientModule.forRoot({
+    RedisClientModule.forRootAsync({
       connectionName: 'sessions',
-      type: 'client',
-      options: {
-        url: 'redis://sessions:6379',
-      },
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'cluster',
+        options: {
+          rootNodes: [
+            { url: configService.get('REDIS_SESSION_NODE_1') },
+            { url: configService.get('REDIS_SESSION_NODE_2') },
+          ],
+        },
+      }),
     }),
   ],
 })
@@ -167,7 +209,7 @@ export class MultiService {
   constructor(
     @InjectRedis() private readonly defaultRedis: Redis,
     @InjectRedis('cache') private readonly cacheRedis: Redis,
-    @InjectRedis('sessions') private readonly sessionRedis: Redis
+    @InjectRedis('sessions') private readonly sessionRedis: RedisCluster
   ) {}
 
   async cacheData(key: string, data: any) {
@@ -186,29 +228,40 @@ export class MultiService {
 
 ### Complete Example with All Packages
 
-Here's a comprehensive example showing how to use all of the available packages
+Here's a comprehensive example showing how to use all of the available packages with async configuration:
 
 ```typescript
 // app.module.ts
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule, seconds } from '@nestjs/throttler';
 import { RedisClientModule, RedisToken } from '@nestjs-redis/client';
 import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
 
 @Module({
   imports: [
-    // Configure Redis client
-    RedisClientModule.forRoot({
-      type: 'client',
-      options: {
-        url: 'redis://localhost:6379',
-      },
+    // Configure Redis client with async config
+    RedisClientModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'client',
+        options: {
+          url: configService.get('REDIS_URL') || 'redis://localhost:6379',
+        },
+      }),
     }),
     // Configure throttling with Redis storage
     ThrottlerModule.forRootAsync({
-      inject: [RedisToken()],
-      useFactory: (redis) => ({
-        throttlers: [{ limit: 10, ttl: seconds(60) }],
+      imports: [ConfigModule],
+      inject: [RedisToken(), ConfigService],
+      useFactory: (redis, configService: ConfigService) => ({
+        throttlers: [
+          {
+            limit: configService.get('THROTTLE_LIMIT') || 10,
+            ttl: seconds(configService.get('THROTTLE_TTL') || 60),
+          },
+        ],
         storage: RedisThrottlerStorage.from(redis),
       }),
     }),
@@ -278,6 +331,7 @@ export class MyService {
 - **Import Path**: Change from `@liaoliaots/nestjs-redis` to `@nestjs-redis/client`
 - **Type Import**: Use `type Redis` from our package instead of `ioredis`
 - **Configuration**: Module configuration syntax is similar but uses `node-redis` options
+- **Async Configuration**: Full support for `forRootAsync` with dependency injection
 - **Commands**: Most Redis commands have the same API, but check [node-redis documentation](https://github.com/redis/node-redis) for specifics
 
 ---
