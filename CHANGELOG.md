@@ -1,3 +1,17 @@
+## 0.4.0 (2025-07-27)
+
+### 🚀 Features
+
+- **redis:** enhance RedisClientModule with async options and improved configuration handling ([667b1bd](https://github.com/CSenshi/nestjs-redis/commit/667b1bd))
+
+### 🩹 Fixes
+
+- **tokens:** move RedisToken and connection names injection token to separate file ([e69d96a](https://github.com/CSenshi/nestjs-redis/commit/e69d96a))
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 0.3.2 (2025-07-26)
 
 ### 🩹 Fixes
