@@ -13,9 +13,7 @@ export type RedisOptions =
   | RedisClusterOptions
   | RedisSentinelOptions;
 
-export type RedisConnectionConfig = {
-  connection?: string;
-} & (
+export type RedisConnectionConfig =
   | {
       type?: 'client';
       options?: RedisClientOptions;
@@ -27,26 +25,26 @@ export type RedisConnectionConfig = {
   | {
       type: 'sentinel';
       options: RedisSentinelOptions;
-    }
-);
+    };
 
-type RedisModuleBaseOptions = {
+/**
+ * Redis module configuration options.
+ * This only contains the Redis connection configuration, not module-level concerns.
+ * Used by useFactory in forRootAsync.
+ */
+export type RedisModuleOptions = RedisConnectionConfig;
+
+/**
+ * Options for forRoot method that include both Redis configuration and module-level options.
+ */
+export type RedisModuleForRootOptions = RedisModuleOptions & {
+  /**
+   * If "true", register `RedisClientModule` as a global module.
+   */
   isGlobal?: boolean;
+
+  /**
+   * The name of the connection. Used to create multiple named connections.
+   */
+  connectionName?: string;
 };
-
-export type RedisModuleOptions = RedisModuleBaseOptions &
-  // Multi-connection mode
-  (| { connections: RedisConnectionConfig[] }
-    // Single connection mode (backward compatible
-    | RedisConnectionConfig
-  );
-
-export function isRedisArrayConfiguration(
-  options?: RedisModuleOptions
-): options is { connections: RedisConnectionConfig[] } {
-  return (
-    options != undefined &&
-    'connections' in options &&
-    Array.isArray(options.connections)
-  );
-}

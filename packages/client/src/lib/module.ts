@@ -5,86 +5,103 @@ import {
   OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '@nestjs/common';
-import {
-  Redis,
-  RedisModuleOptions,
-  RedisConnectionConfig,
-  isRedisArrayConfiguration,
-} from './types';
+import { Redis, RedisModuleOptions, RedisModuleForRootOptions } from './types';
+import { RedisModuleAsyncOptions } from './interfaces';
 import { createClient, createCluster, createSentinel } from 'redis';
-import { RedisToken, getRedisConnectionNamesInjectionToken } from './utils';
+import { RedisToken } from './tokens';
 import { ModuleRef } from '@nestjs/core';
+import {
+  ConfigurableModuleClass,
+  MODULE_OPTIONS_TOKEN,
+} from './redis-client.module-definition';
 
 @Module({})
 export class RedisClientModule
+  extends ConfigurableModuleClass
   implements OnApplicationBootstrap, OnApplicationShutdown
 {
-  constructor(private moduleRef: ModuleRef) {}
+  protected connectionToken?: string;
 
-  public static forRoot(options?: RedisModuleOptions): DynamicModule {
-    const providers = this.getRedisClientProviders(options);
+  constructor(private moduleRef: ModuleRef) {
+    super();
+  }
+
+  public static forRoot(
+    options: RedisModuleForRootOptions = {}
+  ): DynamicModule {
+    const baseModule = super.forRoot(options);
 
     return {
       global: options?.isGlobal ?? false,
-      module: RedisClientModule,
+      module: class extends RedisClientModule {
+        override connectionToken = RedisToken(options?.connectionName);
+      },
       providers: [
-        ...providers,
-        {
-          provide: getRedisConnectionNamesInjectionToken(),
-          useValue: providers.map((p) => p.provide),
-        },
+        ...(baseModule.providers || []),
+        this.getRedisClientProvider(options?.connectionName),
       ],
-      exports: providers.map((p) => p.provide),
+      exports: [RedisToken(options?.connectionName)],
     };
   }
 
-  async onApplicationBootstrap() {
-    await Promise.all(this.getAllClients().map((client) => client.connect()));
-  }
-  async onApplicationShutdown() {
-    await Promise.all(this.getAllClients().map((client) => client.quit()));
-  }
+  public static forRootAsync(options: RedisModuleAsyncOptions): DynamicModule {
+    const baseModule = super.forRootAsync(options);
 
-  private getAllClients(): Redis[] {
-    const redisInjectionTokens = this.moduleRef.get<string[]>(
-      getRedisConnectionNamesInjectionToken()
-    );
-    const clients = redisInjectionTokens.map((connectionName) =>
-      this.moduleRef.get<Redis>(connectionName, { strict: false })
-    );
-    return clients;
-  }
-
-  private static getRedisClientProviders(
-    options?: RedisModuleOptions
-  ): FactoryProvider[] {
-    if (isRedisArrayConfiguration(options)) {
-      return options.connections.map((conn: RedisConnectionConfig) =>
-        this.getRedisClientProvider(conn)
-      );
-    }
-
-    return [this.getRedisClientProvider()];
+    return {
+      global: options.isGlobal ?? false,
+      module: class extends RedisClientModule {
+        override connectionToken = RedisToken(options.connectionName);
+      },
+      providers: [
+        ...(baseModule.providers || []),
+        this.getRedisClientProvider(options.connectionName),
+      ],
+      exports: [RedisToken(options.connectionName)],
+    };
   }
 
   private static getRedisClientProvider(
-    config?: RedisConnectionConfig
+    connectionName?: string
   ): FactoryProvider {
     return {
-      provide: RedisToken(config?.connection),
-      useFactory: (): Redis => {
-        if (!config) return createClient();
-        switch (config.type) {
+      provide: RedisToken(connectionName),
+      useFactory: (config: RedisModuleOptions): Redis => {
+        switch (config?.type) {
           case 'client':
-            return createClient(config.options);
+          case undefined:
+            return createClient(config?.options);
           case 'cluster':
             return createCluster(config.options);
           case 'sentinel':
             return createSentinel(config.options);
           default:
-            throw new Error('Invalid configuration');
+            throw new Error(
+              // @ts-expect-error check for config type
+              `Unsupported Redis type: ${config?.type}. Supported types are 'client', 'cluster' and 'sentinel'`
+            );
         }
       },
+      inject: [MODULE_OPTIONS_TOKEN],
     };
+  }
+
+  async onApplicationBootstrap() {
+    if (!this.connectionToken) {
+      throw new Error(
+        'Connection token is not defined. Ensure to call forRoot or forRootAsync.'
+      );
+    }
+
+    await this.moduleRef.get<Redis>(this.connectionToken).connect();
+  }
+
+  async onApplicationShutdown() {
+    if (!this.connectionToken) {
+      throw new Error(
+        'Connection token is not defined. Ensure to call forRoot or forRootAsync.'
+      );
+    }
+
+    await this.moduleRef.get<Redis>(this.connectionToken).quit();
   }
 }

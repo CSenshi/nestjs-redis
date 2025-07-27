@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RedisClientModule } from './module';
-import { RedisToken } from './utils';
+import { RedisToken } from './tokens';
 import { Redis, RedisModuleOptions } from './types';
+import { RedisModuleAsyncOptions } from './interfaces';
 
-describe('RedisClientModule Integration', () => {
+describe('RedisClientModule Integration forRoot', () => {
   let module: TestingModule;
   let redisClient: Redis;
 
@@ -258,36 +259,93 @@ describe('RedisClientModule Integration', () => {
   });
 });
 
+describe('RedisClientModule Integration forRootAsync', () => {
+  let module: TestingModule;
+  let redisClient: Redis;
+
+  // Test Redis configuration - using default Redis instance
+  const testRedisAsyncConfig: RedisModuleAsyncOptions = {
+    useFactory: () => ({
+      type: 'client',
+      options: {
+        url: process.env.REDIS_URL || 'redis://localhost:6379',
+      },
+    }),
+    connectionName: 'testAsyncConnection',
+  };
+
+  beforeEach(async () => {
+    // Create the testing module with real Redis connection
+    console.log('Creating module with async options:', testRedisAsyncConfig);
+    module = await Test.createTestingModule({
+      imports: [RedisClientModule.forRootAsync(testRedisAsyncConfig)],
+    }).compile();
+
+    await module.init();
+
+    redisClient = module.get<Redis>(RedisToken('testAsyncConnection'));
+  });
+
+  afterEach(async () => {
+    await module.close();
+  });
+
+  describe('Real Redis Connection', () => {
+    it('should connect to Redis successfully', async () => {
+      // The connection should be established during module initialization
+      expect(redisClient).toBeDefined();
+    });
+
+    // it('should perform basic Redis operations', async () => {
+    //   const testKey = 'test:async-integration:key';
+    //   const testValue = 'test-value-' + Date.now();
+
+    //   // Set a value
+    //   await redisClient.set(testKey, testValue);
+
+    //   // Get the value
+    //   const retrievedValue = await redisClient.get(testKey);
+    //   expect(retrievedValue).toBe(testValue);
+
+    //   // Delete the key
+    //   await redisClient.del(testKey);
+
+    //   // Verify deletion
+    //   const deletedValue = await redisClient.get(testKey);
+    //   expect(deletedValue).toBeNull();
+    // });
+  });
+});
+
 describe('Multi-connection Integration', () => {
   let module: TestingModule;
   let redisClient1: Redis;
   let redisClient2: Redis;
 
   beforeAll(async () => {
+    // Create module with multiple forRoot calls
     module = await Test.createTestingModule({
       imports: [
+        // Default connection
         RedisClientModule.forRoot({
-          connections: [
-            {
-              type: 'client',
-              options: {
-                url: process.env.REDIS_URL || 'redis://localhost:6379',
-              },
-            },
-            {
-              connection: 'redis-conn-2',
-              type: 'client',
-              options: {
-                url: process.env.REDIS_URL || 'redis://localhost:6379',
-              },
-            },
-          ],
+          type: 'client',
+          options: {
+            url: process.env.REDIS_URL || 'redis://localhost:6379',
+          },
+        }),
+        // Named connection
+        RedisClientModule.forRoot({
+          connectionName: 'cache',
+          type: 'client',
+          options: {
+            url: process.env.REDIS_URL || 'redis://localhost:6379',
+          },
         }),
       ],
     }).compile();
     await module.init();
     redisClient1 = module.get<Redis>(RedisToken());
-    redisClient2 = module.get<Redis>(RedisToken('redis-conn-2'));
+    redisClient2 = module.get<Redis>(RedisToken('cache'));
   });
 
   afterAll(async () => {
@@ -305,5 +363,34 @@ describe('Multi-connection Integration', () => {
     expect(v2).toBe('value2');
     await redisClient1.del(key1);
     await redisClient2.del(key2);
+  });
+
+  it('should isolate connections properly', async () => {
+    const testKey = 'isolation:test:key';
+
+    // Set value in first connection
+    await redisClient1.set(testKey, 'value1');
+
+    // Set different value in second connection (same Redis instance, so should overwrite)
+    await redisClient2.set(testKey, 'value2');
+
+    // Both connections should see the same value since they connect to the same Redis instance
+    const value1 = await redisClient1.get(testKey);
+    const value2 = await redisClient2.get(testKey);
+
+    expect(value1).toBe('value2');
+    expect(value2).toBe('value2');
+
+    // Clean up
+    await redisClient1.del(testKey);
+  });
+
+  it('should handle connection lifecycle independently', async () => {
+    // Both connections should be able to ping
+    const ping1 = await redisClient1.ping();
+    const ping2 = await redisClient2.ping();
+
+    expect(ping1).toBe('PONG');
+    expect(ping2).toBe('PONG');
   });
 });

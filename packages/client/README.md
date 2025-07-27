@@ -27,7 +27,6 @@ _Built on [node-redis](https://github.com/redis/node-redis) • Future-proof •
 - [🚀 Quick Start](#-quick-start)
 - [🔧 Configuration](#-configuration)
 - [📚 API Reference](#-api-reference)
-- [🔄 Migration Guide](#-migration-guide)
 - [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
 
@@ -50,6 +49,7 @@ The `@nestjs-redis/client` package provides a modern, type-safe Redis integratio
 - **🏗️ Flexible Architecture** — Support for Redis client, cluster, and sentinel modes
 - **💉 Dependency Injection** — Seamless integration with NestJS's DI container
 - **🔄 Lifecycle Management** — Automatic connection handling and cleanup
+- **⚙️ Async Configuration** — Full support for dynamic configuration with `forRootAsync`
 - **🛡️ TypeScript First** — Comprehensive type definitions and IntelliSense support
 - **🚀 Production Ready** — Battle-tested in high-traffic applications
 - **⚡ Performance Optimized** — Connection pooling and efficient resource management
@@ -88,7 +88,10 @@ import { RedisClientModule } from '@nestjs-redis/client';
 @Module({
   imports: [
     RedisClientModule.forRoot({
-      url: 'redis://localhost:6379',
+      type: 'client',
+      options: {
+        url: 'redis://localhost:6379',
+      },
     }),
   ],
 })
@@ -120,29 +123,34 @@ export class AppService {
 // app.module.ts
 @Module({
   imports: [
+    // Default connection
     RedisClientModule.forRoot({
       isGlobal: true,
-      connections: [
-        // Default connection
-        { type: 'client', options: { url: 'redis://localhost:6379' } },
-        // Named connections
-        {
-          connection: 'cache',
-          type: 'client',
-          options: { url: 'redis://cache:6379' },
-        },
-        {
-          connection: 'sessions',
-          type: 'client',
-          options: { url: 'redis://sessions:6379' },
-        },
-        // Cluster connection
-        {
-          connection: 'cluster',
-          type: 'cluster',
-          options: { rootNodes: [{ url: 'redis://cluster:6379' }] },
-        },
-      ],
+      type: 'client',
+      options: {
+        url: 'redis://localhost:6379',
+      },
+    }),
+    // Named connections using separate forRoot calls
+    RedisClientModule.forRoot({
+      connectionName: 'cache',
+      type: 'client',
+      options: {
+        url: 'redis://cache:6379',
+      },
+    }),
+    RedisClientModule.forRoot({
+      connectionName: 'sessions',
+      type: 'client',
+      options: {
+        url: 'redis://sessions:6379',
+      },
+    }),
+    // Cluster connection
+    RedisClientModule.forRoot({
+      connectionName: 'cluster',
+      type: 'cluster',
+      options: { rootNodes: [{ url: 'redis://cluster:6379' }] },
     }),
   ],
 })
@@ -193,11 +201,14 @@ All configuration options are passed directly to the [node-redis](https://github
 
 ```typescript
 RedisClientModule.forRoot({
-  url: 'redis://localhost:6379',
-  // Any node-redis client options
-  socket: {
-    connectTimeout: 5000,
-    reconnectStrategy: (retries) => Math.min(retries * 50, 500),
+  type: 'client',
+  options: {
+    url: 'redis://localhost:6379',
+    // Any node-redis client options
+    socket: {
+      connectTimeout: 5000,
+      reconnectStrategy: (retries) => Math.min(retries * 50, 500),
+    },
   },
 });
 ```
@@ -206,6 +217,7 @@ RedisClientModule.forRoot({
 
 ```typescript
 RedisClientModule.forRoot({
+  connectionName: 'myConnection', // Optional connection name
   isGlobal: true, // Make module global
   type: 'client', // 'client' | 'cluster' | 'sentinel'
   options: {
@@ -216,31 +228,139 @@ RedisClientModule.forRoot({
       connectTimeout: 5000,
       lazyConnect: true,
     },
-    // All node-redis options supported
+    // All node-redis options supported directly
   },
 });
 ```
 
 ### Async Configuration
 
+The `forRootAsync()` method supports dynamic configuration using factories, existing services, or configuration classes.
+
+#### Using `useFactory`
+
 ```typescript
-RedisClientModule.forRootAsync({
-  imports: [ConfigModule],
-  inject: [ConfigService],
-  useFactory: (configService: ConfigService) => ({
-    url: configService.get('REDIS_URL'),
-    password: configService.get('REDIS_PASSWORD'),
-    socket: {
-      connectTimeout: configService.get('REDIS_CONNECT_TIMEOUT', 5000),
-    },
-  }),
-});
+import { ConfigService } from '@nestjs/config';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot(),
+    RedisClientModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'client',
+        options: {
+          url: configService.get('REDIS_URL') || 'redis://localhost:6379',
+          password: configService.get('REDIS_PASSWORD'),
+          database: configService.get('REDIS_DB') || 0,
+        },
+      }),
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+#### Using Configuration Classes
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { RedisOptionsFactory, RedisModuleOptions } from '@nestjs-redis/client';
+
+@Injectable()
+export class RedisConfigService implements RedisOptionsFactory {
+  createRedisOptions(): RedisModuleOptions {
+    return {
+      type: 'client',
+      options: {
+        url: process.env.REDIS_URL || 'redis://localhost:6379',
+        password: process.env.REDIS_PASSWORD,
+        socket: {
+          connectTimeout: 5000,
+          reconnectStrategy: (retries) => Math.min(retries * 50, 500),
+        },
+      },
+    };
+  }
+}
+
+@Module({
+  imports: [
+    RedisClientModule.forRootAsync({
+      useClass: RedisConfigService,
+    }),
+  ],
+  providers: [RedisConfigService],
+})
+export class AppModule {}
+```
+
+#### Using Existing Services
+
+```typescript
+@Module({
+  imports: [
+    RedisClientModule.forRootAsync({
+      useExisting: RedisConfigService,
+    }),
+  ],
+  providers: [RedisConfigService],
+})
+export class AppModule {}
+```
+
+#### Named Connections with Async Configuration
+
+```typescript
+@Module({
+  imports: [
+    // Default connection
+    RedisClientModule.forRootAsync({
+      isGlobal: true,
+      useFactory: (configService: ConfigService) => ({
+        type: 'client',
+        options: {
+          url: configService.get('REDIS_URL'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
+    // Named cache connection
+    RedisClientModule.forRootAsync({
+      connectionName: 'cache',
+      useFactory: (configService: ConfigService) => ({
+        type: 'client',
+        options: {
+          url: configService.get('REDIS_CACHE_URL'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
+    // Named sessions connection
+    RedisClientModule.forRootAsync({
+      connectionName: 'sessions',
+      useFactory: (configService: ConfigService) => ({
+        type: 'cluster',
+        options: {
+          rootNodes: [
+            { url: configService.get('REDIS_SESSION_NODE_1') },
+            { url: configService.get('REDIS_SESSION_NODE_2') },
+          ],
+        },
+      }),
+      inject: [ConfigService],
+    }),
+  ],
+})
+export class AppModule {}
 ```
 
 ### Cluster Configuration
 
 ```typescript
 RedisClientModule.forRoot({
+  connectionName: 'cluster', // Optional connection name
   type: 'cluster',
   options: {
     rootNodes: [
@@ -259,9 +379,10 @@ RedisClientModule.forRoot({
 
 ```typescript
 RedisClientModule.forRoot({
+  connectionName: 'sentinel', // Optional connection name
   type: 'sentinel',
   options: {
-    sentinels: [
+    sentinelRootNodes: [
       { host: 'sentinel1', port: 26379 },
       { host: 'sentinel2', port: 26379 },
     ],
@@ -277,22 +398,26 @@ RedisClientModule.forRoot({
 
 #### `RedisClientModule.forRoot(options)`
 
-| Option        | Type                                                                | Description                        | Default     |
-| ------------- | ------------------------------------------------------------------- | ---------------------------------- | ----------- |
-| `isGlobal`    | `boolean`                                                           | Make the module global             | `false`     |
-| `type`        | `'client' \| 'cluster' \| 'sentinel'`                               | Redis connection type              | `'client'`  |
-| `options`     | `RedisClientOptions \| RedisClusterOptions \| RedisSentinelOptions` | Redis configuration options        | `{}`        |
-| `connections` | `Connection[]`                                                      | Multiple connection configurations | `undefined` |
+| Option           | Type                                                                | Description                 | Default     |
+| ---------------- | ------------------------------------------------------------------- | --------------------------- | ----------- |
+| `connectionName` | `string`                                                            | Name for the connection     | `undefined` |
+| `isGlobal`       | `boolean`                                                           | Make the module global      | `false`     |
+| `type`           | `'client' \| 'cluster' \| 'sentinel'`                               | Redis connection type       | `'client'`  |
+| `options`        | `RedisClientOptions \| RedisClusterOptions \| RedisSentinelOptions` | Redis configuration options | `{}`        |
 
 #### `RedisClientModule.forRootAsync(options)`
 
-| Option        | Type                                     | Description                           |
-| ------------- | ---------------------------------------- | ------------------------------------- |
-| `imports`     | `ModuleMetadata['imports']`              | Modules to import                     |
-| `inject`      | `any[]`                                  | Dependencies to inject                |
-| `useFactory`  | `(...args: any[]) => RedisModuleOptions` | Factory function                      |
-| `useClass`    | `Type<RedisOptionsFactory>`              | Class that implements options factory |
-| `useExisting` | `Type<RedisOptionsFactory>`              | Existing provider                     |
+Async configuration method for dynamic Redis setup.
+
+| Option           | Type                              | Description                                           | Default     |
+| ---------------- | --------------------------------- | ----------------------------------------------------- | ----------- |
+| `connectionName` | `string`                          | Name for the connection                               | `undefined` |
+| `isGlobal`       | `boolean`                         | Make the module global                                | `false`     |
+| `useFactory`     | `(...args) => RedisModuleOptions` | Factory function to create Redis options              | `undefined` |
+| `useClass`       | `Type<RedisOptionsFactory>`       | Class that implements RedisOptionsFactory             | `undefined` |
+| `useExisting`    | `Type<RedisOptionsFactory>`       | Existing provider that implements RedisOptionsFactory | `undefined` |
+| `inject`         | `any[]`                           | Dependencies to inject into useFactory                | `[]`        |
+| `imports`        | `any[]`                           | Modules to import for dependency injection            | `[]`        |
 
 ### Decorators
 
@@ -315,21 +440,26 @@ export class MyService {
 #### `RedisToken(connectionName?: string)`
 
 Get the injection token for a Redis connection.
-> For a fully working example, see how the [throttler module uses injected Redis](https://github.com/CSenshi/nestjs-redis/tree/main/packages/throttler-storage#with-existing-redis-connection-recommended). 
+
+> For a fully working example, see how the [throttler module uses injected Redis](https://github.com/CSenshi/nestjs-redis/tree/main/packages/throttler-storage#with-existing-redis-connection-recommended).
 
 ```typescript
 @Module({
   imports: [
     RedisClientModule.forRoot({
-      url: 'redis://localhost:6379',
+      options: {
+        url: 'redis://localhost:6379',
+      },
     }),
   ],
   providers: [
     {
       inject: [RedisToken()], // <-- Returns injection token
-      useFactory: (redis: Redis) => { // <-- you are able to have redis here because of RedisToken() injection
-        ...
-      }
+      useFactory: (redis: Redis) => {
+        // <-- you are able to have redis here because of RedisToken() injection
+        // Use redis instance here
+        return new MyCustomService(redis);
+      },
       provide: 'CUSTOM_PROVIDER',
     },
   ],
@@ -337,149 +467,17 @@ Get the injection token for a Redis connection.
 export class MyModule {}
 ```
 
-## 🔄 Migration Guide
+### Interfaces
 
-### From @nestjs-modules/ioredis
+#### `RedisOptionsFactory`
 
-The `@nestjs-modules/ioredis` package is a popular ioredis-based Redis integration for NestJS. Here's how to migrate:
-
-#### Module Configuration
+Interface for creating configuration classes that can be used with `useClass` or `useExisting`.
 
 ```typescript
-// Before (@nestjs-modules/ioredis)
-import { RedisModule } from '@nestjs-modules/ioredis';
-
-@Module({
-  imports: [
-    RedisModule.forRoot({
-      type: 'single',
-      url: 'redis://localhost:6379',
-    }),
-  ],
-})
-export class AppModule {}
-
-// After (@nestjs-redis/client)
-import { RedisClientModule } from '@nestjs-redis/client';
-
-@Module({
-  imports: [
-    RedisClientModule.forRoot({
-      url: 'redis://localhost:6379',
-    }),
-  ],
-})
-export class AppModule {}
-```
-
-#### Service Injection
-
-```typescript
-// Before (@nestjs-modules/ioredis)
-import { InjectRedis } from '@nestjs-modules/ioredis';
-import { Redis } from 'ioredis';
-
-@Injectable()
-export class MyService {
-  constructor(@InjectRedis() private readonly redis: Redis) {}
-
-  async setValue(key: string, value: string) {
-    await this.redis.set(key, value);
-  }
-}
-
-// After (@nestjs-redis/client)
-import { InjectRedis, type Redis } from '@nestjs-redis/client';
-
-@Injectable()
-export class MyService {
-  constructor(@InjectRedis() private readonly redis: Redis) {}
-
-  async setValue(key: string, value: string) {
-    await this.redis.set(key, value);
-  }
+export interface RedisOptionsFactory {
+  createRedisOptions(): Promise<RedisModuleOptions> | RedisModuleOptions;
 }
 ```
-
-### From @liaoliaots/nestjs-redis
-
-The `@liaoliaots/nestjs-redis` package is another popular ioredis-based solution. Migration is straightforward:
-
-#### Module Configuration
-
-```typescript
-// Before (@liaoliaots/nestjs-redis)
-import { Module } from '@nestjs/common';
-import { RedisModule } from '@liaoliaots/nestjs-redis';
-
-@Module({
-  imports: [
-    RedisModule.forRoot({
-      readyLog: true,
-      config: {
-        host: 'localhost',
-        port: 6379,
-        password: 'your-password',
-      },
-    }),
-  ],
-})
-export class AppModule {}
-
-// After (@nestjs-redis/client)
-import { Module } from '@nestjs/common';
-import { RedisClientModule } from '@nestjs-redis/client';
-
-@Module({
-  imports: [
-    RedisClientModule.forRoot({
-      url: 'redis://:your-password@localhost:6379',
-    }),
-  ],
-})
-export class AppModule {}
-```
-
-#### Service Injection
-
-```typescript
-// Before (@liaoliaots/nestjs-redis)
-import { Injectable } from '@nestjs/common';
-import { RedisService } from '@liaoliaots/nestjs-redis';
-import { Redis } from 'ioredis';
-
-@Injectable()
-export class MyService {
-  private readonly redis: Redis | null;
-
-  constructor(private readonly redisService: RedisService) {
-    this.redis = this.redisService.getOrThrow();
-  }
-
-  async getValue(key: string): Promise<string | null> {
-    return await this.redis!.get(key);
-  }
-}
-
-// After (@nestjs-redis/client)
-import { Injectable } from '@nestjs/common';
-import { InjectRedis, type Redis } from '@nestjs-redis/client';
-
-@Injectable()
-export class MyService {
-  constructor(@InjectRedis() private readonly redis: Redis) {}
-
-  async getValue(key: string): Promise<string | null> {
-    return this.redis.get(key);
-  }
-}
-```
-
-### Important Notes
-
-**⚠️ API Changes**: Both `@nestjs-modules/ioredis` and `@liaoliaots/nestjs-redis` use the `ioredis` client library, while `@nestjs-redis/client` uses the official `node-redis` client. You'll need to update your Redis command usage to match the [node-redis API](https://github.com/redis/node-redis) when migrating. Most commands are similar, but some have different names or parameter formats.
-
----
 
 ## 🤝 Contributing
 

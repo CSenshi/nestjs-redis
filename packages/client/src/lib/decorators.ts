@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { RedisToken } from './utils';
+import { RedisToken } from './tokens';
 
-export const InjectRedis = (connection?: string) =>
-  Inject(RedisToken(connection));
+export const InjectRedis = (connectionName?: string) =>
+  Inject(RedisToken(connectionName));
