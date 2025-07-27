@@ -14,7 +14,8 @@ export type RedisOptions =
   | RedisSentinelOptions;
 
 export type RedisConnectionConfig = {
-  connection?: string;
+  connectionName?: string;
+  isGlobal?: boolean;
 } & (
   | {
       type?: 'client';
@@ -30,23 +31,4 @@ export type RedisConnectionConfig = {
     }
 );
 
-type RedisModuleBaseOptions = {
-  isGlobal?: boolean;
-};
-
-export type RedisModuleOptions = RedisModuleBaseOptions &
-  // Multi-connection mode
-  (| { connections: RedisConnectionConfig[] }
-    // Single connection mode (backward compatible
-    | RedisConnectionConfig
-  );
-
-export function isRedisArrayConfiguration(
-  options?: RedisModuleOptions
-): options is { connections: RedisConnectionConfig[] } {
-  return (
-    options != undefined &&
-    'connections' in options &&
-    Array.isArray(options.connections)
-  );
-}
+export type RedisModuleOptions = RedisConnectionConfig;
