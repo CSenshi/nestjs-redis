@@ -13,20 +13,20 @@
     "multi-connection"
   ],
   "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/client",
-  "main": "./dist/src/index.js",
-  "module": "./dist/src/index.js",
-  "types": "./dist/src/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "development": "./src/index.ts",
-      "types": "./dist/src/index.d.ts",
-      "import": "./dist/src/index.js",
-      "default": "./dist/src/index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "files": [
-    "dist",
+    "src",
     "!**/*.tsbuildinfo"
   ],
   "nx": {
@@ -52,7 +52,7 @@
           "{options.outputPath}"
         ],
         "options": {
-          "outputPath": "packages/client/dist",
+          "outputPath": "dist/packages/client",
           "tsConfig": "packages/client/tsconfig.lib.json",
           "packageJson": "packages/client/package.json",
           "main": "packages/client/src/index.ts",

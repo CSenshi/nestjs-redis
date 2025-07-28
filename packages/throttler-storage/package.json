@@ -13,16 +13,16 @@
     "throttling"
   ],
   "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/throttler-storage",
-  "main": "./dist/src/index.js",
-  "module": "./dist/src/index.js",
-  "types": "./dist/src/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "development": "./src/index.ts",
-      "types": "./dist/src/index.d.ts",
-      "import": "./dist/src/index.js",
-      "default": "./dist/src/index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "files": [
@@ -53,7 +53,7 @@
           "{options.outputPath}"
         ],
         "options": {
-          "outputPath": "packages/throttler-storage/dist",
+          "outputPath": "dist/packages/throttler-storage",
           "tsConfig": "packages/throttler-storage/tsconfig.lib.json",
           "packageJson": "packages/throttler-storage/package.json",
           "main": "packages/throttler-storage/src/index.ts",
