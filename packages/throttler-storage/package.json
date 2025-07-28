@@ -26,7 +26,7 @@
     }
   },
   "files": [
-    "dist",
+    "src",
     "!**/*.tsbuildinfo"
   ],
   "nx": {

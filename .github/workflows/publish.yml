@@ -46,7 +46,7 @@ jobs:
         shell: bash
 
       - name: Publish packages
-        run: pnpm exec nx release publish --access public
+        run: pnpm exec nx publish-packages
         shell: bash
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
