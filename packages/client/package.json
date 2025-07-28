@@ -1,6 +1,6 @@
 {
   "name": "@nestjs-redis/client",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Flexible, production-ready Redis client module for NestJS with multi-connection support, built on the modern node-redis client",
   "keywords": [
     "nestjs",

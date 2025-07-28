@@ -1,3 +1,13 @@
+## 0.4.1 (2025-07-28)
+
+### 🚀 Features
+
+- **publish:** implement custom publish script and update workflow ([2d5b76c](https://github.com/CSenshi/nestjs-redis/commit/2d5b76c))
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 0.4.0 (2025-07-27)
 
 ### 🚀 Features

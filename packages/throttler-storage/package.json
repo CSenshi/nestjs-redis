@@ -1,6 +1,6 @@
 {
   "name": "@nestjs-redis/throttler-storage",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Redis storage for NestJS Throttler enabling distributed rate limiting across multiple application instances",
   "keywords": [
     "nestjs",
