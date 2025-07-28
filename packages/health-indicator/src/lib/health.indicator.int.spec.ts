@@ -19,8 +19,12 @@ describe('RedisHealthIndicator Integration Tests', () => {
           provide: HealthIndicatorService,
           useValue: {
             check: jest.fn().mockReturnValue({
-              up: jest.fn().mockImplementation((data) => ({ redis: { status: 'up', ...data } })),
-              down: jest.fn().mockImplementation((data) => ({ redis: { status: 'down', ...data } })),
+              up: jest.fn().mockImplementation((data) => ({
+                redis: { status: 'up', ...data },
+              })),
+              down: jest.fn().mockImplementation((data) => ({
+                redis: { status: 'down', ...data },
+              })),
             }),
           },
         },
@@ -35,7 +39,7 @@ describe('RedisHealthIndicator Integration Tests', () => {
       try {
         redisClient = createClient({ url: REDIS_URL });
         await redisClient.connect();
-      } catch (error) {
+      } catch {
         console.warn('Redis server not available, skipping integration tests');
       }
     });
@@ -60,13 +64,13 @@ describe('RedisHealthIndicator Integration Tests', () => {
     });
 
     it('should handle connection errors', async () => {
-      const badClient = createClient({ 
+      const badClient = createClient({
         url: 'redis://localhost:9999',
         socket: {
           connectTimeout: 1000, // 1 second timeout
-        }
+        },
       });
-      
+
       // Don't try to connect - just test the health check with a disconnected client
       const result = await healthIndicator.isHealthy('redis', {
         client: badClient,
@@ -76,7 +80,7 @@ describe('RedisHealthIndicator Integration Tests', () => {
 
       try {
         await badClient.quit();
-      } catch (error) {
+      } catch {
         // Ignore cleanup errors
       }
     }, 15000);

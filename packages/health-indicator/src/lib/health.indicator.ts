@@ -1,14 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { HealthIndicatorService, HealthIndicatorResult } from '@nestjs/terminus';
+import {
+  HealthIndicatorService,
+  HealthIndicatorResult,
+} from '@nestjs/terminus';
 import { Redis } from './interfaces';
 
 @Injectable()
 export class RedisHealthIndicator {
   constructor(
-    private readonly healthIndicatorService: HealthIndicatorService,
+    private readonly healthIndicatorService: HealthIndicatorService
   ) {}
 
-  async isHealthy(key: string, { client }: { client: Redis }): Promise<HealthIndicatorResult> {
+  async isHealthy(
+    key: string,
+    { client }: { client: Redis }
+  ): Promise<HealthIndicatorResult> {
     const indicator = this.healthIndicatorService.check(key);
 
     try {
@@ -21,8 +27,9 @@ export class RedisHealthIndicator {
 
       return indicator.up();
     } catch (error) {
-      return indicator.down({ 
-        message: error instanceof Error ? error.message : 'Redis connection failed' 
+      return indicator.down({
+        message:
+          error instanceof Error ? error.message : 'Redis connection failed',
       });
     }
   }

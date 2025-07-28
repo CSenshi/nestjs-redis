@@ -44,12 +44,12 @@ pnpm add @nestjs-redis/health-indicator redis
 
 ### Requirements
 
-| Dependency       | Version | Required   |
-| ---------------- | ------- | ---------- |
-| `@nestjs/common` | ^11.0.0 | ✅ Peer    |
+| Dependency         | Version | Required   |
+| ------------------ | ------- | ---------- |
+| `@nestjs/common`   | ^11.0.0 | ✅ Peer    |
 | `@nestjs/terminus` | ^11.0.0 | ✅ Peer    |
-| `redis`          | ^5.0.0  | ✅ Peer    |
-| `Node.js`        | 18+     | ✅ Runtime |
+| `redis`            | ^5.0.0  | ✅ Peer    |
+| `Node.js`          | 18+     | ✅ Runtime |
 
 ## 🚀 Quick Start
 
@@ -89,16 +89,17 @@ export class HealthController {
   constructor(
     private health: HealthCheckService,
     private redis: RedisHealthIndicator,
-    @InjectRedis() private redisClient: Redis,
+    @InjectRedis() private redisClient: Redis
   ) {}
 
   @Get()
   @HealthCheck()
   check() {
     return this.health.check([
-      () => this.redis.isHealthy('redis', { 
-        client: this.redisClient 
-      }),
+      () =>
+        this.redis.isHealthy('redis', {
+          client: this.redisClient,
+        }),
     ]);
   }
 }
@@ -115,27 +116,25 @@ export class HealthController {
     private health: HealthCheckService,
     private redis: RedisHealthIndicator,
     @InjectRedis() private mainRedis: Redis,
-    @InjectRedis('cache') private cacheRedis: Redis,
+    @InjectRedis('cache') private cacheRedis: Redis
   ) {}
 
   @Get()
   @HealthCheck()
   check() {
     return this.health.check([
-      () => this.redis.isHealthy('redis-main', { 
-        client: this.mainRedis 
-      }),
-      () => this.redis.isHealthy('redis-cache', { 
-        client: this.cacheRedis 
-      }),
+      () =>
+        this.redis.isHealthy('redis-main', {
+          client: this.mainRedis,
+        }),
+      () =>
+        this.redis.isHealthy('redis-cache', {
+          client: this.cacheRedis,
+        }),
     ]);
   }
 }
 ```
-
-
-
-
 
 ## 🤝 Contributing
 
