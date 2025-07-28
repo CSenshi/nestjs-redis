@@ -1,25 +1,43 @@
 {
   "name": "@nestjs-redis/health-indicator",
-  "version": "0.0.1",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "version": "0.5.0",
+  "license": "MIT",
+  "description": "A comprehensive Redis health indicator for NestJS applications using the Terminus health check library",
+  "keywords": [
+    "nestjs",
+    "redis",
+    "health-check",
+    "terminus",
+    "monitoring",
+    "typescript"
+  ],
+  "homepage": "https://github.com/nestjs-redis/health-indicator#readme",
+  "main": "./src/index.js",
+  "module": "./src/index.js",
+  "types": "./src/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "development": "./src/index.ts",
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js",
+      "default": "./src/index.js"
     }
   },
   "files": [
-    "dist",
+    "src",
     "!**/*.tsbuildinfo"
   ],
   "nx": {
     "name": "health-indicator",
     "targets": {
+      "test:int": {
+        "executor": "@nx/jest:jest",
+        "options": {
+          "jestConfig": "packages/health-indicator/jest.int.config.ts",
+          "passWithNoTests": true
+        }
+      },
       "build": {
         "executor": "@nx/js:tsc",
         "outputs": [
@@ -31,7 +49,8 @@
           "packageJson": "packages/health-indicator/package.json",
           "main": "packages/health-indicator/src/index.ts",
           "assets": [
-            "packages/health-indicator/*.md"
+            "packages/health-indicator/*.md",
+            "LICENSE"
           ]
         }
       }
@@ -39,5 +58,18 @@
   },
   "dependencies": {
     "tslib": "^2.3.0"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/terminus": "^11.0.0"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^11.0.0",
+    "redis": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CSenshi/nestjs-redis",
+    "directory": "packages/health-indicator.ts"
   }
 }

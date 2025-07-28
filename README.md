@@ -67,11 +67,11 @@ The Redis ecosystem for NestJS has been fragmented, with most solutions built on
 
 ## 📊 Compatibility
 
-| Package                           | Node.js | NestJS | Redis | Status         |
-| --------------------------------- | ------- | ------ | ----- | -------------- |
-| `@nestjs-redis/client`            | 18+     | 10+    | 5+    | ✅ Stable      |
-| `@nestjs-redis/throttler-storage` | 18+     | 10+    | 5+    | ✅ Stable      |
-| `@nestjs-redis/redlock`           | 18+     | 10+    | 5+    | 🚧 Coming Soon |
+| Package                           | Node.js | NestJS | Redis | Status    |
+| --------------------------------- | ------- | ------ | ----- | --------- |
+| `@nestjs-redis/client`            | 18+     | 10+    | 5+    | ✅ Stable |
+| `@nestjs-redis/throttler-storage` | 18+     | 10+    | 5+    | ✅ Stable |
+| `@nestjs-redis/health-indicator`  | 18+     | 10+    | 5+    | ✅ Stable |
 
 ---
 
@@ -235,13 +235,18 @@ Here's a comprehensive example showing how to use all of the available packages 
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule, seconds } from '@nestjs/throttler';
+import { TerminusModule } from '@nestjs/terminus';
 import { RedisClientModule, RedisToken } from '@nestjs-redis/client';
 import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
+import { RedisHealthIndicator } from '@nestjs-redis/health-indicator';
+import { HealthController } from './health.controller';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     // Configure Redis client with async config
     RedisClientModule.forRootAsync({
+      isGlobal: true,
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
@@ -265,7 +270,10 @@ import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
         storage: RedisThrottlerStorage.from(redis),
       }),
     }),
+    // Configure health checks
+    TerminusModule,
   ],
+  providers: [RedisHealthIndicator],
 })
 export class AppModule {}
 ```
@@ -276,6 +284,7 @@ export class AppModule {}
 | -------------------------------------------------------------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- |
 | [`@nestjs-redis/client`](https://www.npmjs.com/package/@nestjs-redis/client)                       | ✅ **Stable**      | Flexible, production-ready Redis client module for NestJS with multi-connection support, built on the modern node-redis client | Caching, session storage, pub/sub, queues            |
 | [`@nestjs-redis/throttler-storage`](https://www.npmjs.com/package/@nestjs-redis/throttler-storage) | ✅ **Stable**      | Redis storage for NestJS Throttler with distributed rate limiting                                                              | API rate limiting, DDoS protection, quota management |
+| [`@nestjs-redis/health-indicator`](https://www.npmjs.com/package/@nestjs-redis/health-indicator)   | ✅ **Stable**      | Redis health indicator for NestJS applications with comprehensive monitoring support                                           | Health checks, monitoring, production readiness      |
 | `@nestjs-redis/redlock`                                                                            | 🚧 **Coming Soon** | Distributed lock manager using Redis                                                                                           | Preventing race conditions, exclusive operations     |
 
 Each package is published independently with comprehensive documentation. **Click the package links above for detailed installation and usage instructions.**
@@ -284,7 +293,7 @@ Each package is published independently with comprehensive documentation. **Clic
 
 - `packages/client` — Redis client module
 - `packages/throttler-storage` — Redis storage for NestJS Throttler
-- `packages/redlock` — Redlock module (planned)
+- `packages/health-indicator` — Redis health indicator for monitoring
 - `packages/*` — Additional modules in the future
 
 ---
