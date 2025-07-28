@@ -1,3 +1,18 @@
+## 0.0.1 (2025-07-28)
+
+### 🚀 Features
+
+- **health-indicator:** init ([c46b72d](https://github.com/CSenshi/nestjs-redis/commit/c46b72d))
+- **health-indicator:** implement Redis health indicator ([e96c141](https://github.com/CSenshi/nestjs-redis/commit/e96c141))
+
+### 🩹 Fixes
+
+- **health-indicator:** fix linter problems ([d537c35](https://github.com/CSenshi/nestjs-redis/commit/d537c35))
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 0.5.0 (2025-07-28)
 
 This was a version bump only, there were no code changes.

@@ -1,6 +1,6 @@
 {
   "name": "@nestjs-redis/health-indicator",
-  "version": "0.5.0",
+  "version": "0.0.1",
   "license": "MIT",
   "description": "A comprehensive Redis health indicator for NestJS applications using the Terminus health check library",
   "keywords": [
