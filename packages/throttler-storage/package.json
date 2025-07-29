@@ -79,6 +79,10 @@
     "redis": "^5.0.0",
     "ts-node": "^10.9.1"
   },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/CSenshi/nestjs-redis",

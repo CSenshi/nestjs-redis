@@ -20,7 +20,6 @@ jobs:
         node-version: ['18', '20', '22']
         package: ['client', 'health-indicator', 'throttler-storage']
         include:
-          # Add specific version combinations for dependencies
           - nestjs-version: '^9.0.0'
             terminus-version: '^9.0.0'
             throttler-version: '^6.0.0'
@@ -31,7 +30,7 @@ jobs:
             terminus-version: '^11.0.0'
             throttler-version: '^6.0.0'
 
-    name: Test ${{ matrix.package }} with NestJS ${{ matrix.nestjs-version }} on Node ${{ matrix.node-version }}
+    name: ${{ matrix.package }} - Nestjs ${{ matrix.nestjs-version }} - Node ${{ matrix.node-version }}
 
     steps:
       - uses: actions/checkout@v4
