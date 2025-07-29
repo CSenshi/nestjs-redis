@@ -39,7 +39,7 @@ export type RedisModuleOptions = RedisConnectionConfig;
  */
 export type RedisModuleForRootOptions = RedisModuleOptions & {
   /**
-   * If "true", register `RedisClientModule` as a global module.
+   * If "true", register `RedisModule` as a global module.
    */
   isGlobal?: boolean;
 

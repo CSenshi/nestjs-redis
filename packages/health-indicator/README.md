@@ -57,13 +57,13 @@ pnpm add @nestjs-redis/health-indicator redis
 // app.module.ts
 import { Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
-import { RedisClientModule } from '@nestjs-redis/client';
+import { RedisModule } from '@nestjs-redis/client';
 import { RedisHealthIndicator } from '@nestjs-redis/health-indicator';
 import { HealthController } from './health.controller';
 
 @Module({
   imports: [
-    RedisClientModule.forRoot({
+    RedisModule.forRoot({
       type: 'client',
       options: {
         url: 'redis://localhost:6379',

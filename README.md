@@ -100,11 +100,11 @@ npm install @nestjs-redis/throttler-storage redis
 ```typescript
 // app.module.ts
 import { Module } from '@nestjs/common';
-import { RedisClientModule } from '@nestjs-redis/client';
+import { RedisModule } from '@nestjs-redis/client';
 
 @Module({
   imports: [
-    RedisClientModule.forRoot({
+    RedisModule.forRoot({
       type: 'client',
       options: {
         url: 'redis://localhost:6379',
@@ -142,12 +142,12 @@ Use `forRootAsync` for dynamic configuration with dependency injection:
 // app.module.ts
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { RedisClientModule } from '@nestjs-redis/client';
+import { RedisModule } from '@nestjs-redis/client';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    RedisClientModule.forRootAsync({
+    RedisModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'client',
@@ -170,7 +170,7 @@ export class AppModule {}
 @Module({
   imports: [
     // Default connection with async config
-    RedisClientModule.forRootAsync({
+    RedisModule.forRootAsync({
       isGlobal: true,
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -182,14 +182,14 @@ export class AppModule {}
       }),
     }),
     // Named connections using separate forRoot calls
-    RedisClientModule.forRoot({
+    RedisModule.forRoot({
       connectionName: 'cache',
       type: 'client',
       options: {
         url: 'redis://cache:6379',
       },
     }),
-    RedisClientModule.forRootAsync({
+    RedisModule.forRootAsync({
       connectionName: 'sessions',
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -242,7 +242,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule, seconds } from '@nestjs/throttler';
 import { TerminusModule } from '@nestjs/terminus';
-import { RedisClientModule, RedisToken } from '@nestjs-redis/client';
+import { RedisModule, RedisToken } from '@nestjs-redis/client';
 import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
 import { RedisHealthIndicator } from '@nestjs-redis/health-indicator';
 import { HealthController } from './health.controller';
@@ -251,7 +251,7 @@ import { HealthController } from './health.controller';
   imports: [
     ConfigModule.forRoot(),
     // Configure Redis client with async config
-    RedisClientModule.forRootAsync({
+    RedisModule.forRootAsync({
       isGlobal: true,
       imports: [ConfigModule],
       inject: [ConfigService],

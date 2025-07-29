@@ -16,7 +16,7 @@ import {
 } from './redis-client.module-definition';
 
 @Module({})
-export class RedisClientModule
+export class RedisModule
   extends ConfigurableModuleClass
   implements OnApplicationBootstrap, OnApplicationShutdown
 {
@@ -33,7 +33,7 @@ export class RedisClientModule
 
     return {
       global: options?.isGlobal ?? false,
-      module: class extends RedisClientModule {
+      module: class extends RedisModule {
         override connectionToken = RedisToken(options?.connectionName);
       },
       providers: [
@@ -49,7 +49,7 @@ export class RedisClientModule
 
     return {
       global: options.isGlobal ?? false,
-      module: class extends RedisClientModule {
+      module: class extends RedisModule {
         override connectionToken = RedisToken(options.connectionName);
       },
       providers: [

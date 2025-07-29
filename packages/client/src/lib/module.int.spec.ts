@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RedisClientModule } from './module';
+import { RedisModule } from './module';
 import { RedisToken } from './tokens';
 import { Redis, RedisModuleOptions } from './types';
 import { RedisModuleAsyncOptions } from './interfaces';
 
-describe('RedisClientModule Integration forRoot', () => {
+describe('RedisModule Integration forRoot', () => {
   let module: TestingModule;
   let redisClient: Redis;
 
@@ -19,7 +19,7 @@ describe('RedisClientModule Integration forRoot', () => {
   beforeEach(async () => {
     // Create the testing module with real Redis connection
     module = await Test.createTestingModule({
-      imports: [RedisClientModule.forRoot(testRedisConfig)],
+      imports: [RedisModule.forRoot(testRedisConfig)],
     }).compile();
     await module.init();
 
@@ -177,7 +177,7 @@ describe('RedisClientModule Integration forRoot', () => {
   describe('Module Configuration', () => {
     it('should work with default configuration', async () => {
       const defaultModule = await Test.createTestingModule({
-        imports: [RedisClientModule.forRoot()],
+        imports: [RedisModule.forRoot()],
       }).compile();
       await defaultModule.init();
 
@@ -202,7 +202,7 @@ describe('RedisClientModule Integration forRoot', () => {
       };
 
       const customModule = await Test.createTestingModule({
-        imports: [RedisClientModule.forRoot(customConfig)],
+        imports: [RedisModule.forRoot(customConfig)],
       }).compile();
       await customModule.init();
 
@@ -259,7 +259,7 @@ describe('RedisClientModule Integration forRoot', () => {
   });
 });
 
-describe('RedisClientModule Integration forRootAsync', () => {
+describe('RedisModule Integration forRootAsync', () => {
   let module: TestingModule;
   let redisClient: Redis;
 
@@ -278,7 +278,7 @@ describe('RedisClientModule Integration forRootAsync', () => {
     // Create the testing module with real Redis connection
     console.log('Creating module with async options:', testRedisAsyncConfig);
     module = await Test.createTestingModule({
-      imports: [RedisClientModule.forRootAsync(testRedisAsyncConfig)],
+      imports: [RedisModule.forRootAsync(testRedisAsyncConfig)],
     }).compile();
 
     await module.init();
@@ -327,14 +327,14 @@ describe('Multi-connection Integration', () => {
     module = await Test.createTestingModule({
       imports: [
         // Default connection
-        RedisClientModule.forRoot({
+        RedisModule.forRoot({
           type: 'client',
           options: {
             url: process.env.REDIS_URL || 'redis://localhost:6379',
           },
         }),
         // Named connection
-        RedisClientModule.forRoot({
+        RedisModule.forRoot({
           connectionName: 'cache',
           type: 'client',
           options: {

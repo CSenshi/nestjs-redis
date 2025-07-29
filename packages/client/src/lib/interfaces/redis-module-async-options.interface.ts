@@ -13,7 +13,7 @@ export interface RedisModuleAsyncOptions
     keyof RedisOptionsFactory
   > {
   /**
-   * If "true", register `RedisClientModule` as a global module.
+   * If "true", register `RedisModule` as a global module.
    */
   isGlobal?: boolean;
 

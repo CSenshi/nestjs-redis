@@ -85,12 +85,12 @@ pnpm add @nestjs-redis/throttler-storage redis
 ```ts
 import { Module } from '@nestjs/common';
 import { ThrottlerModule, seconds } from '@nestjs/throttler';
-import { RedisClientModule, RedisToken } from '@nestjs-redis/client';
+import { RedisModule, RedisToken } from '@nestjs-redis/client';
 import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
 
 @Module({
   imports: [
-    RedisClientModule.forRoot({
+    RedisModule.forRoot({
       url: 'redis://localhost:6379',
     }),
     ThrottlerModule.forRootAsync({
@@ -110,12 +110,12 @@ export class AppModule {}
 ```ts
 import { Module } from '@nestjs/common';
 import { ThrottlerModule, seconds } from '@nestjs/throttler';
-import { RedisClientModule, RedisToken } from '@nestjs-redis/client';
+import { RedisModule, RedisToken } from '@nestjs-redis/client';
 import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
 
 @Module({
   imports: [
-    RedisClientModule.forRoot({
+    RedisModule.forRoot({
       connections: [
         {
           connection: 'cache',

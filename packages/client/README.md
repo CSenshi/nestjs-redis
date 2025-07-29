@@ -83,11 +83,11 @@ pnpm add @nestjs-redis/client redis
 ```typescript
 // app.module.ts
 import { Module } from '@nestjs/common';
-import { RedisClientModule } from '@nestjs-redis/client';
+import { RedisModule } from '@nestjs-redis/client';
 
 @Module({
   imports: [
-    RedisClientModule.forRoot({
+    RedisModule.forRoot({
       type: 'client',
       options: {
         url: 'redis://localhost:6379',
@@ -124,7 +124,7 @@ export class AppService {
 @Module({
   imports: [
     // Default connection
-    RedisClientModule.forRoot({
+    RedisModule.forRoot({
       isGlobal: true,
       type: 'client',
       options: {
@@ -132,14 +132,14 @@ export class AppService {
       },
     }),
     // Named connections using separate forRoot calls
-    RedisClientModule.forRoot({
+    RedisModule.forRoot({
       connectionName: 'cache',
       type: 'client',
       options: {
         url: 'redis://cache:6379',
       },
     }),
-    RedisClientModule.forRoot({
+    RedisModule.forRoot({
       connectionName: 'sessions',
       type: 'client',
       options: {
@@ -147,7 +147,7 @@ export class AppService {
       },
     }),
     // Cluster connection
-    RedisClientModule.forRoot({
+    RedisModule.forRoot({
       connectionName: 'cluster',
       type: 'cluster',
       options: { rootNodes: [{ url: 'redis://cluster:6379' }] },
@@ -200,7 +200,7 @@ All configuration options are passed directly to the [node-redis](https://github
 ### Basic Configuration
 
 ```typescript
-RedisClientModule.forRoot({
+RedisModule.forRoot({
   type: 'client',
   options: {
     url: 'redis://localhost:6379',
@@ -216,7 +216,7 @@ RedisClientModule.forRoot({
 ### Advanced Configuration
 
 ```typescript
-RedisClientModule.forRoot({
+RedisModule.forRoot({
   connectionName: 'myConnection', // Optional connection name
   isGlobal: true, // Make module global
   type: 'client', // 'client' | 'cluster' | 'sentinel'
@@ -245,7 +245,7 @@ import { ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    RedisClientModule.forRootAsync({
+    RedisModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
@@ -287,7 +287,7 @@ export class RedisConfigService implements RedisOptionsFactory {
 
 @Module({
   imports: [
-    RedisClientModule.forRootAsync({
+    RedisModule.forRootAsync({
       useClass: RedisConfigService,
     }),
   ],
@@ -301,7 +301,7 @@ export class AppModule {}
 ```typescript
 @Module({
   imports: [
-    RedisClientModule.forRootAsync({
+    RedisModule.forRootAsync({
       useExisting: RedisConfigService,
     }),
   ],
@@ -316,7 +316,7 @@ export class AppModule {}
 @Module({
   imports: [
     // Default connection
-    RedisClientModule.forRootAsync({
+    RedisModule.forRootAsync({
       isGlobal: true,
       useFactory: (configService: ConfigService) => ({
         type: 'client',
@@ -327,7 +327,7 @@ export class AppModule {}
       inject: [ConfigService],
     }),
     // Named cache connection
-    RedisClientModule.forRootAsync({
+    RedisModule.forRootAsync({
       connectionName: 'cache',
       useFactory: (configService: ConfigService) => ({
         type: 'client',
@@ -338,7 +338,7 @@ export class AppModule {}
       inject: [ConfigService],
     }),
     // Named sessions connection
-    RedisClientModule.forRootAsync({
+    RedisModule.forRootAsync({
       connectionName: 'sessions',
       useFactory: (configService: ConfigService) => ({
         type: 'cluster',
@@ -359,7 +359,7 @@ export class AppModule {}
 ### Cluster Configuration
 
 ```typescript
-RedisClientModule.forRoot({
+RedisModule.forRoot({
   connectionName: 'cluster', // Optional connection name
   type: 'cluster',
   options: {
@@ -378,7 +378,7 @@ RedisClientModule.forRoot({
 ### Sentinel Configuration
 
 ```typescript
-RedisClientModule.forRoot({
+RedisModule.forRoot({
   connectionName: 'sentinel', // Optional connection name
   type: 'sentinel',
   options: {
@@ -396,7 +396,7 @@ RedisClientModule.forRoot({
 
 ### Module Configuration
 
-#### `RedisClientModule.forRoot(options)`
+#### `RedisModule.forRoot(options)`
 
 | Option           | Type                                                                | Description                 | Default     |
 | ---------------- | ------------------------------------------------------------------- | --------------------------- | ----------- |
@@ -405,7 +405,7 @@ RedisClientModule.forRoot({
 | `type`           | `'client' \| 'cluster' \| 'sentinel'`                               | Redis connection type       | `'client'`  |
 | `options`        | `RedisClientOptions \| RedisClusterOptions \| RedisSentinelOptions` | Redis configuration options | `{}`        |
 
-#### `RedisClientModule.forRootAsync(options)`
+#### `RedisModule.forRootAsync(options)`
 
 Async configuration method for dynamic Redis setup.
 
@@ -446,7 +446,7 @@ Get the injection token for a Redis connection.
 ```typescript
 @Module({
   imports: [
-    RedisClientModule.forRoot({
+    RedisModule.forRoot({
       options: {
         url: 'redis://localhost:6379',
       },

@@ -35,7 +35,7 @@ This was a version bump only, there were no code changes.
 
 ### 🚀 Features
 
-- **redis:** enhance RedisClientModule with async options and improved configuration handling ([667b1bd](https://github.com/CSenshi/nestjs-redis/commit/667b1bd))
+- **redis:** enhance RedisModule with async options and improved configuration handling ([667b1bd](https://github.com/CSenshi/nestjs-redis/commit/667b1bd))
 
 ### 🩹 Fixes
 

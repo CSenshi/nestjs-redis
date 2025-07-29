@@ -1,4 +1,4 @@
-export { RedisClientModule } from './lib/module';
+export { RedisModule } from './lib/module';
 export { InjectRedis } from './lib/decorators';
 export type {
   Redis,
