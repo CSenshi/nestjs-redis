@@ -11,7 +11,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/@nestjs-redis/client.svg)](https://www.npmjs.com/package/@nestjs-redis/client)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
-[![NestJS](https://img.shields.io/badge/NestJS-11+-red.svg)](https://nestjs.com/)
+[![NestJS](https://img.shields.io/badge/NestJS-9%2B-red.svg)](https://nestjs.com/)
 [![Redis](https://img.shields.io/badge/Redis-5+-red.svg)](https://redis.io/)
 
 _Built on the modern [node-redis](https://github.com/redis/node-redis) client • Future-proof • Type-safe • Production-tested_
@@ -69,9 +69,15 @@ The Redis ecosystem for NestJS has been fragmented, with most solutions built on
 
 | Package                           | Node.js | NestJS | Redis | Status    |
 | --------------------------------- | ------- | ------ | ----- | --------- |
-| `@nestjs-redis/client`            | 18+     | 10+    | 5+    | ✅ Stable |
-| `@nestjs-redis/throttler-storage` | 18+     | 10+    | 5+    | ✅ Stable |
-| `@nestjs-redis/health-indicator`  | 18+     | 10+    | 5+    | ✅ Stable |
+| `@nestjs-redis/client`            | 18+     | 9+     | 5+    | ✅ Stable |
+| `@nestjs-redis/throttler-storage` | 18+     | 9+     | 5+    | ✅ Stable |
+| `@nestjs-redis/health-indicator`  | 18+     | 9+     | 5+    | ✅ Stable |
+
+### Supported NestJS Versions
+
+All packages in the NestJS Redis Toolkit support NestJS versions 9.x, 10.x, and 11.x.
+
+> The packages use `ConfigurableModuleBuilder` which was introduced in NestJS 9.0.0, making it the minimum supported version.
 
 ---
 

@@ -1,0 +1,87 @@
+name: NestJS Compatibility Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+env:
+  NODE_OPTIONS: --max_old_space_size=4096
+
+jobs:
+  compatibility-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        nestjs-version: ['^9.0.0', '^10.0.0', '^11.0.0']
+        node-version: ['18', '20', '22']
+        package: ['client', 'health-indicator', 'throttler-storage']
+        include:
+          # Add specific version combinations for dependencies
+          - nestjs-version: '^9.0.0'
+            terminus-version: '^9.0.0'
+            throttler-version: '^6.0.0'
+          - nestjs-version: '^10.0.0'
+            terminus-version: '^10.0.0'
+            throttler-version: '^6.0.0'
+          - nestjs-version: '^11.0.0'
+            terminus-version: '^11.0.0'
+            throttler-version: '^6.0.0'
+
+    name: Test ${{ matrix.package }} with NestJS ${{ matrix.nestjs-version }} on Node ${{ matrix.node-version }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: tree:0
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install specific NestJS version for testing
+        run: |
+          # Install specific versions for compatibility testing - install ALL NestJS packages at same version
+          pnpm add -D @nestjs/common@${{ matrix.nestjs-version }} @nestjs/core@${{ matrix.nestjs-version }} @nestjs/testing@${{ matrix.nestjs-version }} @nestjs/platform-express@${{ matrix.nestjs-version }}
+
+          # Install package-specific dependencies
+          if [ "${{ matrix.package }}" = "health-indicator" ]; then
+            pnpm add -D @nestjs/terminus@${{ matrix.terminus-version }}
+          fi
+
+          if [ "${{ matrix.package }}" = "throttler-storage" ]; then
+            # Update the dependency in the package itself
+            cd packages/throttler-storage
+            pnpm add @nestjs/throttler@${{ matrix.throttler-version }}
+            cd ../..
+          fi
+
+      - name: Run unit tests
+        run: pnpm exec nx test ${{ matrix.package }}
+
+  compatibility-summary:
+    runs-on: ubuntu-latest
+    needs: compatibility-test
+    if: always()
+    steps:
+      - name: Check compatibility test results
+        run: |
+          if [ "${{ needs.compatibility-test.result }}" = "failure" ]; then
+            echo "❌ Some compatibility tests failed"
+            exit 1
+          else
+            echo "✅ All compatibility tests passed"
+          fi

@@ -10,7 +10,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/@nestjs-redis/client.svg)](https://www.npmjs.com/package/@nestjs-redis/client)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
-[![NestJS](https://img.shields.io/badge/NestJS-11+-red.svg)](https://nestjs.com/)
+[![NestJS](https://img.shields.io/badge/NestJS-9%2B-red.svg)](https://nestjs.com/)
 [![Redis](https://img.shields.io/badge/Redis-5+-red.svg)](https://redis.io/)
 
 _Built on [node-redis](https://github.com/redis/node-redis) • Future-proof • Type-safe • Production-tested_
@@ -69,12 +69,12 @@ pnpm add @nestjs-redis/client redis
 
 ### Requirements
 
-| Dependency       | Version | Required   |
-| ---------------- | ------- | ---------- |
-| `@nestjs/common` | ^11.0.0 | ✅ Peer    |
-| `@nestjs/core`   | ^11.0.0 | ✅ Peer    |
-| `redis`          | ^5.0.0  | ✅ Peer    |
-| `Node.js`        | 18+     | ✅ Runtime |
+| Dependency       | Version                          | Required   |
+| ---------------- | -------------------------------- | ---------- |
+| `@nestjs/common` | ^9.0.0 \|\| ^10.0.0 \|\| ^11.0.0 | ✅ Peer    |
+| `@nestjs/core`   | ^9.0.0 \|\| ^10.0.0 \|\| ^11.0.0 | ✅ Peer    |
+| `redis`          | ^5.0.0                           | ✅ Peer    |
+| `Node.js`        | 18+                              | ✅ Runtime |
 
 ## 🚀 Quick Start
 
