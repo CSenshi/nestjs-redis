@@ -1,3 +1,13 @@
+## 0.1.1 (2025-07-29)
+
+### 🩹 Fixes
+
+- remove scripts section from package.json ([6ccc7e4](https://github.com/CSenshi/nestjs-redis/commit/6ccc7e4))
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 0.1.0 (2025-07-29)
 
 ### 🚀 Features
