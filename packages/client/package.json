@@ -2,6 +2,7 @@
   "name": "@nestjs-redis/client",
   "version": "0.0.1",
   "license": "MIT",
+  "author": "Saba Pochkhua <saba.pochkhua@gmail.com> (https://github.com/CSenshi)",
   "description": "Flexible, production-ready Redis client module for NestJS with multi-connection support, built on the modern node-redis client",
   "keywords": [
     "nestjs",
@@ -79,6 +80,11 @@
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
+  },
+  "scripts": {
+    "build": "nx build client",
+    "test": "nx test client",
+    "test:int": "nx test:int client"
   },
   "repository": {
     "type": "git",
