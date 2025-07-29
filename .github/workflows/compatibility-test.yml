@@ -16,9 +16,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        nestjs-version: ['^9.0.0', '^10.0.0', '^11.0.0']
         node-version: ['18', '20', '22']
         package: ['client', 'health-indicator', 'throttler-storage']
+        nestjs-version: ['9', '10', '11']
         include:
           - nestjs-version: '^9.0.0'
             terminus-version: '^9.0.0'
@@ -30,7 +30,7 @@ jobs:
             terminus-version: '^11.0.0'
             throttler-version: '^6.0.0'
 
-    name: ${{ matrix.package }} - Nestjs ${{ matrix.nestjs-version }} - Node ${{ matrix.node-version }}
+    name: Node${{ matrix.node-version }} - Nest${{ matrix.nestjs-version }} - ${{ matrix.package }}
 
     steps:
       - uses: actions/checkout@v4
