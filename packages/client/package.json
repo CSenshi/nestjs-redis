@@ -81,11 +81,6 @@
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
   },
-  "scripts": {
-    "build": "nx build client",
-    "test": "nx test client",
-    "test:int": "nx test:int client"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/CSenshi/nestjs-redis",
