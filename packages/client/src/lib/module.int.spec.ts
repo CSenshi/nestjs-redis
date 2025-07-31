@@ -343,6 +343,35 @@ describe('RedisModule Integration forRootAsync', () => {
 
       await defaultModule.close();
     });
+
+    it('should work with injected modules inside imports', async () => {
+      const defaultModule = await Test.createTestingModule({
+        imports: [
+          RedisModule.forRootAsync({
+            imports: [ConfigModule.forRoot({ isGlobal: true })],
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => ({
+              type: 'client',
+              isGlobal: true,
+              options: {
+                url:
+                  configService.get<string>('REDIS_HOST') ??
+                  'redis://localhost:6379',
+              },
+            }),
+          }),
+        ],
+      }).compile();
+      await defaultModule.init();
+
+      const defaultRedisClient = defaultModule.get<Redis>(RedisToken());
+
+      // Test basic operation
+      const ping = await defaultRedisClient.ping();
+      expect(ping).toBe('PONG');
+
+      await defaultModule.close();
+    });
   });
 });
 

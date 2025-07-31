@@ -52,6 +52,7 @@ export class RedisModule
       module: class extends RedisModule {
         override connectionToken = RedisToken(options.connectionName);
       },
+      imports: options.imports || [],
       providers: [
         ...(baseModule.providers || []),
         this.getRedisClientProvider(options.connectionName),
