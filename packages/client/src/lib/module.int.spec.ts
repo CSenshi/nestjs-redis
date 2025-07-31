@@ -1,8 +1,8 @@
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RedisModule } from './module';
 import { RedisToken } from './tokens';
 import { Redis, RedisModuleOptions } from './types';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 
 describe('RedisModule Integration forRoot', () => {
   let module: TestingModule;
@@ -235,13 +235,13 @@ describe('RedisModule Integration forRoot', () => {
     it('should handle bulk operations efficiently', async () => {
       const testKeys = Array.from(
         { length: 100 },
-        (_, i) => `test:bulk:key${i}`
+        (_, i) => `test:bulk:key${i}`,
       );
       const testValues = testKeys.map((_, i) => `value${i}`);
 
       // Bulk set
       const setPromises = testKeys.map((key, index) =>
-        redisClient.set(key, testValues[index])
+        redisClient.set(key, testValues[index]),
       );
       await Promise.all(setPromises);
 

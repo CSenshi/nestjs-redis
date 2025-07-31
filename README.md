@@ -215,7 +215,7 @@ export class MultiService {
   constructor(
     @InjectRedis() private readonly defaultRedis: Redis,
     @InjectRedis('cache') private readonly cacheRedis: Redis,
-    @InjectRedis('sessions') private readonly sessionRedis: RedisCluster
+    @InjectRedis('sessions') private readonly sessionRedis: RedisCluster,
   ) {}
 
   async cacheData(key: string, data: any) {
@@ -226,7 +226,7 @@ export class MultiService {
     await this.sessionRedis.setEx(
       `session:${sessionId}`,
       1800,
-      JSON.stringify(session)
+      JSON.stringify(session),
     );
   }
 }
@@ -240,11 +240,11 @@ Here's a comprehensive example showing how to use all of the available packages 
 // app.module.ts
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ThrottlerModule, seconds } from '@nestjs/throttler';
 import { TerminusModule } from '@nestjs/terminus';
+import { ThrottlerModule, seconds } from '@nestjs/throttler';
 import { RedisModule, RedisToken } from '@nestjs-redis/client';
-import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
 import { RedisHealthIndicator } from '@nestjs-redis/health-indicator';
+import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
 import { HealthController } from './health.controller';
 
 @Module({
@@ -286,11 +286,11 @@ export class AppModule {}
 
 ## 📦 Packages
 
-| Package | Description |
-| ------- | ----------- |
-| [**Client**](https://www.npmjs.com/package/@nestjs-redis/client) | `@nestjs-redis/client` — Flexible, production-ready Redis client module for NestJS with multi-connection support, built on the modern node-redis client. Perfect for caching, session storage, pub/sub, and queues. |
-| [**Throttler Storage**](https://www.npmjs.com/package/@nestjs-redis/throttler-storage) | `@nestjs-redis/throttler-storage` — Redis storage for NestJS Throttler with distributed rate limiting. Ideal for API rate limiting, DDoS protection, and quota management across multiple instances. |
-| [**Health Indicator**](https://www.npmjs.com/package/@nestjs-redis/health-indicator) | `@nestjs-redis/health-indicator` — Redis health indicator for NestJS applications with comprehensive monitoring support. Essential for health checks, monitoring, and production readiness. |
+| Package                                                                                | Description                                                                                                                                                                                                         |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [**Client**](https://www.npmjs.com/package/@nestjs-redis/client)                       | `@nestjs-redis/client` — Flexible, production-ready Redis client module for NestJS with multi-connection support, built on the modern node-redis client. Perfect for caching, session storage, pub/sub, and queues. |
+| [**Throttler Storage**](https://www.npmjs.com/package/@nestjs-redis/throttler-storage) | `@nestjs-redis/throttler-storage` — Redis storage for NestJS Throttler with distributed rate limiting. Ideal for API rate limiting, DDoS protection, and quota management across multiple instances.                |
+| [**Health Indicator**](https://www.npmjs.com/package/@nestjs-redis/health-indicator)   | `@nestjs-redis/health-indicator` — Redis health indicator for NestJS applications with comprehensive monitoring support. Essential for health checks, monitoring, and production readiness.                         |
 
 Each package is published independently with comprehensive documentation. **Click the package links above for detailed installation and usage instructions.**
 

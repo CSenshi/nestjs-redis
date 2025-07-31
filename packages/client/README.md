@@ -172,7 +172,7 @@ export class MultiService {
     @InjectRedis() private readonly defaultRedis: Redis,
     @InjectRedis('cache') private readonly cacheRedis: Redis,
     @InjectRedis('sessions') private readonly sessionRedis: Redis,
-    @InjectRedis('cluster') private readonly clusterRedis: RedisCluster
+    @InjectRedis('cluster') private readonly clusterRedis: RedisCluster,
   ) {}
 
   async cacheData(key: string, data: any) {
@@ -183,7 +183,7 @@ export class MultiService {
     await this.sessionRedis.setEx(
       `session:${sessionId}`,
       1800,
-      JSON.stringify(session)
+      JSON.stringify(session),
     );
   }
 
@@ -266,7 +266,7 @@ export class AppModule {}
 
 ```typescript
 import { Injectable } from '@nestjs/common';
-import { RedisOptionsFactory, RedisModuleOptions } from '@nestjs-redis/client';
+import { RedisModuleOptions, RedisOptionsFactory } from '@nestjs-redis/client';
 
 @Injectable()
 export class RedisConfigService implements RedisOptionsFactory {
@@ -430,7 +430,7 @@ Inject a Redis client instance into your service.
 export class MyService {
   constructor(
     @InjectRedis() private readonly redis: Redis,
-    @InjectRedis('cache') private readonly cacheRedis: Redis
+    @InjectRedis('cache') private readonly cacheRedis: Redis,
   ) {}
 }
 ```

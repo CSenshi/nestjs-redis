@@ -1,4 +1,4 @@
-import type { createCluster, createClient, createSentinel } from 'redis';
+import type { createClient, createCluster, createSentinel } from 'redis';
 
 export type RedisClient = ReturnType<typeof createClient>;
 export type RedisCluster = ReturnType<typeof createCluster>;

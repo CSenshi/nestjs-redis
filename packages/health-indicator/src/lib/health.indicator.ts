@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import {
-  HealthIndicatorService,
   HealthIndicatorResult,
+  HealthIndicatorService,
 } from '@nestjs/terminus';
 import { Redis } from './interfaces';
 
 @Injectable()
 export class RedisHealthIndicator {
   constructor(
-    private readonly healthIndicatorService: HealthIndicatorService
+    private readonly healthIndicatorService: HealthIndicatorService,
   ) {}
 
   async isHealthy(
     key: string,
-    { client }: { client: Redis }
+    { client }: { client: Redis },
   ): Promise<HealthIndicatorResult> {
     const indicator = this.healthIndicatorService.check(key);
 

@@ -5,15 +5,15 @@ import {
   OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '@nestjs/common';
-import { Redis, RedisModuleOptions, RedisModuleForRootOptions } from './types';
-import { RedisModuleAsyncOptions } from './interfaces';
-import { createClient, createCluster, createSentinel } from 'redis';
-import { RedisToken } from './tokens';
 import { ModuleRef } from '@nestjs/core';
+import { createClient, createCluster, createSentinel } from 'redis';
+import { RedisModuleAsyncOptions } from './interfaces';
 import {
   ConfigurableModuleClass,
   MODULE_OPTIONS_TOKEN,
 } from './redis-client.module-definition';
+import { RedisToken } from './tokens';
+import { Redis, RedisModuleForRootOptions, RedisModuleOptions } from './types';
 
 @Module({})
 export class RedisModule
@@ -27,7 +27,7 @@ export class RedisModule
   }
 
   public static forRoot(
-    options: RedisModuleForRootOptions = {}
+    options: RedisModuleForRootOptions = {},
   ): DynamicModule {
     const baseModule = super.forRoot(options);
 
@@ -61,7 +61,7 @@ export class RedisModule
   }
 
   private static getRedisClientProvider(
-    connectionName?: string
+    connectionName?: string,
   ): FactoryProvider {
     return {
       provide: RedisToken(connectionName),
@@ -77,7 +77,7 @@ export class RedisModule
           default:
             throw new Error(
               // @ts-expect-error check for config type
-              `Unsupported Redis type: ${config?.type}. Supported types are 'client', 'cluster' and 'sentinel'`
+              `Unsupported Redis type: ${config?.type}. Supported types are 'client', 'cluster' and 'sentinel'`,
             );
         }
       },
@@ -88,7 +88,7 @@ export class RedisModule
   async onApplicationBootstrap() {
     if (!this.connectionToken) {
       throw new Error(
-        'Connection token is not defined. Ensure to call forRoot or forRootAsync.'
+        'Connection token is not defined. Ensure to call forRoot or forRootAsync.',
       );
     }
 
@@ -98,7 +98,7 @@ export class RedisModule
   async onApplicationShutdown() {
     if (!this.connectionToken) {
       throw new Error(
-        'Connection token is not defined. Ensure to call forRoot or forRootAsync.'
+        'Connection token is not defined. Ensure to call forRoot or forRootAsync.',
       );
     }
 

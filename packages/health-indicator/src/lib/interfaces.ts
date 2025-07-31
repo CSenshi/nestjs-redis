@@ -1,4 +1,4 @@
-import type { createCluster, createClient, createSentinel } from 'redis';
+import type { createClient, createCluster, createSentinel } from 'redis';
 
 /**
  * Redis client types supported by the health indicator

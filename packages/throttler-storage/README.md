@@ -158,7 +158,7 @@ import { createClient, createCluster, createSentinel } from 'redis';
 
       // Generic method for existing Redis client/cluster/sentinel
       storage: RedisThrottlerStorage.from(
-        createClient({ url: 'redis://localhost:6379' })
+        createClient({ url: 'redis://localhost:6379' }),
       ),
 
       // Redis client from options
@@ -230,7 +230,7 @@ interface ThrottlerStorage {
     key: string,
     ttl: number,
     limit: number,
-    blockDuration: number
+    blockDuration: number,
   ): Promise<ThrottlerStorageRecord>;
 }
 

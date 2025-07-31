@@ -1,5 +1,5 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { HealthIndicatorService } from '@nestjs/terminus';
+import { Test, TestingModule } from '@nestjs/testing';
 import { createClient } from 'redis';
 import { RedisHealthIndicator } from './health.indicator';
 import { Redis } from './interfaces';
