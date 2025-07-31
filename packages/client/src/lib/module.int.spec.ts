@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RedisModule } from './module';
 import { RedisToken } from './tokens';
 import { Redis, RedisModuleOptions } from './types';
-import { RedisModuleAsyncOptions } from './interfaces';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 describe('RedisModule Integration forRoot', () => {
   let module: TestingModule;
@@ -263,27 +263,23 @@ describe('RedisModule Integration forRootAsync', () => {
   let module: TestingModule;
   let redisClient: Redis;
 
-  // Test Redis configuration - using default Redis instance
-  const testRedisAsyncConfig: RedisModuleAsyncOptions = {
-    useFactory: () => ({
-      type: 'client',
-      options: {
-        url: process.env.REDIS_URL || 'redis://localhost:6379',
-      },
-    }),
-    connectionName: 'testAsyncConnection',
-  };
-
   beforeEach(async () => {
-    // Create the testing module with real Redis connection
-    console.log('Creating module with async options:', testRedisAsyncConfig);
     module = await Test.createTestingModule({
-      imports: [RedisModule.forRootAsync(testRedisAsyncConfig)],
+      imports: [
+        RedisModule.forRootAsync({
+          useFactory: () => ({
+            type: 'client',
+            options: {
+              url: process.env.REDIS_URL || 'redis://localhost:6379',
+            },
+          }),
+        }),
+      ],
     }).compile();
 
     await module.init();
 
-    redisClient = module.get<Redis>(RedisToken('testAsyncConnection'));
+    redisClient = module.get<Redis>(RedisToken());
   });
 
   afterEach(async () => {
@@ -296,24 +292,57 @@ describe('RedisModule Integration forRootAsync', () => {
       expect(redisClient).toBeDefined();
     });
 
-    // it('should perform basic Redis operations', async () => {
-    //   const testKey = 'test:async-integration:key';
-    //   const testValue = 'test-value-' + Date.now();
+    it('should perform basic Redis operations', async () => {
+      const testKey = 'test:async-integration:key';
+      const testValue = 'test-value-' + Date.now();
 
-    //   // Set a value
-    //   await redisClient.set(testKey, testValue);
+      // Set a value
+      await redisClient.set(testKey, testValue);
 
-    //   // Get the value
-    //   const retrievedValue = await redisClient.get(testKey);
-    //   expect(retrievedValue).toBe(testValue);
+      // Get the value
+      const retrievedValue = await redisClient.get(testKey);
+      expect(retrievedValue).toBe(testValue);
 
-    //   // Delete the key
-    //   await redisClient.del(testKey);
+      // Delete the key
+      await redisClient.del(testKey);
 
-    //   // Verify deletion
-    //   const deletedValue = await redisClient.get(testKey);
-    //   expect(deletedValue).toBeNull();
-    // });
+      // Verify deletion
+      const deletedValue = await redisClient.get(testKey);
+      expect(deletedValue).toBeNull();
+    });
+  });
+
+  describe('Module Configuration', () => {
+    it('should work with injected configModule', async () => {
+      const defaultModule = await Test.createTestingModule({
+        imports: [
+          ConfigModule.forRoot({
+            isGlobal: true,
+          }),
+          RedisModule.forRootAsync({
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => ({
+              type: 'client',
+              isGlobal: true,
+              options: {
+                url:
+                  configService.get<string>('REDIS_HOST') ??
+                  'redis://localhost:6379',
+              },
+            }),
+          }),
+        ],
+      }).compile();
+      await defaultModule.init();
+
+      const defaultRedisClient = defaultModule.get<Redis>(RedisToken());
+
+      // Test basic operation
+      const ping = await defaultRedisClient.ping();
+      expect(ping).toBe('PONG');
+
+      await defaultModule.close();
+    });
   });
 });
 
