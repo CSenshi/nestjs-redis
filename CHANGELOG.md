@@ -1,3 +1,13 @@
+## 0.1.2 (2025-07-31)
+
+### 🩹 Fixes
+
+- **client:** fix forRootAsync method not looking at imports property ([a495e5c](https://github.com/CSenshi/nestjs-redis/commit/a495e5c))
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 0.1.1 (2025-07-29)
 
 ### 🩹 Fixes
