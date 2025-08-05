@@ -11,6 +11,9 @@
     },
     {
       "path": "./packages/health-indicator"
+    },
+    {
+      "path": "./packages/lock"
     }
   ]
 }
