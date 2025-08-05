@@ -1,1 +1,2 @@
-export * from './lib/lock.module';
+export { RedlockModule } from './lib/redlock/redlock.module';
+export { RedlockService } from './lib/redlock/redlock.service';
