@@ -94,7 +94,8 @@ function getKeys(key: string | string[]): string[] {
   } else if (typeof key === 'string') {
     return [key];
   } else {
-    throw new Error(`Invalid key type: ${typeof key}. Expected string or string[].`);
+    throw new Error(
+      `Invalid key type: ${typeof key}. Expected string or string[].`,
+    );
   }
 }
-
