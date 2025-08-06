@@ -111,7 +111,7 @@ describe('RedisModule Integration forRoot', () => {
       await module.init();
     });
 
-    it('Shoul get the RedlockService', async () => {
+    it('Should get the RedlockService', async () => {
       const module = await Test.createTestingModule({
         imports: [
           RedlockModule.forRootAsync({
