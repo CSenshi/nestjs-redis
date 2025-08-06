@@ -3,7 +3,7 @@ import { RedlockService } from './redlock.service';
 
 // 7. Better TypeScript types
 export function Redlock<T extends (...args: any[]) => any>(
-  keys: string[],
+  key: string | string[],
   ttl = 100,
 ): (
   target: any,
@@ -15,6 +15,7 @@ export function Redlock<T extends (...args: any[]) => any>(
     propertyKey: string | symbol,
     descriptor: TypedPropertyDescriptor<T>,
   ) => {
+    const keys = getKeys(key);
     // Guard against undefined descriptor
     if (!descriptor || typeof descriptor.value !== 'function') {
       throw new Error(
@@ -86,3 +87,14 @@ export function Redlock<T extends (...args: any[]) => any>(
     return descriptor;
   };
 }
+
+function getKeys(key: string | string[]): string[] {
+  if (Array.isArray(key)) {
+    return key;
+  } else if (typeof key === 'string') {
+    return [key];
+  } else {
+    throw new Error(`Invalid key type: ${typeof key}. Expected string or string[].`);
+  }
+}
+
