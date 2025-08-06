@@ -17,6 +17,12 @@ env:
 jobs:
   main:
     runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:8-alpine
+        ports: ['6379:6379']
+
     steps:
       - uses: actions/checkout@v4
         with:
