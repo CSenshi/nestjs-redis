@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Redlock } from './redlock.decorator';
-import { RedlockService } from './redlock.service';
-import { RedlockModule } from './redlock.module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { createClient } from 'redis';
+import { Redlock } from './redlock.decorator';
+import { RedlockModule } from './redlock.module';
+import { RedlockService } from './redlock.service';
 
 // Mock RedlockService
 const mockRedlockService = {
@@ -53,7 +53,8 @@ describe('@Redlock Decorator Validations', () => {
     class TestService {
       constructor() {
         // Mock the injected service
-        (this as Record<string, unknown>)[RedlockService.name] = mockRedlockService;
+        (this as Record<string, unknown>)[RedlockService.name] =
+          mockRedlockService;
       }
 
       @Redlock(['testKey'], 200)
@@ -65,13 +66,18 @@ describe('@Redlock Decorator Validations', () => {
     const service = new TestService();
     const result = await service.getValue();
     expect(result).toBe(42);
-    expect(mockRedlockService.withLock).toHaveBeenCalledWith(['testKey'], 200, expect.any(Function));
+    expect(mockRedlockService.withLock).toHaveBeenCalledWith(
+      ['testKey'],
+      200,
+      expect.any(Function),
+    );
   });
 
   it('should handle methods that throw errors', async () => {
     class TestService {
       constructor() {
-        (this as Record<string, unknown>)[RedlockService.name] = mockRedlockService;
+        (this as Record<string, unknown>)[RedlockService.name] =
+          mockRedlockService;
       }
 
       @Redlock(['testKey'], 200)
@@ -80,7 +86,9 @@ describe('@Redlock Decorator Validations', () => {
       }
     }
 
-    mockRedlockService.withLock.mockImplementation((keys, ttl, callback) => callback());
+    mockRedlockService.withLock.mockImplementation((keys, ttl, callback) =>
+      callback(),
+    );
 
     const service = new TestService();
     await expect(service.throwError()).rejects.toThrow('test error');
@@ -102,7 +110,8 @@ describe('@Redlock Decorator Validations', () => {
   it('should preserve custom properties on methods', () => {
     class TestService {
       constructor() {
-        (this as Record<string, unknown>)[RedlockService.name] = mockRedlockService;
+        (this as Record<string, unknown>)[RedlockService.name] =
+          mockRedlockService;
       }
 
       @Redlock(['testKey'], 200)
@@ -123,7 +132,8 @@ describe('@Redlock Decorator Validations', () => {
   it('should maintain type safety', () => {
     class TestService {
       constructor() {
-        (this as Record<string, unknown>)[RedlockService.name] = mockRedlockService;
+        (this as Record<string, unknown>)[RedlockService.name] =
+          mockRedlockService;
       }
 
       @Redlock(['testKey'], 200)
@@ -142,7 +152,8 @@ describe('@Redlock Decorator Validations', () => {
   it('should handle synchronous methods correctly', async () => {
     class TestService {
       constructor() {
-        (this as Record<string, unknown>)[RedlockService.name] = mockRedlockService;
+        (this as Record<string, unknown>)[RedlockService.name] =
+          mockRedlockService;
       }
 
       @Redlock(['testKey'], 200)
@@ -160,7 +171,8 @@ describe('@Redlock Decorator Validations', () => {
   it('should detect async methods correctly', async () => {
     class TestService {
       constructor() {
-        (this as Record<string, unknown>)[RedlockService.name] = mockRedlockService;
+        (this as Record<string, unknown>)[RedlockService.name] =
+          mockRedlockService;
       }
 
       @Redlock(['testKey'], 200)
@@ -186,7 +198,7 @@ describe('@Redlock Decorator Validations', () => {
 
     const service = new TestService();
     await expect(service.testMethod()).rejects.toThrow(
-      'RedlockService not found. Ensure the RedlockModule is imported in the same module as the class using @Redlock or isGlobal is true'
+      'RedlockService not found. Ensure the RedlockModule is imported in the same module as the class using @Redlock or isGlobal is true',
     );
   });
 
@@ -204,7 +216,7 @@ describe('@Redlock Decorator Validations', () => {
 
     const service = new TestService();
     await expect(service.testMethod()).rejects.toThrow(
-      'RedlockService not found'
+      'RedlockService not found',
     );
   });
 
@@ -246,17 +258,17 @@ describe('@Redlock Decorator', () => {
   it('should preserve function name', async () => {
     @Injectable()
     class TestService {
-      count = 0
+      count = 0;
 
       @Redlock(['testKey'], 200)
       async incr() {
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         this.count++;
       }
     }
     const testModule: TestingModule = await Test.createTestingModule({
-      imports: [RedlockModule.forRoot({ clients: redisClients, }),],
-      providers: [TestService,],
+      imports: [RedlockModule.forRoot({ clients: redisClients })],
+      providers: [TestService],
     }).compile();
 
     await testModule.init();

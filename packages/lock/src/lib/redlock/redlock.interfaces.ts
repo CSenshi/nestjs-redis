@@ -1,5 +1,5 @@
 import type { RedlockOptions } from '@redis-kit/lock';
-import type { createClient, RedisClientType } from 'redis';
+import type { RedisClientType, createClient } from 'redis';
 
 type RedisClient = ReturnType<typeof createClient> | RedisClientType;
 
