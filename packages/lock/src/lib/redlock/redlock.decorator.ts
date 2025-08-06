@@ -4,8 +4,8 @@ import { RedlockService } from "./redlock.service";
 // 7. Better TypeScript types
 export function Redlock<T extends (...args: any[]) => any>(
   keys: string[],
-  ttl = 100,
-): (target: any, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<T>) => TypedPropertyDescriptor<T> {
+  ttl = 100
+): (target: any, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<T>) => void {
   return (target: any, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<T>) => {
     // Guard against undefined descriptor
     if (!descriptor || typeof descriptor.value !== 'function') {

@@ -3,7 +3,9 @@
   "compilerOptions": {
     "outDir": "./out-tsc/jest",
     "types": ["jest", "node"],
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
   "include": [
     "jest.config.ts",

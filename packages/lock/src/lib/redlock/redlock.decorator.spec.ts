@@ -3,7 +3,7 @@ import { Redlock } from './redlock.decorator';
 import { RedlockService } from './redlock.service';
 import { RedlockModule } from './redlock.module';
 import { Test, TestingModule } from '@nestjs/testing';
-import { RedisClientType, createClient } from 'redis';
+import { createClient } from 'redis';
 
 // Mock RedlockService
 const mockRedlockService = {
@@ -29,7 +29,8 @@ describe('@Redlock Decorator Validations', () => {
   it('should preserve function length (arity)', () => {
     class TestService {
       @Redlock(['testKey'], 200)
-      async testMethod(param1: string, param2: number) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      async testMethod(_param1: string, _param2: number) {
         return 'locked';
       }
     }
@@ -52,7 +53,7 @@ describe('@Redlock Decorator Validations', () => {
     class TestService {
       constructor() {
         // Mock the injected service
-        (this as any)[RedlockService.name] = mockRedlockService;
+        (this as Record<string, unknown>)[RedlockService.name] = mockRedlockService;
       }
 
       @Redlock(['testKey'], 200)
@@ -70,7 +71,7 @@ describe('@Redlock Decorator Validations', () => {
   it('should handle methods that throw errors', async () => {
     class TestService {
       constructor() {
-        (this as any)[RedlockService.name] = mockRedlockService;
+        (this as Record<string, unknown>)[RedlockService.name] = mockRedlockService;
       }
 
       @Redlock(['testKey'], 200)
@@ -88,8 +89,9 @@ describe('@Redlock Decorator Validations', () => {
   it('should throw error for non-method properties', () => {
     expect(() => {
       class TestService {
+        // @ts-expect-error This is not a method
         @Redlock(['testKey'], 200)
-        testProperty: string = 'not a method';
+        testProperty = 'not a method';
       }
       // This line prevents "unused variable" warning
       new TestService();
@@ -100,7 +102,7 @@ describe('@Redlock Decorator Validations', () => {
   it('should preserve custom properties on methods', () => {
     class TestService {
       constructor() {
-        (this as any)[RedlockService.name] = mockRedlockService;
+        (this as Record<string, unknown>)[RedlockService.name] = mockRedlockService;
       }
 
       @Redlock(['testKey'], 200)
@@ -109,18 +111,19 @@ describe('@Redlock Decorator Validations', () => {
       }
     }
 
-    // Add custom property to original method
-    (TestService.prototype.testMethod as any).customProp = 'custom value';
+    // @ts-expect-error Custom property for testing
+    TestService.prototype.testMethod.customProp = 'custom value';
 
     const service = new TestService();
-    expect((service.testMethod as any).customProp).toBe('custom value');
+    // @ts-expect-error Accessing custom property
+    expect(service.testMethod.customProp).toBe('custom value');
   });
 
   // 7. TypeScript type safety (compile-time test)
   it('should maintain type safety', () => {
     class TestService {
       constructor() {
-        (this as any)[RedlockService.name] = mockRedlockService;
+        (this as Record<string, unknown>)[RedlockService.name] = mockRedlockService;
       }
 
       @Redlock(['testKey'], 200)
@@ -139,7 +142,7 @@ describe('@Redlock Decorator Validations', () => {
   it('should handle synchronous methods correctly', async () => {
     class TestService {
       constructor() {
-        (this as any)[RedlockService.name] = mockRedlockService;
+        (this as Record<string, unknown>)[RedlockService.name] = mockRedlockService;
       }
 
       @Redlock(['testKey'], 200)
@@ -157,7 +160,7 @@ describe('@Redlock Decorator Validations', () => {
   it('should detect async methods correctly', async () => {
     class TestService {
       constructor() {
-        (this as any)[RedlockService.name] = mockRedlockService;
+        (this as Record<string, unknown>)[RedlockService.name] = mockRedlockService;
       }
 
       @Redlock(['testKey'], 200)
@@ -190,7 +193,7 @@ describe('@Redlock Decorator Validations', () => {
   it('should handle null/undefined RedlockService', async () => {
     class TestService {
       constructor() {
-        (this as any)[RedlockService.name] = null;
+        (this as Record<string, unknown>)[RedlockService.name] = null;
       }
 
       @Redlock(['testKey'], 200)
@@ -221,7 +224,7 @@ describe('@Redlock Decorator Validations', () => {
 });
 
 describe('@Redlock Decorator', () => {
-  let redisClients: RedisClientType[];
+  let redisClients: ReturnType<typeof createClient>[];
 
   beforeAll(async () => {
     redisClients = [
@@ -259,7 +262,7 @@ describe('@Redlock Decorator', () => {
     await testModule.init();
 
     const service = testModule.get<TestService>(TestService);
-    
+
     expect(service.count).toBe(0);
     const startTime = Date.now();
     await Promise.all([service.incr(), service.incr()]);

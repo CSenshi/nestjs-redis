@@ -5,6 +5,7 @@ import {
   MODULE_OPTIONS_TOKEN,
 } from './redlock.module-definition';
 import { RedlockService } from './redlock.service';
+import type { RedisClientType } from 'redis';
 
 @Module({
   providers: [
@@ -12,7 +13,7 @@ import { RedlockService } from './redlock.service';
       provide: RedlockService,
       inject: [MODULE_OPTIONS_TOKEN],
       useFactory: (options: RedlockModuleOptions) =>
-        new RedlockService(options.clients, options.redlockConfig),
+        new RedlockService(options.clients as RedisClientType[], options.redlockConfig),
     },
   ],
   exports: [RedlockService],

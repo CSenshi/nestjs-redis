@@ -60,7 +60,7 @@ describe('RedisModule Integration forRoot', () => {
         {
           inject: [RedlockService],
           provide: 'TestService',
-          useFactory: (_: RedlockService) => {
+          useFactory: () => {
             return {};
           },
         },
