@@ -279,7 +279,7 @@ describe('@Redlock Decorator', () => {
     const startTime = Date.now();
     await Promise.all([service.incr(), service.incr()]);
     const endTime = Date.now();
-    expect(endTime - startTime).toBeGreaterThanOrEqual(200); // Ensure
+    expect(endTime - startTime).toBeGreaterThanOrEqual(200); // Ensure that the locks are acquired sequentially (not in parallel)
     expect(service.count).toBe(2);
   });
 });
