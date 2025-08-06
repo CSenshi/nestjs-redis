@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/CSenshi/nestjs-redis/main/docs/images/logo.png" alt="NestJS Redis Toolkit Logo" width="120" height="120">
+<img src="https://raw.githubusercontent.com/CSenshi/nestjs-redis/main/docs/images/logo.png" alt="NestJS Redis Toolkit Logo" width="200" height="200">
 
 # @nestjs-redis/lock
 
@@ -44,10 +44,10 @@ pnpm add @nestjs-redis/lock
 
 ### Requirements
 
-| Dependency             | Version                          | Required   |
-| ---------------------- | -------------------------------- | ---------- |
-| `@nestjs/common`       | ^9.0.0 \|\| ^10.0.0 \|\| ^11.0.0 | ✅ Peer    |
-| `Node.js`              | 18+                              | ✅ Runtime |
+| Dependency       | Version                          | Required   |
+| ---------------- | -------------------------------- | ---------- |
+| `@nestjs/common` | ^9.0.0 \|\| ^10.0.0 \|\| ^11.0.0 | ✅ Peer    |
+| `Node.js`        | 18+                              | ✅ Runtime |
 
 ## 🚀 Quick Start
 
