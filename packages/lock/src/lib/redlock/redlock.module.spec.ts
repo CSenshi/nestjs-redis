@@ -19,10 +19,7 @@ describe('RedisModule Integration forRoot', () => {
   });
 
   afterAll(async () => {
-    // Close all Redis clients
-    for (const client of redisClients) {
-      await client.quit();
-    }
+    await Promise.all(redisClients.map((client) => client.quit()));
   });
 
   describe('RedlockModule.forRoot', () => {
