@@ -1,3 +1,15 @@
+## 0.2.0 (2025-08-06)
+
+### 🚀 Features
+
+- **@nestjs-redis/lock:** Introduce new redlock package to ecosystem 
+- **ci:** add step to derive SHAs for nx affected commands ([dd45018](https://github.com/CSenshi/nestjs-redis/commit/dd45018))
+- **ci:** add Redis service to compatibility test workflow ([e3e05ee](https://github.com/CSenshi/nestjs-redis/commit/e3e05ee))
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 0.1.2 (2025-07-31)
 
 ### 🩹 Fixes
