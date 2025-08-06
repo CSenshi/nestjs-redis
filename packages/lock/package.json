@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "tslib": "^2.8.0",
-    "@redis-kit/lock": "^0.1.0-8"
+    "@redis-kit/lock": "^0.1.0-3"
   },
   "devDependencies": {
     "@nestjs/testing": "^11.0.0"
