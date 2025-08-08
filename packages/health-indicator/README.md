@@ -4,54 +4,36 @@
 
 # @nestjs-redis/health-indicator
 
-**Redis health indicator for NestJS applications with comprehensive monitoring support**
+Redis health indicator for NestJS with first-class Terminus integration, built on node-redis.
 
 [![npm version](https://badge.fury.io/js/%40nestjs-redis%2Fhealth-indicator.svg)](https://www.npmjs.com/package/@nestjs-redis/health-indicator)
 [![npm downloads](https://img.shields.io/npm/dm/@nestjs-redis/health-indicator.svg)](https://www.npmjs.com/package/@nestjs-redis/health-indicator)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
-[![NestJS](https://img.shields.io/badge/NestJS-9%2B-red.svg)](https://nestjs.com/)
-[![Redis](https://img.shields.io/badge/Redis-5+-red.svg)](https://redis.io/)
-
-_Built on [node-redis](https://github.com/redis/node-redis) • Production-ready • Type-safe • Terminus integration_
+[![NestJS](https://img.shields.io/badge/NestJS-9%2B-red.svg)](https://nestjs.com/) [![Redis](https://img.shields.io/badge/Redis-5+-red.svg)](https://redis.io/)
 
 </div>
 
 ---
 
-## 📋 Table of Contents
+## Features
 
-- [📦 Installation](#-installation)
-- [🚀 Quick Start](#-quick-start)
-- [🔧 Configuration](#-configuration)
-- [🤝 Contributing](#-contributing)
-- [📄 License](#-license)
+- Plug-and-play Terminus health checks
+- Works with existing `@nestjs-redis/client` connections
+- Supports multiple Redis instances
+- Type-safe, production-ready
 
----
-
-## 📦 Installation
+## Installation
 
 ```bash
-# Install the package and dependencies
 npm install @nestjs-redis/health-indicator redis
-
-# Or with yarn
+# or
 yarn add @nestjs-redis/health-indicator redis
-
-# Or with pnpm
+# or
 pnpm add @nestjs-redis/health-indicator redis
 ```
 
-### Requirements
-
-| Dependency         | Version                          | Required   |
-| ------------------ | -------------------------------- | ---------- |
-| `@nestjs/common`   | ^9.0.0 \|\| ^10.0.0 \|\| ^11.0.0 | ✅ Peer    |
-| `@nestjs/terminus` | ^9.0.0 \|\| ^10.0.0 \|\| ^11.0.0 | ✅ Peer    |
-| `redis`            | ^5.0.0                           | ✅ Peer    |
-| `Node.js`          | 18+                              | ✅ Runtime |
-
-## 🚀 Quick Start
+## Quick Start
 
 ```typescript
 // app.module.ts
@@ -59,19 +41,15 @@ import { Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
 import { RedisModule } from '@nestjs-redis/client';
 import { RedisHealthIndicator } from '@nestjs-redis/health-indicator';
-import { HealthController } from './health.controller';
 
 @Module({
   imports: [
     RedisModule.forRoot({
       type: 'client',
-      options: {
-        url: 'redis://localhost:6379',
-      },
+      options: { url: 'redis://localhost:6379' },
     }),
     TerminusModule,
   ],
-  controllers: [HealthController],
   providers: [RedisHealthIndicator],
 })
 export class AppModule {}
@@ -87,61 +65,54 @@ import { RedisHealthIndicator } from '@nestjs-redis/health-indicator';
 @Controller('health')
 export class HealthController {
   constructor(
-    private health: HealthCheckService,
-    private redis: RedisHealthIndicator,
-    @InjectRedis() private redisClient: Redis,
+    private readonly health: HealthCheckService,
+    private readonly redis: RedisHealthIndicator,
+    @InjectRedis() private readonly redisClient: Redis,
   ) {}
 
   @Get()
   @HealthCheck()
   check() {
     return this.health.check([
-      () =>
-        this.redis.isHealthy('redis', {
-          client: this.redisClient,
-        }),
+      () => this.redis.isHealthy('redis', { client: this.redisClient }),
     ]);
   }
 }
 ```
 
-## 🔧 Configuration
-
-### Multiple Redis Instances
+### Multiple Instances
 
 ```typescript
 @Controller('health')
 export class HealthController {
   constructor(
-    private health: HealthCheckService,
-    private redis: RedisHealthIndicator,
-    @InjectRedis() private mainRedis: Redis,
-    @InjectRedis('cache') private cacheRedis: Redis,
+    private readonly health: HealthCheckService,
+    private readonly redis: RedisHealthIndicator,
+    @InjectRedis() private readonly mainRedis: Redis,
+    @InjectRedis('cache') private readonly cacheRedis: Redis,
   ) {}
 
   @Get()
   @HealthCheck()
   check() {
     return this.health.check([
-      () =>
-        this.redis.isHealthy('redis-main', {
-          client: this.mainRedis,
-        }),
-      () =>
-        this.redis.isHealthy('redis-cache', {
-          client: this.cacheRedis,
-        }),
+      () => this.redis.isHealthy('redis-main', { client: this.mainRedis }),
+      () => this.redis.isHealthy('redis-cache', { client: this.cacheRedis }),
     ]);
   }
 }
 ```
 
-## 🤝 Contributing
+## Links
 
-Contributions are welcome! Please see the [main repository](https://github.com/CSenshi/nestjs-redis) for contributing guidelines.
+- Root repo: [CSenshi/nestjs-redis](https://github.com/CSenshi/nestjs-redis)
+- Issues: [GitHub Issues](https://github.com/CSenshi/nestjs-redis/issues)
+- Discussions: [GitHub Discussions](https://github.com/CSenshi/nestjs-redis/discussions)
 
----
+## Contributing
 
-## 📄 License
+Please see the [root contributing guidelines](https://github.com/CSenshi/nestjs-redis#contributing).
+
+## License
 
 MIT © [CSenshi](https://github.com/CSenshi)
