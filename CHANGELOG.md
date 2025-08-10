@@ -1,3 +1,13 @@
+## 0.10.0 (2025-08-10)
+
+### 📝 Notes
+
+- Version jump: some intermediate versions were published and later unpublished due to inconsistencies. npm prevents republishing the same versions for a period of time, so we are moving to 0.10.0 to unblock releases. This is an administrative bump; starting from 0.10.0 is a safe choice for consumers.
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 0.3.0 (2025-08-10)
 
 ### 🚀 Features
