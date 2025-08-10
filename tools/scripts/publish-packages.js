@@ -16,6 +16,7 @@ function publishPackages() {
 
   const packageDirs = readdirSync(DIST_PACKAGES_DIR, { withFileTypes: true })
     .filter((dirent) => dirent.isDirectory())
+    .filter((dirent) => dirent.name !== 'kit') // We are publishing kit separately
     .map((dirent) => dirent.name);
 
   if (packageDirs.length === 0) {
