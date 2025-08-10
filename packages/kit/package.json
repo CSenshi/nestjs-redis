@@ -1,0 +1,50 @@
+{
+  "name": "@nestjs-redis/kit",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "!**/*.tsbuildinfo"
+  ],
+  "nx": {
+    "name": "kit",
+    "targets": {
+      "build": {
+        "executor": "@nx/js:tsc",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "outputPath": "dist/packages/kit",
+          "tsConfig": "packages/kit/tsconfig.lib.json",
+          "packageJson": "packages/kit/package.json",
+          "main": "packages/kit/src/index.ts",
+          "assets": [
+            "packages/kit/*.md"
+          ]
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "@nestjs-redis/client": "workspace:*",
+    "@nestjs-redis/health-indicator": "workspace:*",
+    "@nestjs-redis/throttler-storage": "workspace:*",
+    "@nestjs-redis/lock": "workspace:*"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0"
+  }
+}
