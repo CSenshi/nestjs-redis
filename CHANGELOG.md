@@ -1,3 +1,9 @@
+## 0.2.1 (2025-08-10)
+
+### 🩹 Fixes
+
+- update documentation
+
 ## 0.2.0 (2025-08-06)
 
 ### 🚀 Features
