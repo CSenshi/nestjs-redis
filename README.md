@@ -26,6 +26,7 @@ NestJS Redis Toolkit is a cohesive set of utilities for Redis in NestJS applicat
 
 ## Packages
 
+- [@nestjs-redis/kit](packages/kit/README.md) — All-in-one convenience package that bundles all toolkit modules
 - [@nestjs-redis/client](packages/client/README.md) — Redis client module with multi-connection support
 - [@nestjs-redis/lock](packages/lock/README.md) — Distributed locking via Redlock
 - [@nestjs-redis/throttler-storage](packages/throttler-storage/README.md) — Redis storage for NestJS Throttler
@@ -33,10 +34,10 @@ NestJS Redis Toolkit is a cohesive set of utilities for Redis in NestJS applicat
 
 ## Quick Start
 
-Install the client and the Redis driver:
+Install the kit and the Redis driver:
 
 ```bash
-npm install @nestjs-redis/client redis
+npm install @nestjs-redis/kit redis
 ```
 
 Minimal setup:
@@ -44,7 +45,7 @@ Minimal setup:
 ```typescript
 // app.module.ts
 import { Module } from '@nestjs/common';
-import { RedisModule } from '@nestjs-redis/client';
+import { RedisModule } from '@nestjs-redis/kit';
 
 @Module({
   imports: [
@@ -59,7 +60,7 @@ export class AppModule {}
 ```typescript
 // app.service.ts
 import { Injectable } from '@nestjs/common';
-import { InjectRedis, type Redis } from '@nestjs-redis/client';
+import { InjectRedis, type Redis } from '@nestjs-redis/kit';
 
 @Injectable()
 export class AppService {
@@ -75,10 +76,23 @@ export class AppService {
 }
 ```
 
+### Prefer kit, or install individual packages
+
+For most users, `@nestjs-redis/kit` is the simplest way to get started. If you only need a single capability, you can install a specific package directly.
+
+```bash
+npm install @nestjs-redis/client redis
+```
+
+```typescript
+import { RedisModule } from '@nestjs-redis/client';
+```
+
 ## Compatibility
 
 | Package                                                                                            | Node.js | NestJS | Redis |
 | -------------------------------------------------------------------------------------------------- | ------- | ------ | ----- |
+| [`@nestjs-redis/kit`](https://www.npmjs.com/package/@nestjs-redis/kit)                             | 18+     | 9+     | 5+    |
 | [`@nestjs-redis/client`](https://www.npmjs.com/package/@nestjs-redis/client)                       | 18+     | 9+     | 5+    |
 | [`@nestjs-redis/throttler-storage`](https://www.npmjs.com/package/@nestjs-redis/throttler-storage) | 18+     | 9+     | 5+    |
 | [`@nestjs-redis/health-indicator`](https://www.npmjs.com/package/@nestjs-redis/health-indicator)   | 18+     | 9+     | 5+    |
