@@ -22,6 +22,7 @@ Redis-backed storage for NestJS Throttler enabling distributed rate limiting acr
 - Drop-in replacement for in-memory storage
 - Works with existing `@nestjs-redis/client` connections
 - Client, Cluster, and Sentinel support
+- Does not manage Redis connection lifecycle — pass an existing, managed client
 
 ## Installation
 
@@ -35,7 +36,7 @@ pnpm add @nestjs-redis/throttler-storage redis
 
 ## Quick Start
 
-With existing Redis connection:
+### With existing Redis connection (Recommended)
 
 ```typescript
 import { Module } from '@nestjs/common';
@@ -52,6 +53,50 @@ import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
         throttlers: [{ limit: 5, ttl: seconds(60) }],
         storage: RedisThrottlerStorage.from(redis),
       }),
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+### Without existing Redis connection (Recommended)
+
+If you do not otherwise use Redis in your application and want it only for throttler storage, you can declare the connection within the `ThrottlerModule` scope by importing `RedisModule` inside `forRootAsync`.
+
+```typescript
+@Module({
+  imports: [
+    ThrottlerModule.forRootAsync({
+      imports: [
+        RedisModule.forRoot({ options: { url: 'redis://localhost:6379' } }),
+      ],
+      inject: [RedisToken()],
+      useFactory: (redis) => ({
+        throttlers: [{ limit: 5, ttl: seconds(60) }],
+        storage: RedisThrottlerStorage.from(redis),
+      }),
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+### Without existing Redis connection and without RedisModule
+
+If you do not want to use `RedisModule`, create a client yourself and manage its lifecycle (connect/disconnect). `RedisThrottlerStorage` does not manage the lifecycle of the provided client.
+
+```typescript
+@Module({
+  imports: [
+    ThrottlerModule.forRootAsync({
+      useFactory: async () => {
+        const redis = createClient({ url: 'redis://localhost:6379' });
+        await redis.connect();
+        return {
+          throttlers: [{ limit: 5, ttl: seconds(60) }],
+          storage: RedisThrottlerStorage.from(redis),
+        };
+      },
     }),
   ],
 })

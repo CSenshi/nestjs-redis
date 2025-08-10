@@ -1,11 +1,7 @@
-import {
-  Injectable,
-  OnApplicationBootstrap,
-  OnApplicationShutdown,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import type { ThrottlerStorage } from '@nestjs/throttler';
 import type { ThrottlerStorageRecord } from '@nestjs/throttler/dist/throttler-storage-record.interface';
-import { createClient, createCluster, createSentinel } from 'redis';
+import type { createClient, createCluster, createSentinel } from 'redis';
 
 // Import types from the client package for better compatibility
 type RedisClient = ReturnType<typeof createClient>;
@@ -13,102 +9,29 @@ type RedisCluster = ReturnType<typeof createCluster>;
 type RedisSentinel = ReturnType<typeof createSentinel>;
 type Redis = RedisClient | RedisCluster | RedisSentinel;
 
-type RedisClientOptions = Parameters<typeof createClient>[0];
-type RedisClusterOptions = Parameters<typeof createCluster>[0];
-type RedisSentinelOptions = Parameters<typeof createSentinel>[0];
-
 @Injectable()
-export class RedisThrottlerStorage
-  implements ThrottlerStorage, OnApplicationBootstrap, OnApplicationShutdown
-{
+export class RedisThrottlerStorage implements ThrottlerStorage {
   private readonly prefix = '_throttler';
-  private readonly manageClientLifecycle: boolean;
-  private readonly client: Redis;
 
-  // Private constructor - forces use of factory methods
-  private constructor(client: Redis, manageClientLifecycle: boolean) {
-    this.client = client;
-    this.manageClientLifecycle = manageClientLifecycle;
-  }
+  private constructor(private readonly client: Redis) {}
 
   /**
-   * Creates a Redis throttler storage from an existing Redis client, cluster, or sentinel.
+   * Creates a Redis throttler storage from an existing Redis client.
    * This is the unified method that accepts any Redis connection type, providing a single
    * entry point for all Redis configurations.
    *
-   * The client lifecycle will NOT be managed by this storage instance by default.
+   * The client lifecycle is NOT managed by this storage instance.
    *
    * @param client The existing Redis client, cluster, or sentinel
-   * @param manageClientLifecycle Optional boolean to control whether the storage manages client connection/disconnection. Defaults to false.
    *
    * @example
    * ```typescript
    * // With Redis client
    * const storage = RedisThrottlerStorage.from(createClient({ url: 'redis://localhost:6379' }));
-   *
-   * // With Redis cluster
-   * const storage = RedisThrottlerStorage.from(createCluster({ rootNodes: [{ url: 'redis://localhost:7000' }] }));
-   *
-   * // With Redis sentinel
-   * const storage = RedisThrottlerStorage.from(createSentinel({ sentinels: [{ host: 'localhost', port: 26379 }], name: 'mymaster' }));
-   *
-   * // With lifecycle management enabled
-   * const storage = RedisThrottlerStorage.from(redisClient, true);
    * ```
    */
-  static from(
-    client: Redis,
-    manageClientLifecycle = false,
-  ): RedisThrottlerStorage {
-    return new RedisThrottlerStorage(client, manageClientLifecycle);
-  }
-
-  /**
-   * Creates a Redis throttler storage from Redis client options
-   * A new client will be created and its lifecycle managed by this storage instance by default
-   * @param options Redis client configuration options
-   * @param manageClientLifecycle Optional boolean to control whether the storage manages client connection/disconnection. Defaults to true.
-   */
-  static fromClientOptions(
-    options: RedisClientOptions,
-    manageClientLifecycle = true,
-  ): RedisThrottlerStorage {
-    return new RedisThrottlerStorage(
-      createClient(options),
-      manageClientLifecycle,
-    );
-  }
-
-  /**
-   * Creates a Redis throttler storage from Redis cluster options
-   * A new cluster will be created and its lifecycle managed by this storage instance by default
-   * @param options Redis cluster configuration options
-   * @param manageClientLifecycle Optional boolean to control whether the storage manages cluster connection/disconnection. Defaults to true.
-   */
-  static fromClusterOptions(
-    options: RedisClusterOptions,
-    manageClientLifecycle = true,
-  ): RedisThrottlerStorage {
-    return new RedisThrottlerStorage(
-      createCluster(options),
-      manageClientLifecycle,
-    );
-  }
-
-  /**
-   * Creates a Redis throttler storage from Redis sentinel options
-   * A new sentinel will be created and its lifecycle managed by this storage instance by default
-   * @param options Redis sentinel configuration options
-   * @param manageClientLifecycle Optional boolean to control whether the storage manages sentinel connection/disconnection. Defaults to true.
-   */
-  static fromSentinelOptions(
-    options: RedisSentinelOptions,
-    manageClientLifecycle = true,
-  ): RedisThrottlerStorage {
-    return new RedisThrottlerStorage(
-      createSentinel(options),
-      manageClientLifecycle,
-    );
+  static from(client: Redis): RedisThrottlerStorage {
+    return new RedisThrottlerStorage(client);
   }
 
   /**
@@ -182,17 +105,5 @@ export class RedisThrottlerStorage
       isBlocked: isBlocked === 1,
       timeToBlockExpire: Math.ceil(timeToBlockExpireMs - Date.now() / 1000),
     };
-  }
-
-  async onApplicationBootstrap() {
-    if (this.manageClientLifecycle) {
-      await this.client.connect();
-    }
-  }
-
-  async onApplicationShutdown() {
-    if (this.manageClientLifecycle) {
-      await this.client.quit();
-    }
   }
 }
