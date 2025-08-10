@@ -1,3 +1,17 @@
+## 0.3.0 (2025-08-10)
+
+### 🚀 Features
+
+- **kit:** add new all-in-one package to bundle all modules ([a2ac074](https://github.com/CSenshi/nestjs-redis/commit/a2ac074))
+
+### 🩹 Fixes
+
+- **lock:** fix invalid invalid files in package.json ([49087f4](https://github.com/CSenshi/nestjs-redis/commit/49087f4))
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 0.2.1 (2025-08-10)
 
 ### 🩹 Fixes
