@@ -1,20 +1,10 @@
 #!/usr/bin/env node
 
-const {
-  execSync
-} = require('child_process');
-const {
-  readdirSync,
-  existsSync,
-  readFileSync,
-  writeFileSync
-} = require('fs');
-const {
-  join
-} = require('path');
+const { execSync } = require('child_process');
+const { readdirSync, existsSync, readFileSync, writeFileSync } = require('fs');
+const { join } = require('path');
 
 const DIST_PACKAGES_DIR = 'dist/packages';
-
 
 function getLatestVersion(packageName = 'kit') {
   const packageJsonPath = join(DIST_PACKAGES_DIR, packageName, 'package.json');
@@ -48,8 +38,8 @@ function publishKit() {
   }
 
   const packageDirs = readdirSync(DIST_PACKAGES_DIR, {
-      withFileTypes: true
-    })
+    withFileTypes: true,
+  })
     .filter((dirent) => dirent.isDirectory())
     .map((dirent) => dirent.name);
 
