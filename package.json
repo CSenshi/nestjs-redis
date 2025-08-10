@@ -55,6 +55,12 @@
         "options": {
           "command": "node tools/scripts/publish-packages.js"
         }
+      },
+      "publish-kit": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "node tools/scripts/publish-kit.js"
+        }
       }
     }
   },

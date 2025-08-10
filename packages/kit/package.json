@@ -1,19 +1,30 @@
 {
-  "name": "@nestjs-redis/lock",
+  "name": "@nestjs-redis/kit",
   "version": "0.2.1",
   "license": "MIT",
   "author": "Saba Pochkhua <saba.pochkhua@gmail.com> (https://github.com/CSenshi)",
-  "description": "Redis-based distributed lock module for NestJS, built on @redis-kit/lock",
+  "description": "All-in-one convenience package that re-exports every module in the NestJS Redis Toolkit",
   "keywords": [
     "nestjs",
     "redis",
+    "kit",
+    "node-redis",
+    "re-exports",
+    "typescript",
     "lock",
     "distributed",
-    "typescript",
-    "node-redis",
-    "redis-lock"
+    "multi-connection",
+    "client",
+    "database",
+    "cache",
+    "health-check",
+    "terminus",
+    "monitoring",
+    "throttling",
+    "throttler",
+    "rate-limiting"
   ],
-  "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/lock",
+  "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/kit",
   "main": "./src/index.js",
   "module": "./src/index.js",
   "types": "./src/index.d.ts",
@@ -31,7 +42,7 @@
     "!**/*.tsbuildinfo"
   ],
   "nx": {
-    "name": "lock",
+    "name": "kit",
     "targets": {
       "build": {
         "executor": "@nx/js:tsc",
@@ -39,12 +50,12 @@
           "{options.outputPath}"
         ],
         "options": {
-          "outputPath": "dist/packages/lock",
-          "tsConfig": "packages/lock/tsconfig.lib.json",
-          "packageJson": "packages/lock/package.json",
-          "main": "packages/lock/src/index.ts",
+          "outputPath": "dist/packages/kit",
+          "tsConfig": "packages/kit/tsconfig.lib.json",
+          "packageJson": "packages/kit/package.json",
+          "main": "packages/kit/src/index.ts",
           "assets": [
-            "packages/lock/*.md",
+            "packages/kit/*.md",
             "LICENSE"
           ]
         }
@@ -53,13 +64,10 @@
   },
   "dependencies": {
     "tslib": "^2.8.0",
-    "@redis-kit/lock": "^0.1.0-3"
-  },
-  "devDependencies": {
-    "@nestjs/testing": "^11.0.0"
-  },
-  "peerDependencies": {
-    "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0"
+    "@nestjs-redis/client": "workspace:*",
+    "@nestjs-redis/health-indicator": "workspace:*",
+    "@nestjs-redis/throttler-storage": "workspace:*",
+    "@nestjs-redis/lock": "workspace:*"
   },
   "engines": {
     "node": ">=18.0.0",
@@ -68,6 +76,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/CSenshi/nestjs-redis",
-    "directory": "packages/lock"
+    "directory": "packages/kit"
   }
 }
