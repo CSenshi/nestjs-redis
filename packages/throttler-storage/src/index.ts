@@ -1,1 +1,1 @@
-export * from './lib/throttler-storage.service';
+export { RedisThrottlerStorage } from './lib/throttler-storage.service';

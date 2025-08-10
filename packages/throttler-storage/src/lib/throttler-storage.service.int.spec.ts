@@ -71,7 +71,7 @@ describe('RedisThrottlerStorage - Exact Implementation Comparison', () => {
     await redisClient.connect();
 
     // Initialize both implementations
-    redisStorage = RedisThrottlerStorage.from(redisClient);
+    redisStorage = new RedisThrottlerStorage(redisClient);
     memoryStorage = new ThrottlerStorageService();
     comparator = new ThrottlerStorageComparator(redisStorage, memoryStorage);
   });
@@ -291,7 +291,7 @@ describe('RedisThrottlerStorage - Factory Methods Integration', () => {
       // Verify client is connected
       expect(client.isReady).toBe(true);
 
-      const storage = RedisThrottlerStorage.from(client);
+      const storage = new RedisThrottlerStorage(client);
 
       const result1 = await storage.increment(
         testKey,

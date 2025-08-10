@@ -13,26 +13,19 @@ type Redis = RedisClient | RedisCluster | RedisSentinel;
 export class RedisThrottlerStorage implements ThrottlerStorage {
   private readonly prefix = '_throttler';
 
-  private constructor(private readonly client: Redis) {}
-
   /**
    * Creates a Redis throttler storage from an existing Redis client.
-   * This is the unified method that accepts any Redis connection type, providing a single
-   * entry point for all Redis configurations.
    *
    * The client lifecycle is NOT managed by this storage instance.
    *
-   * @param client The existing Redis client, cluster, or sentinel
+   * @param client The existing Redis client
    *
    * @example
    * ```typescript
-   * // With Redis client
-   * const storage = RedisThrottlerStorage.from(createClient({ url: 'redis://localhost:6379' }));
+   * const storage = new RedisThrottlerStorage(createClient({ url: 'redis://localhost:6379' }));
    * ```
    */
-  static from(client: Redis): RedisThrottlerStorage {
-    return new RedisThrottlerStorage(client);
-  }
+  constructor(private readonly client: Redis) {}
 
   /**
    * This logic is modeled after the official NestJS in-memory storage implementation:

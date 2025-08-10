@@ -51,7 +51,7 @@ import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
       inject: [RedisToken()],
       useFactory: (redis) => ({
         throttlers: [{ limit: 5, ttl: seconds(60) }],
-        storage: RedisThrottlerStorage.from(redis),
+        storage: new RedisThrottlerStorage(redis),
       }),
     }),
   ],
@@ -73,7 +73,7 @@ If you do not otherwise use Redis in your application and want it only for throt
       inject: [RedisToken()],
       useFactory: (redis) => ({
         throttlers: [{ limit: 5, ttl: seconds(60) }],
-        storage: RedisThrottlerStorage.from(redis),
+        storage: new RedisThrottlerStorage(redis),
       }),
     }),
   ],
@@ -94,7 +94,7 @@ If you do not want to use `RedisModule`, create a client yourself and manage its
         await redis.connect();
         return {
           throttlers: [{ limit: 5, ttl: seconds(60) }],
-          storage: RedisThrottlerStorage.from(redis),
+          storage: new RedisThrottlerStorage(redis),
         };
       },
     }),
