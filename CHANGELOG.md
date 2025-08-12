@@ -1,3 +1,13 @@
+## 0.10.1 (2025-08-12)
+
+### 🩹 Fixes
+
+- **client:** ensure Redis is ready in all lifecycle hooks ([6e7688f](https://github.com/CSenshi/nestjs-redis/commit/6e7688f))
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 0.10.0 (2025-08-10)
 
 ### 📝 Notes
