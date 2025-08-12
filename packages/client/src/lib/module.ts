@@ -2,7 +2,6 @@ import {
   DynamicModule,
   FactoryProvider,
   Module,
-  OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
@@ -18,7 +17,7 @@ import { Redis, RedisModuleForRootOptions, RedisModuleOptions } from './types';
 @Module({})
 export class RedisModule
   extends ConfigurableModuleClass
-  implements OnApplicationBootstrap, OnApplicationShutdown
+  implements OnApplicationShutdown
 {
   protected connectionToken?: string;
 
@@ -66,34 +65,30 @@ export class RedisModule
   ): FactoryProvider {
     return {
       provide: RedisToken(connectionName),
-      useFactory: (config: RedisModuleOptions): Redis => {
-        switch (config?.type) {
-          case 'client':
-          case undefined:
-            return createClient(config?.options);
-          case 'cluster':
-            return createCluster(config.options);
-          case 'sentinel':
-            return createSentinel(config.options);
-          default:
-            throw new Error(
-              // @ts-expect-error check for config type
-              `Unsupported Redis type: ${config?.type}. Supported types are 'client', 'cluster' and 'sentinel'`,
-            );
+      useFactory: async (config: RedisModuleOptions): Promise<Redis> => {
+        function getClient(): Redis {
+          switch (config?.type) {
+            case 'client':
+            case undefined:
+              return createClient(config?.options);
+            case 'cluster':
+              return createCluster(config.options);
+            case 'sentinel':
+              return createSentinel(config.options);
+            default:
+              throw new Error(
+                // @ts-expect-error check for config type
+                `Unsupported Redis type: ${config?.type}. Supported types are 'client', 'cluster' and 'sentinel'`,
+              );
+          }
         }
+
+        const client = getClient();
+        await client.connect();
+        return client;
       },
       inject: [MODULE_OPTIONS_TOKEN],
     };
-  }
-
-  async onApplicationBootstrap() {
-    if (!this.connectionToken) {
-      throw new Error(
-        'Connection token is not defined. Ensure to call forRoot or forRootAsync.',
-      );
-    }
-
-    await this.moduleRef.get<Redis>(this.connectionToken).connect();
   }
 
   async onApplicationShutdown() {

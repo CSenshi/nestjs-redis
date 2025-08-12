@@ -1,5 +1,14 @@
+import {
+  BeforeApplicationShutdown,
+  Injectable,
+  OnApplicationBootstrap,
+  OnApplicationShutdown,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
+import { InjectRedis } from './decorators';
 import { RedisModule } from './module';
 import { RedisToken } from './tokens';
 import { Redis, RedisModuleOptions } from './types';
@@ -450,5 +459,124 @@ describe('Multi-connection Integration', () => {
 
     expect(ping1).toBe('PONG');
     expect(ping2).toBe('PONG');
+  });
+});
+
+describe('RedisModule Service Lifecycle Integration', () => {
+  // Test service that implements all lifecycle hooks
+  @Injectable()
+  class TestLifecycleService
+    implements
+      OnModuleInit,
+      OnApplicationBootstrap,
+      OnModuleDestroy,
+      OnApplicationShutdown,
+      BeforeApplicationShutdown
+  {
+    constructor(
+      @InjectRedis() readonly redis: Redis,
+      private readonly prefix = 'root',
+    ) {}
+
+    async beforeApplicationShutdown(signal?: string) {
+      await this.redis.set(
+        `${this.prefix}:lifecycle:beforeShutdown`,
+        `application-before-shutdown-${signal || `unknown`}`,
+      );
+    }
+
+    async onModuleInit(): Promise<void> {
+      await this.redis.set(
+        `${this.prefix}:lifecycle:init`,
+        `module-initialized`,
+      );
+    }
+
+    async onApplicationBootstrap(): Promise<void> {
+      await this.redis.set(
+        `${this.prefix}:lifecycle:bootstrap`,
+        `application-bootstrapped`,
+      );
+    }
+
+    async onModuleDestroy(): Promise<void> {
+      await this.redis.set(
+        `${this.prefix}:lifecycle:destroy`,
+        `module-destroyed`,
+      );
+    }
+
+    async onApplicationShutdown(signal?: string): Promise<void> {
+      await this.redis.set(
+        `${this.prefix}:lifecycle:shutdown`,
+        `application-shutdown-${signal || 'unknown'}`,
+      );
+    }
+  }
+
+  let module: TestingModule;
+  let asyncModule: TestingModule;
+
+  beforeEach(async () => {
+    // Create the testing module with the lifecycle service
+    module = await Test.createTestingModule({
+      imports: [
+        RedisModule.forRoot({ options: { url: process.env.REDIS_URL } }),
+      ],
+      providers: [
+        {
+          provide: TestLifecycleService,
+          inject: [RedisToken()],
+          useFactory: (redis: Redis) => new TestLifecycleService(redis, 'sync'),
+        },
+      ],
+    }).compile();
+
+    asyncModule = await Test.createTestingModule({
+      imports: [
+        RedisModule.forRootAsync({
+          useFactory: () => ({ options: { url: process.env.REDIS_URL } }),
+          inject: [],
+        }),
+      ],
+      providers: [
+        {
+          provide: TestLifecycleService,
+          inject: [RedisToken()],
+          useFactory: (redis: Redis) =>
+            new TestLifecycleService(redis, 'async'),
+        },
+      ],
+    }).compile();
+  });
+
+  describe('Service Lifecycle with Redis', () => {
+    it('should have Redis available in onModuleInit', async () => {
+      await module.init();
+      await asyncModule.init();
+
+      await module.close();
+      await asyncModule.close();
+    });
+
+    it('should disconnect Redis after onApplicationShutdown', async () => {
+      const service = module.get(TestLifecycleService);
+      const asyncService = asyncModule.get(TestLifecycleService);
+
+      await module.init();
+      await asyncModule.init();
+
+      // Verify that the redis client is connected
+      expect(service.redis.isReady).toBe(true);
+      expect(asyncService.redis.isReady).toBe(true);
+
+      // Trigger application shutdown
+      await module.close();
+      await asyncModule.close();
+
+      // Verify that the redis client is disconnected
+      expect(service.redis.isReady).toBe(false);
+      expect(asyncService.redis.isReady).toBe(false);
+    });
   });
 });
