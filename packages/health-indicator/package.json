@@ -32,13 +32,6 @@
   "nx": {
     "name": "health-indicator",
     "targets": {
-      "test:int": {
-        "executor": "@nx/jest:jest",
-        "options": {
-          "jestConfig": "packages/health-indicator/jest.int.config.ts",
-          "passWithNoTests": true
-        }
-      },
       "build": {
         "executor": "@nx/js:tsc",
         "outputs": [

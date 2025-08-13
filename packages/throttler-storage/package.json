@@ -42,13 +42,6 @@
       "feature:rate-limiting"
     ],
     "targets": {
-      "test:int": {
-        "executor": "@nx/jest:jest",
-        "options": {
-          "jestConfig": "packages/throttler-storage/jest.int.config.ts",
-          "passWithNoTests": true
-        }
-      },
       "build": {
         "executor": "@nx/js:tsc",
         "outputs": [
