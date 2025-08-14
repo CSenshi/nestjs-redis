@@ -7,5 +7,6 @@ module.exports = {
     '!src/**/*.spec.ts',
     '!src/**/*.int.spec.ts',
   ],
-  coverageReporters: ['text', 'lcov', 'html', 'clover'],
+  coverageReporters: ['lcov'],
+  collectCoverage: true,
 };

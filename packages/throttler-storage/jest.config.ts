@@ -16,6 +16,5 @@ export default {
     '^.+\\.[tj]s$': ['@swc/jest', swcJestConfig],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: 'test-output/jest/coverage',
-  testMatch: ['**/*.spec.ts'], // include all tests (unit and integration)
+  coverageDirectory: '../../test-output/throttler-storage',
 };
