@@ -1,0 +1,46 @@
+name: 📚 Documentation
+description: Report a documentation issue or improvement
+title: '📚 '
+labels: ['documentation']
+
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: Issue type
+      options:
+        - 'Missing documentation'
+        - 'Incorrect information'
+        - 'Unclear explanation'
+        - 'Missing examples'
+        - 'Typo/grammar'
+        - 'Broken links'
+        - 'Other'
+    validations:
+      required: true
+
+  - type: dropdown
+    id: location
+    attributes:
+      label: Location
+      options:
+        - 'Main README'
+        - 'Package README'
+        - 'CONTRIBUTING.md'
+        - 'Code comments'
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What's the issue?
+      placeholder: Describe what's wrong or missing
+    validations:
+      required: true
+
+  - type: textarea
+    id: improvement
+    attributes:
+      label: Suggested improvement
+      placeholder: How should it be improved?

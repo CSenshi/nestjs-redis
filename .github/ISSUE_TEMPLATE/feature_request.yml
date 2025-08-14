@@ -1,0 +1,35 @@
+name: 🚀 Feature Request
+description: Suggest a new feature or enhancement
+title: '🚀 '
+labels: ['enhancement']
+
+body:
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      options:
+        - '@nestjs-redis/kit'
+        - '@nestjs-redis/client'
+        - '@nestjs-redis/lock'
+        - '@nestjs-redis/throttler-storage'
+        - '@nestjs-redis/health-indicator'
+        - 'New package'
+        - 'Documentation'
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: What feature would you like?
+      placeholder: Brief description of the feature
+    validations:
+      required: true
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Code example
+      placeholder: Show how you'd like to use this feature
+      render: typescript
