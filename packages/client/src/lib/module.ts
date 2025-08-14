@@ -68,8 +68,8 @@ export class RedisModule
       useFactory: async (config: RedisModuleOptions): Promise<Redis> => {
         function getClient(): Redis {
           switch (config?.type) {
-            case 'client':
             case undefined:
+            case 'client':
               return createClient(config?.options);
             case 'cluster':
               return createCluster(config.options);
