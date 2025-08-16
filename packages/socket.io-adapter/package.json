@@ -1,0 +1,43 @@
+{
+  "name": "@nestjs-redis/socket.io-adapter",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "!**/*.tsbuildinfo"
+  ],
+  "nx": {
+    "name": "socket.io-adapter",
+    "targets": {
+      "build": {
+        "executor": "@nx/js:tsc",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "outputPath": "dist/packages/socket.io-adapter",
+          "tsConfig": "packages/socket.io-adapter/tsconfig.lib.json",
+          "packageJson": "packages/socket.io-adapter/package.json",
+          "main": "packages/socket.io-adapter/src/index.ts",
+          "assets": [
+            "packages/socket.io-adapter/*.md"
+          ]
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  }
+}

@@ -196,6 +196,12 @@ importers:
         specifier: ^11.0.0
         version: 11.1.5(@nestjs/common@11.1.5(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/core@11.1.5)(@nestjs/platform-express@11.1.5)
 
+  packages/socket.io-adapter:
+    dependencies:
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
   packages/throttler-storage:
     dependencies:
       '@nestjs/common':
