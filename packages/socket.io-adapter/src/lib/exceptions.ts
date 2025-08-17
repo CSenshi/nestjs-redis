@@ -29,3 +29,10 @@ Make sure you have:
     this.message += `\n`;
   }
 }
+
+export class RedisAdapterAlreadySetUpException extends Error {
+  constructor() {
+    super('Redis adapter is already set up for this application instance.');
+    this.name = 'RedisAdapterAlreadySetUpException';
+  }
+}
