@@ -1,8 +1,15 @@
-import { HealthIndicatorService } from '@nestjs/terminus';
+import { Controller, Get, Module } from '@nestjs/common';
+import {
+  HealthCheck,
+  HealthCheckResult,
+  HealthCheckService,
+  TerminusModule,
+} from '@nestjs/terminus';
 import { Test, TestingModule } from '@nestjs/testing';
+import { InjectRedis, Redis, RedisModule } from '@nestjs-redis/client';
 import { createClient } from 'redis';
+import request from 'supertest';
 import { RedisHealthIndicator } from './health.indicator';
-import { Redis } from './interfaces';
 
 // These tests require a running Redis instance
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
@@ -13,22 +20,8 @@ describe('RedisHealthIndicator Integration Tests', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        RedisHealthIndicator,
-        {
-          provide: HealthIndicatorService,
-          useValue: {
-            check: jest.fn().mockReturnValue({
-              up: jest.fn().mockImplementation((data) => ({
-                redis: { status: 'up', ...data },
-              })),
-              down: jest.fn().mockImplementation((data) => ({
-                redis: { status: 'down', ...data },
-              })),
-            }),
-          },
-        },
-      ],
+      imports: [TerminusModule],
+      providers: [RedisHealthIndicator],
     }).compile();
 
     healthIndicator = module.get<RedisHealthIndicator>(RedisHealthIndicator);
@@ -84,5 +77,67 @@ describe('RedisHealthIndicator Integration Tests', () => {
         // Ignore cleanup errors
       }
     }, 15000);
+  });
+
+  describe('Full RedisModule Integration', () => {
+    it('should integrate with the full RedisModule', async () => {
+      @Controller('health')
+      class HealthController {
+        constructor(
+          private health: HealthCheckService,
+          private redis: RedisHealthIndicator,
+          @InjectRedis() private readonly redisClient: Redis,
+        ) {}
+
+        @Get()
+        @HealthCheck()
+        check(): Promise<HealthCheckResult> {
+          return this.health.check([
+            () => this.redis.isHealthy('redis', { client: this.redisClient }),
+          ]);
+        }
+      }
+
+      @Module({
+        imports: [
+          RedisModule.forRoot({
+            type: 'client',
+            options: { url: process.env.REDIS_URL },
+          }),
+          TerminusModule,
+        ],
+        controllers: [HealthController],
+        providers: [RedisHealthIndicator],
+      })
+      class HealthModule {}
+
+      @Module({
+        imports: [HealthModule],
+        controllers: [],
+        providers: [],
+      })
+      class AppModule {}
+
+      const module: TestingModule = await Test.createTestingModule({
+        imports: [AppModule],
+      }).compile();
+
+      const app = module.createNestApplication();
+      await app.init();
+
+      request(app.getHttpServer())
+        .get('/health')
+        .expect(200)
+        .expect({
+          data: {
+            status: 'ok',
+            info: { redis: { status: 'up' } },
+            error: {},
+            details: { redis: { status: 'up' } },
+          },
+        });
+
+      await app.close();
+    });
   });
 });
