@@ -1,3 +1,27 @@
+## 0.11.1 (2025-08-17)
+
+### 🚀 Features
+
+- add issue templates for bug reports, documentation, and feature requests; update pull request template; enhance security policy with vulnerability reporting details ([2de3386](https://github.com/CSenshi/nestjs-redis/commit/2de3386))
+- add socket.io-adapter to issue templates and CI workflows ([8489115](https://github.com/CSenshi/nestjs-redis/commit/8489115))
+- **ci): add Codecov action for coverage report uploads refactor(jest:** unify coverage directory structure across packages ([d2f50fb](https://github.com/CSenshi/nestjs-redis/commit/d2f50fb))
+- **health-indicator:** add Redis client dependency and integration tests ([f2db41c](https://github.com/CSenshi/nestjs-redis/commit/f2db41c))
+- **kit:** add socket.io-adapter as a dependency and export in index ([27f3831](https://github.com/CSenshi/nestjs-redis/commit/27f3831))
+- **socket.io-adapter:** init ([f84b14d](https://github.com/CSenshi/nestjs-redis/commit/f84b14d))
+- **socket.io-adapter:** implement Redis integration with custom exceptions and adapter setup ([b85467d](https://github.com/CSenshi/nestjs-redis/commit/b85467d))
+- **socket.io-adapter:** write README ([8e079fb](https://github.com/CSenshi/nestjs-redis/commit/8e079fb))
+- **socket.io-adapter:** update package.json ([cd0cbda](https://github.com/CSenshi/nestjs-redis/commit/cd0cbda))
+- **socket.io-adapter:** refactor exports ([87fdc5b](https://github.com/CSenshi/nestjs-redis/commit/87fdc5b))
+
+### 🩹 Fixes
+
+- remove unused @nestjs-redis/client dependency and related integration tests ([193f475](https://github.com/CSenshi/nestjs-redis/commit/193f475))
+- **health-indicator:** update RedisHealthIndicator to use HealthIndicatorService directly ([1f324b0](https://github.com/CSenshi/nestjs-redis/commit/1f324b0))
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 0.11.0 (2025-08-17)
 
 ### 🚀 Features
