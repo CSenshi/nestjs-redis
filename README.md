@@ -31,6 +31,7 @@ NestJS Redis Toolkit is a cohesive set of utilities for Redis in NestJS applicat
 - [@nestjs-redis/lock](packages/lock/README.md) — Distributed locking via Redlock
 - [@nestjs-redis/throttler-storage](packages/throttler-storage/README.md) — Redis storage for NestJS Throttler
 - [@nestjs-redis/health-indicator](packages/health-indicator/README.md) — Redis health checks for Terminus
+- [@nestjs-redis/socket.io-adapter](packages/socket.io-adapter/README.md) — Redis-powered Socket.IO adapter for scalable WebSocket connections
 
 ## Quick Start
 
@@ -94,9 +95,10 @@ import { RedisModule } from '@nestjs-redis/client';
 | -------------------------------------------------------------------------------------------------- | ------- | ------ | ----- |
 | [`@nestjs-redis/kit`](https://www.npmjs.com/package/@nestjs-redis/kit)                             | 18+     | 9+     | 5+    |
 | [`@nestjs-redis/client`](https://www.npmjs.com/package/@nestjs-redis/client)                       | 18+     | 9+     | 5+    |
+| [`@nestjs-redis/lock`](https://www.npmjs.com/package/@nestjs-redis/lock)                           | 18+     | 9+     | 5+    |
 | [`@nestjs-redis/throttler-storage`](https://www.npmjs.com/package/@nestjs-redis/throttler-storage) | 18+     | 9+     | 5+    |
 | [`@nestjs-redis/health-indicator`](https://www.npmjs.com/package/@nestjs-redis/health-indicator)   | 18+     | 9+     | 5+    |
-| [`@nestjs-redis/lock`](https://www.npmjs.com/package/@nestjs-redis/lock)                           | 18+     | 9+     | 5+    |
+| [`@nestjs-redis/socket.io-adapter`](https://www.npmjs.com/package/@nestjs-redis/socket.io-adapter) | 18+     | 9+     | 5+    |
 
 All packages support NestJS 9.x, 10.x, and 11.x.
 
