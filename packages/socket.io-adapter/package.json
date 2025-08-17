@@ -1,20 +1,34 @@
 {
   "name": "@nestjs-redis/socket.io-adapter",
   "version": "0.0.1",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "license": "MIT",
+  "author": "Saba Pochkhua <saba.pochkhua@gmail.com> (https://github.com/CSenshi)",
+  "description": "Redis-powered Socket.IO adapter for NestJS enabling scalable WebSocket connections",
+  "keywords": [
+    "nestjs",
+    "redis",
+    "socket.io",
+    "websockets",
+    "adapter",
+    "scalable",
+    "typescript",
+    "node-redis"
+  ],
+  "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/socket.io-adapter",
+  "main": "./src/index.js",
+  "module": "./src/index.js",
+  "types": "./src/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "development": "./src/index.ts",
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js",
+      "default": "./src/index.js"
     }
   },
   "files": [
-    "dist",
+    "src",
     "!**/*.tsbuildinfo"
   ],
   "nx": {
@@ -31,20 +45,33 @@
           "packageJson": "packages/socket.io-adapter/package.json",
           "main": "packages/socket.io-adapter/src/index.ts",
           "assets": [
-            "packages/socket.io-adapter/*.md"
+            "packages/socket.io-adapter/*.md",
+            "LICENSE"
           ]
         }
       }
     }
   },
   "dependencies": {
+    "tslib": "^2.8.0",
     "@nestjs/platform-socket.io": "^11.1.6",
-    "@socket.io/redis-adapter": "^8.3.0",
-    "tslib": "^2.3.0"
+    "@socket.io/redis-adapter": "^8.3.0"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^11.0.0"
   },
   "peerDependencies": {
     "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0",
     "@nestjs/core": "^9.0.0 || ^10.0.0 || ^11.0.0",
     "socket.io": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CSenshi/nestjs-redis",
+    "directory": "packages/socket.io-adapter"
   }
 }
