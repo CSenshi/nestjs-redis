@@ -1,7 +1,7 @@
 import type { INestApplication } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { UnknownElementException } from '@nestjs/core/errors/exceptions';
-import { RedisClientNotFoundException } from './exception';
+import { RedisClientNotFoundException } from './exceptions';
 import { RedisIoAdapter } from './redis-io.adapter';
 
 export async function setupRedisAdapter(
@@ -33,7 +33,7 @@ export async function setupRedisAdapter(
  * @returns Injection token for the Redis client
  * @publicApi
  */
-export function RedisToken(connectionName?: string): string {
+function RedisToken(connectionName?: string): string {
   if (connectionName) {
     return `REDIS_CLIENT_${connectionName.toUpperCase()}`;
   }
