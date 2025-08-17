@@ -61,7 +61,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./test-output
-          files: ./client/lcov.info,./health-indicator/lcov.info,./lock/lcov.info,./throttler-storage/lcov.info
+          files: ./client/lcov.info,./health-indicator/lcov.info,./lock/lcov.info,./throttler-storage/lcov.info,./socket.io-adapter/lcov.info
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false

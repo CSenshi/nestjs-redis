@@ -13,6 +13,7 @@ body:
         - '@nestjs-redis/kit'
         - '@nestjs-redis/client'
         - '@nestjs-redis/lock'
+        - '@nestjs-redis/socket.io-adapter'
         - '@nestjs-redis/throttler-storage'
         - '@nestjs-redis/health-indicator'
     validations:

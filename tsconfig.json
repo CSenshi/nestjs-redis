@@ -17,6 +17,9 @@
     },
     {
       "path": "./packages/kit"
+    },
+    {
+      "path": "./packages/socket.io-adapter"
     }
   ]
 }

@@ -23,7 +23,14 @@ jobs:
       fail-fast: false
       matrix:
         node-version: ['18', '20', '22']
-        package: ['client', 'health-indicator', 'throttler-storage', 'lock']
+        package:
+          [
+            'client',
+            'health-indicator',
+            'throttler-storage',
+            'lock',
+            'socket.io-adapter',
+          ]
         nestjs-version: ['9', '10', '11']
         include:
           - nestjs-version: '9'

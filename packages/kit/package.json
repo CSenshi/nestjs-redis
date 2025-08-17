@@ -67,7 +67,8 @@
     "@nestjs-redis/client": "workspace:*",
     "@nestjs-redis/health-indicator": "workspace:*",
     "@nestjs-redis/throttler-storage": "workspace:*",
-    "@nestjs-redis/lock": "workspace:*"
+    "@nestjs-redis/lock": "workspace:*",
+    "@nestjs-redis/socket.io-adapter": "workspace:*"
   },
   "engines": {
     "node": ">=18.0.0",
