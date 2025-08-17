@@ -7,9 +7,17 @@ import { Redis } from './interfaces';
 
 @Injectable()
 export class RedisHealthIndicator {
-  constructor(
-    private readonly healthIndicatorService: HealthIndicatorService,
-  ) {}
+  /**
+   * TODO
+   *
+   * This is workaround, this should be DI but for some reason
+   * HealthIndicatorService is not injected after building the package.
+   *
+   * Reference (how it should be): https://docs.nestjs.com/recipes/terminus#custom-health-indicator
+   *
+   * ToDo: Fix this issue in the future.
+   */
+  private healthIndicatorService = new HealthIndicatorService();
 
   async isHealthy(
     key: string,
