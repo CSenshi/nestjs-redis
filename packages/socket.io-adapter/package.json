@@ -58,7 +58,6 @@
     "tslib": "^2.8.0"
   },
   "devDependencies": {
-    "@nestjs-redis/client": "0.10.1",
     "@nestjs/testing": "^11.0.0",
     "@nestjs/websockets": "^11.1.6",
     "redis": "^5.0.0",
