@@ -1,3 +1,17 @@
+## 0.11.0 (2025-08-17)
+
+### 🚀 Features
+
+- **socket.io-adapter**: add new pacakge ([#7](https://github.com/CSenshi/nestjs-redis/pull/7))
+
+### 🩹 Fixes
+
+- **health-indicator:** update RedisHealthIndicator to use HealthIndicatorService directly ([#8](https://github.com/CSenshi/nestjs-redis/pull/8))
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 0.10.1 (2025-08-12)
 
 ### 🩹 Fixes
