@@ -59,8 +59,10 @@
     "redis": "^5.0.0"
   },
   "devDependencies": {
+    "@nestjs-redis/client": "0.10.1",
     "@nestjs/testing": "^11.0.0",
-    "redis": "^5.0.0"
+    "redis": "^5.0.0",
+    "supertest": "^7.1.4"
   },
   "engines": {
     "node": ">=18.0.0",
