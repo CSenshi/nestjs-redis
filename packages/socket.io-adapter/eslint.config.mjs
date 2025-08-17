@@ -9,6 +9,9 @@ export default [
         'error',
         {
           ignoredFiles: ['{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}'],
+          ignoredDependencies: [
+            'redis', // redis is imported only for typing via import type statement
+          ],
         },
       ],
     },
