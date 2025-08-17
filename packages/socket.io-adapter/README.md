@@ -19,7 +19,7 @@ Redis-powered Socket.IO adapter for NestJS enabling scalable WebSocket connectio
 ## Features
 
 - **Horizontal scaling**: Connect clients to any server instance
-- **Redis pub/sub**: Automatic event distribution across instances  
+- **Redis pub/sub**: Automatic event distribution across instances
 - **Lifecycle management**: Redis connections are managed automatically
 - **Works with existing connections**: Integrates seamlessly with `@nestjs-redis/client`
 - **Type-safe**: Full TypeScript support
@@ -62,15 +62,14 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // Setup Redis adapter for Socket.IO
   await setupRedisAdapter(app);
-  
+
   await app.listen(3000);
 }
 bootstrap();
 ```
-
 
 ### Multiple Redis connections
 
@@ -96,10 +95,10 @@ export class AppModule {}
 // main.ts
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // Use the 'websockets' Redis connection
   await setupRedisAdapter(app, 'websockets');
-  
+
   await app.listen(3000);
 }
 ```
