@@ -86,8 +86,46 @@ export class RedisModule
           }
         }
 
+        function addListeners(client: Redis, connectionName?: string): void {
+          client.on('connect', () => {
+            RedisModule.log(
+              `[Event=connect] Connection initiated to Redis server`,
+              connectionName,
+            );
+          });
+
+          client.on('ready', () => {
+            RedisModule.log(
+              `[Event=ready] Redis client is ready to accept commands`,
+              connectionName,
+            );
+          });
+
+          client.on('end', () => {
+            RedisModule.log(
+              `[Event=end] Connection closed (disconnected from Redis server)`,
+              connectionName,
+            );
+          });
+
+          client.on('reconnecting', () => {
+            RedisModule.log(
+              `[Event=reconnecting] Attempting to reconnect to Redis server`,
+              connectionName,
+            );
+          });
+
+          client.on('error', (err) => {
+            RedisModule.err(
+              `[Event=error] Redis connection error (network issue): ${err.message}`,
+              connectionName,
+            );
+          });
+        }
+
         RedisModule.log(`Creating Redis client...`, connectionName);
         const client = getClient();
+        addListeners(client, connectionName);
         RedisModule.log(`Connecting to Redis...`, connectionName);
         await client.connect();
         RedisModule.log(`Redis client connected`, connectionName);
@@ -109,6 +147,13 @@ export class RedisModule
   ): void {
     if (process.env['REDIS_MODULE_DEBUG'] !== 'true') return;
 
-    this.logger.log(`[connection=${connectionName}]: ${message}`);
+    this.logger.log(`[Connection=${connectionName}]: ${message}`);
+  }
+
+  private static err(
+    message: string,
+    connectionName: string | undefined = '<empty>',
+  ): void {
+    this.logger.error(`[Connection=${connectionName}]: ${message}`);
   }
 }
