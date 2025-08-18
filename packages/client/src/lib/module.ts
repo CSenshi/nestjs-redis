@@ -1,6 +1,7 @@
 import {
   DynamicModule,
   FactoryProvider,
+  Logger,
   Module,
   OnApplicationShutdown,
 } from '@nestjs/common';
@@ -19,7 +20,9 @@ export class RedisModule
   extends ConfigurableModuleClass
   implements OnApplicationShutdown
 {
-  protected connectionToken?: string;
+  private static readonly logger = new Logger('RedisModule');
+
+  protected connectionName?: string;
 
   constructor(private moduleRef: ModuleRef) {
     super();
@@ -33,7 +36,7 @@ export class RedisModule
     return {
       global: options?.isGlobal ?? false,
       module: class extends RedisModule {
-        override connectionToken = RedisToken(options?.connectionName);
+        override connectionName = options?.connectionName;
       },
       providers: [
         ...(baseModule.providers || []),
@@ -49,7 +52,7 @@ export class RedisModule
     return {
       global: options.isGlobal ?? false,
       module: class extends RedisModule {
-        override connectionToken = RedisToken(options.connectionName);
+        override connectionName = options.connectionName;
       },
       imports: options.imports || [],
       providers: [
@@ -83,8 +86,11 @@ export class RedisModule
           }
         }
 
+        RedisModule.log(`Creating Redis client...`, connectionName);
         const client = getClient();
+        RedisModule.log(`Connecting to Redis...`, connectionName);
         await client.connect();
+        RedisModule.log(`Redis client connected`, connectionName);
         return client;
       },
       inject: [MODULE_OPTIONS_TOKEN],
@@ -92,12 +98,17 @@ export class RedisModule
   }
 
   async onApplicationShutdown() {
-    if (!this.connectionToken) {
-      throw new Error(
-        'Connection token is not defined. Ensure to call forRoot or forRootAsync.',
-      );
-    }
+    RedisModule.log(`Closing Redis connection...`, this.connectionName);
+    await this.moduleRef.get<Redis>(RedisToken(this.connectionName)).quit();
+    RedisModule.log(`Redis connection closed`, this.connectionName);
+  }
 
-    await this.moduleRef.get<Redis>(this.connectionToken).quit();
+  private static log(
+    message: string,
+    connectionName: string | undefined = '<empty>',
+  ): void {
+    if (process.env['REDIS_MODULE_DEBUG'] !== 'true') return;
+
+    this.logger.log(`[connection=${connectionName}]: ${message}`);
   }
 }
