@@ -89,6 +89,23 @@ npm install @nestjs-redis/client redis
 import { RedisModule } from '@nestjs-redis/client';
 ```
 
+## Debug Logging
+
+Enable detailed logging across all toolkit packages by setting the `REDIS_MODULE_DEBUG` environment variable:
+
+```bash
+REDIS_MODULE_DEBUG=true npm start
+```
+
+This provides comprehensive operational logging:
+
+```
+[RedisModule] [Connection=<empty>]: Creating Redis client...
+[RedisModule] [Connection=<empty>]: [Event=connect] Connection initiated to Redis server
+[RedisModule] [Connection=<empty>]: [Event=ready] Redis client is ready to accept commands
+[RedisModule] [Connection=<empty>]: Redis client connected
+```
+
 ## Compatibility
 
 | Package                                                                                            | Node.js | NestJS | Redis |

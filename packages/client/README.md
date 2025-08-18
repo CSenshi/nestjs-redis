@@ -94,6 +94,33 @@ export class AppService {
 export class AppModule {}
 ```
 
+## Debug Logging
+
+Enable detailed Redis connection logging by setting the `REDIS_MODULE_DEBUG` environment variable:
+
+```bash
+REDIS_MODULE_DEBUG=true npm start
+```
+
+This provides comprehensive logging of Redis connection lifecycle events:
+
+```
+[RedisModule] [Connection=<empty>]: Creating Redis client...
+[RedisModule] [Connection=<empty>]: Connecting to Redis...
+[RedisModule] [Connection=<empty>]: [Event=connect] Connection initiated to Redis server
+[RedisModule] [Connection=<empty>]: [Event=ready] Redis client is ready to accept commands
+[RedisModule] [Connection=<empty>]: Redis client connected
+
+...
+
+[RedisModule] [Connection=<empty>]: Closing Redis connection
+[RedisModule] [Connection=<empty>]: [Event=end] Connection closed (disconnected from Redis server)
+[RedisModule] [Connection=<empty>]: Redis connection closed
+
+```
+
+All available event types can be checked at official [`node-redis` docs](https://github.com/redis/node-redis?tab=readme-ov-file#events)
+
 ## API
 
 - `@InjectRedis(name?)`
