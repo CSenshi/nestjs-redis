@@ -4,7 +4,7 @@
 
 # @nestjs-redis/client
 
-Flexible, production-ready Redis client module for NestJS with multi-connection support. Built on the official node-redis client.
+Flexible, production-ready Redis client module for NestJS with multi-connection support
 
 [![npm version](https://badge.fury.io/js/%40nestjs-redis%2Fclient.svg)](https://www.npmjs.com/package/@nestjs-redis/client)
 [![npm downloads](https://img.shields.io/npm/dm/@nestjs-redis/client.svg)](https://www.npmjs.com/package/@nestjs-redis/client)

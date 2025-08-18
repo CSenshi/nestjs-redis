@@ -4,7 +4,7 @@
 
 # @nestjs-redis/health-indicator
 
-Redis health indicator for NestJS with first-class Terminus integration, built on node-redis.
+Redis health indicator for NestJS with first-class Terminus integration.
 
 [![npm version](https://badge.fury.io/js/%40nestjs-redis%2Fhealth-indicator.svg)](https://www.npmjs.com/package/@nestjs-redis/health-indicator)
 [![npm downloads](https://img.shields.io/npm/dm/@nestjs-redis/health-indicator.svg)](https://www.npmjs.com/package/@nestjs-redis/health-indicator)

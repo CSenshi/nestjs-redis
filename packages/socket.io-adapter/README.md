@@ -4,7 +4,7 @@
 
 # @nestjs-redis/socket.io-adapter
 
-Redis-powered Socket.IO adapter for NestJS enabling scalable WebSocket connections across multiple instances.
+Redis-powered Socket.IO adapter for NestJS
 
 [![npm version](https://badge.fury.io/js/%40nestjs-redis%2Fsocket.io-adapter.svg)](https://www.npmjs.com/package/@nestjs-redis/socket.io-adapter)
 [![npm downloads](https://img.shields.io/npm/dm/@nestjs-redis/socket.io-adapter.svg)](https://www.npmjs.com/package/@nestjs-redis/socket.io-adapter)

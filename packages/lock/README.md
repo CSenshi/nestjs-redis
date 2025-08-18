@@ -4,7 +4,7 @@
 
 # @nestjs-redis/lock
 
-Distributed locking for NestJS using Redis and the Redlock algorithm. Simple decorator and service APIs.
+Distributed locking for NestJS using Redis and the Redlock algorithm
 
 [![npm version](https://badge.fury.io/js/%40nestjs-redis%2Flock.svg)](https://www.npmjs.com/package/@nestjs-redis/lock)
 [![npm downloads](https://img.shields.io/npm/dm/@nestjs-redis/lock.svg)](https://www.npmjs.com/package/@nestjs-redis/lock)
