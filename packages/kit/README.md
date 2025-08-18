@@ -25,15 +25,15 @@ All-in-one convenience package that re-exports every module in the NestJS Redis 
 
 ## Installation
 
+### Recommended: Install the complete toolkit
+
 ```bash
 npm install @nestjs-redis/kit redis
-# or
-yarn add @nestjs-redis/kit redis
-# or
-pnpm add @nestjs-redis/kit redis
 ```
 
-If you only need a specific capability, you can also install a single package directly (e.g., client only):
+### Alternative: Install individual packages
+
+If you only need specific functionality, install individual packages:
 
 ```bash
 npm install @nestjs-redis/client redis

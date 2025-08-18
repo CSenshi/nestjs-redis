@@ -25,12 +25,16 @@ Redis health indicator for NestJS with first-class Terminus integration.
 
 ## Installation
 
+### Recommended: Install the complete toolkit
+
+```bash
+npm install @nestjs-redis/kit redis
+```
+
+### Alternative: Install health-indicator package only
+
 ```bash
 npm install @nestjs-redis/health-indicator redis
-# or
-yarn add @nestjs-redis/health-indicator redis
-# or
-pnpm add @nestjs-redis/health-indicator redis
 ```
 
 ## Quick Start

@@ -35,7 +35,7 @@ NestJS Redis Toolkit is a cohesive set of utilities for Redis in NestJS applicat
 
 ## Quick Start
 
-Install the kit and the Redis driver:
+### Recommended: Install the complete toolkit
 
 ```bash
 npm install @nestjs-redis/kit redis
@@ -77,9 +77,9 @@ export class AppService {
 }
 ```
 
-### Prefer kit, or install individual packages
+### Alternative: Install individual packages
 
-For most users, `@nestjs-redis/kit` is the simplest way to get started. If you only need a single capability, you can install a specific package directly.
+If you only need specific functionality, install individual packages:
 
 ```bash
 npm install @nestjs-redis/client redis

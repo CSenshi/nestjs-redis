@@ -27,12 +27,16 @@ Redis-powered Socket.IO adapter for NestJS
 
 ## Installation
 
+### Recommended: Install the complete toolkit
+
 ```bash
-npm install @nestjs-redis/socket.io-adapter
-# or
-yarn add @nestjs-redis/socket.io-adapter
-# or
-pnpm add @nestjs-redis/socket.io-adapter
+npm install @nestjs-redis/kit redis
+```
+
+### Alternative: Install socket.io-adapter package only
+
+```bash
+npm install @nestjs-redis/socket.io-adapter redis
 ```
 
 ## Quick Start

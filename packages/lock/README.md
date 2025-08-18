@@ -25,12 +25,16 @@ Distributed locking for NestJS using Redis and the Redlock algorithm
 
 ## Installation
 
+### Recommended: Install the complete toolkit
+
 ```bash
-npm install @nestjs-redis/lock
-# or
-yarn add @nestjs-redis/lock
-# or
-pnpm add @nestjs-redis/lock
+npm install @nestjs-redis/kit redis
+```
+
+### Alternative: Install lock package only
+
+```bash
+npm install @nestjs-redis/lock redis
 ```
 
 ## Quick Start

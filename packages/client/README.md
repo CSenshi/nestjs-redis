@@ -26,12 +26,16 @@ Flexible, production-ready Redis client module for NestJS with multi-connection 
 
 ## Installation
 
+### Recommended: Install the complete toolkit
+
+```bash
+npm install @nestjs-redis/kit redis
+```
+
+### Alternative: Install client package only
+
 ```bash
 npm install @nestjs-redis/client redis
-# or
-yarn add @nestjs-redis/client redis
-# or
-pnpm add @nestjs-redis/client redis
 ```
 
 ## Quick Start

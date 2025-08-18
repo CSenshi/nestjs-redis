@@ -26,12 +26,16 @@ Redis-backed storage for NestJS Throttler enabling distributed rate limiting acr
 
 ## Installation
 
+### Recommended: Install the complete toolkit
+
+```bash
+npm install @nestjs-redis/kit redis
+```
+
+### Alternative: Install throttler-storage package only
+
 ```bash
 npm install @nestjs-redis/throttler-storage redis
-# or
-yarn add @nestjs-redis/throttler-storage redis
-# or
-pnpm add @nestjs-redis/throttler-storage redis
 ```
 
 ## Quick Start
