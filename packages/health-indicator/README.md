@@ -39,12 +39,13 @@ npm install @nestjs-redis/health-indicator redis
 
 ## Quick Start
 
+> **Note**: Examples use `@nestjs-redis/kit` imports (recommended). If you installed only this package, import from `@nestjs-redis/health-indicator` and `@nestjs-redis/client` instead.
+
 ```typescript
 // app.module.ts
 import { Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
-import { RedisModule } from '@nestjs-redis/client';
-import { RedisHealthIndicator } from '@nestjs-redis/health-indicator';
+import { RedisHealthIndicator, RedisModule } from '@nestjs-redis/kit';
 
 @Module({
   imports: [
@@ -63,8 +64,11 @@ export class AppModule {}
 // health.controller.ts
 import { Controller, Get } from '@nestjs/common';
 import { HealthCheck, HealthCheckService } from '@nestjs/terminus';
-import { InjectRedis, type Redis } from '@nestjs-redis/client';
-import { RedisHealthIndicator } from '@nestjs-redis/health-indicator';
+import {
+  InjectRedis,
+  type Redis,
+  RedisHealthIndicator,
+} from '@nestjs-redis/kit';
 
 @Controller('health')
 export class HealthController {

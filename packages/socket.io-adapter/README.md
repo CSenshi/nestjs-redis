@@ -38,10 +38,12 @@ npm install @nestjs-redis/socket.io-adapter redis
 
 ## Quick Start
 
+> **Note**: Examples use `@nestjs-redis/kit` imports (recommended). If you installed only this package, import from `@nestjs-redis/socket.io-adapter` and `@nestjs-redis/client` instead.
+
 ```typescript
 // app.module.ts
 import { Module } from '@nestjs/common';
-import { RedisModule } from '@nestjs-redis/client';
+import { RedisModule } from '@nestjs-redis/kit';
 
 @Module({
   imports: [
@@ -56,7 +58,7 @@ export class AppModule {}
 ```typescript
 // main.ts
 import { NestFactory } from '@nestjs/core';
-import { setupRedisAdapter } from '@nestjs-redis/socket.io-adapter';
+import { setupRedisAdapter } from '@nestjs-redis/kit';
 import { AppModule } from './app.module';
 
 async function bootstrap() {

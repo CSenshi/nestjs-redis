@@ -40,13 +40,18 @@ npm install @nestjs-redis/throttler-storage redis
 
 ## Quick Start
 
+> **Note**: Examples use `@nestjs-redis/kit` imports (recommended). If you installed only this package, import from `@nestjs-redis/throttler-storage` and `@nestjs-redis/client` instead.
+
 ### With existing Redis connection (Recommended)
 
 ```typescript
 import { Module } from '@nestjs/common';
 import { ThrottlerModule, seconds } from '@nestjs/throttler';
-import { RedisModule, RedisToken } from '@nestjs-redis/client';
-import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
+import {
+  RedisModule,
+  RedisThrottlerStorage,
+  RedisToken,
+} from '@nestjs-redis/kit';
 
 @Module({
   imports: [

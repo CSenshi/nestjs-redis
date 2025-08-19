@@ -4,7 +4,7 @@
 
 # @nestjs-redis/kit
 
-All-in-one convenience package that re-exports every module in the NestJS Redis Toolkit. Install once, use everywhere.
+All-in-one package containing all NestJS Redis Toolkit modules
 
 [![npm version](https://badge.fury.io/js/%40nestjs-redis%2Fkit.svg)](https://www.npmjs.com/package/@nestjs-redis/kit)
 [![npm downloads](https://img.shields.io/npm/dm/@nestjs-redis/kit.svg)](https://www.npmjs.com/package/@nestjs-redis/kit)
