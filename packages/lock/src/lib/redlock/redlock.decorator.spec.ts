@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { createClient } from 'redis';
+import type { RedisClientType } from 'redis';
 import { Redlock } from './redlock.decorator';
 import { RedlockModule } from './redlock.module';
 import { RedlockService } from './redlock.service';
@@ -236,7 +237,7 @@ describe('@Redlock Decorator Validations', () => {
 });
 
 describe('@Redlock Decorator', () => {
-  let redisClients: ReturnType<typeof createClient>[];
+  let redisClients: RedisClientType[];
 
   beforeAll(async () => {
     redisClients = [

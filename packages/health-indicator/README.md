@@ -64,18 +64,15 @@ export class AppModule {}
 // health.controller.ts
 import { Controller, Get } from '@nestjs/common';
 import { HealthCheck, HealthCheckService } from '@nestjs/terminus';
-import {
-  InjectRedis,
-  type Redis,
-  RedisHealthIndicator,
-} from '@nestjs-redis/kit';
+import { InjectRedis, RedisHealthIndicator } from '@nestjs-redis/kit';
+import type { RedisClientType } from 'redis';
 
 @Controller('health')
 export class HealthController {
   constructor(
     private readonly health: HealthCheckService,
     private readonly redis: RedisHealthIndicator,
-    @InjectRedis() private readonly redisClient: Redis,
+    @InjectRedis() private readonly redisClient: RedisClientType,
   ) {}
 
   @Get()
@@ -96,8 +93,8 @@ export class HealthController {
   constructor(
     private readonly health: HealthCheckService,
     private readonly redis: RedisHealthIndicator,
-    @InjectRedis() private readonly mainRedis: Redis,
-    @InjectRedis('cache') private readonly cacheRedis: Redis,
+    @InjectRedis() private readonly mainRedis: RedisClientType,
+    @InjectRedis('cache') private readonly cacheRedis: RedisClientType,
   ) {}
 
   @Get()

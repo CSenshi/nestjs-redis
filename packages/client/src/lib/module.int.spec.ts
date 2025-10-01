@@ -8,14 +8,15 @@ import {
 } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
+import type { RedisClientType } from 'redis';
 import { InjectRedis } from './decorators';
 import { RedisModule } from './module';
 import { RedisToken } from './tokens';
-import { Redis, RedisModuleOptions } from './types';
+import { RedisModuleOptions } from './types';
 
 describe('RedisModule Integration forRoot', () => {
   let module: TestingModule;
-  let redisClient: Redis;
+  let redisClient: RedisClientType;
 
   // Test Redis configuration - using default Redis instance
   const testRedisConfig: RedisModuleOptions = {
@@ -32,7 +33,7 @@ describe('RedisModule Integration forRoot', () => {
     }).compile();
     await module.init();
 
-    redisClient = module.get<Redis>(RedisToken());
+    redisClient = module.get<RedisClientType>(RedisToken());
   });
 
   afterEach(async () => {
@@ -190,7 +191,8 @@ describe('RedisModule Integration forRoot', () => {
       }).compile();
       await defaultModule.init();
 
-      const defaultRedisClient = defaultModule.get<Redis>(RedisToken());
+      const defaultRedisClient =
+        defaultModule.get<RedisClientType>(RedisToken());
 
       // Test basic operation
       const ping = await defaultRedisClient.ping();
@@ -215,7 +217,7 @@ describe('RedisModule Integration forRoot', () => {
       }).compile();
       await customModule.init();
 
-      const customRedisClient = customModule.get<Redis>(RedisToken());
+      const customRedisClient = customModule.get<RedisClientType>(RedisToken());
 
       // Test basic operation
       const ping = await customRedisClient.ping();
@@ -270,7 +272,7 @@ describe('RedisModule Integration forRoot', () => {
 
 describe('RedisModule Integration forRootAsync', () => {
   let module: TestingModule;
-  let redisClient: Redis;
+  let redisClient: RedisClientType;
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
@@ -288,7 +290,7 @@ describe('RedisModule Integration forRootAsync', () => {
 
     await module.init();
 
-    redisClient = module.get<Redis>(RedisToken());
+    redisClient = module.get<RedisClientType>(RedisToken());
   });
 
   afterEach(async () => {
@@ -344,7 +346,8 @@ describe('RedisModule Integration forRootAsync', () => {
       }).compile();
       await defaultModule.init();
 
-      const defaultRedisClient = defaultModule.get<Redis>(RedisToken());
+      const defaultRedisClient =
+        defaultModule.get<RedisClientType>(RedisToken());
 
       // Test basic operation
       const ping = await defaultRedisClient.ping();
@@ -373,7 +376,8 @@ describe('RedisModule Integration forRootAsync', () => {
       }).compile();
       await defaultModule.init();
 
-      const defaultRedisClient = defaultModule.get<Redis>(RedisToken());
+      const defaultRedisClient =
+        defaultModule.get<RedisClientType>(RedisToken());
 
       // Test basic operation
       const ping = await defaultRedisClient.ping();
@@ -386,8 +390,8 @@ describe('RedisModule Integration forRootAsync', () => {
 
 describe('Multi-connection Integration', () => {
   let module: TestingModule;
-  let redisClient1: Redis;
-  let redisClient2: Redis;
+  let redisClient1: RedisClientType;
+  let redisClient2: RedisClientType;
 
   beforeAll(async () => {
     // Create module with multiple forRoot calls
@@ -411,8 +415,8 @@ describe('Multi-connection Integration', () => {
       ],
     }).compile();
     await module.init();
-    redisClient1 = module.get<Redis>(RedisToken());
-    redisClient2 = module.get<Redis>(RedisToken('cache'));
+    redisClient1 = module.get<RedisClientType>(RedisToken());
+    redisClient2 = module.get<RedisClientType>(RedisToken('cache'));
   });
 
   afterAll(async () => {
@@ -474,7 +478,7 @@ describe('RedisModule Service Lifecycle Integration', () => {
       BeforeApplicationShutdown
   {
     constructor(
-      @InjectRedis() readonly redis: Redis,
+      @InjectRedis() readonly redis: RedisClientType,
       private readonly prefix = 'root',
     ) {}
 
@@ -527,7 +531,8 @@ describe('RedisModule Service Lifecycle Integration', () => {
         {
           provide: TestLifecycleService,
           inject: [RedisToken()],
-          useFactory: (redis: Redis) => new TestLifecycleService(redis, 'sync'),
+          useFactory: (redis: RedisClientType) =>
+            new TestLifecycleService(redis, 'sync'),
         },
       ],
     }).compile();
@@ -543,7 +548,7 @@ describe('RedisModule Service Lifecycle Integration', () => {
         {
           provide: TestLifecycleService,
           inject: [RedisToken()],
-          useFactory: (redis: Redis) =>
+          useFactory: (redis: RedisClientType) =>
             new TestLifecycleService(redis, 'async'),
         },
       ],

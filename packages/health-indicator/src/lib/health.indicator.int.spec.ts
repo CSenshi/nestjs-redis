@@ -1,15 +1,21 @@
 import { HealthIndicatorService } from '@nestjs/terminus';
 import { Test, TestingModule } from '@nestjs/testing';
 import { createClient } from 'redis';
+import type {
+  RedisClientType,
+  RedisClusterType,
+  RedisSentinelType,
+} from 'redis';
 import { RedisHealthIndicator } from './health.indicator';
-import { Redis } from './interfaces';
+
+type RedisInstance = RedisClientType | RedisClusterType | RedisSentinelType;
 
 // These tests require a running Redis instance
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
 
 describe('RedisHealthIndicator Integration Tests', () => {
   let healthIndicator: RedisHealthIndicator;
-  let redisClient: Redis;
+  let redisClient: RedisInstance;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({

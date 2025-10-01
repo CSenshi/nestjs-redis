@@ -48,13 +48,13 @@ import { TerminusModule } from '@nestjs/terminus';
 import { ThrottlerModule, seconds } from '@nestjs/throttler';
 import {
   InjectRedis,
-  Redis,
   RedisHealthIndicator,
   RedisModule,
   RedisThrottlerStorage,
   RedisToken,
   RedlockModule,
 } from '@nestjs-redis/kit';
+import type { RedisClientType } from 'redis';
 
 @Module({
   imports: [
@@ -64,13 +64,13 @@ import {
     // Locking
     RedlockModule.forRootAsync({
       inject: [RedisToken()],
-      useFactory: (redis: Redis) => ({ clients: [redis] }),
+      useFactory: (redis: RedisClientType) => ({ clients: [redis] }),
     }),
 
     // Throttling
     ThrottlerModule.forRootAsync({
       inject: [RedisToken()],
-      useFactory: (redis: Redis) => ({
+      useFactory: (redis: RedisClientType) => ({
         throttlers: [{ limit: 5, ttl: seconds(60) }],
         storage: new RedisThrottlerStorage(redis),
       }),
@@ -87,11 +87,12 @@ export class AppModule {}
 ```typescript
 // usage.ts
 import { Injectable } from '@nestjs/common';
-import { InjectRedis, type Redis, Redlock } from '@nestjs-redis/kit';
+import { InjectRedis, Redlock } from '@nestjs-redis/kit';
+import type { RedisClientType } from 'redis';
 
 @Injectable()
 export class DemoService {
-  constructor(@InjectRedis() private readonly redis: Redis) {}
+  constructor(@InjectRedis() private readonly redis: RedisClientType) {}
 
   @Redlock('demo:critical', 5000)
   async doCriticalWork() {

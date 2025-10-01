@@ -1,12 +1,10 @@
 export { RedisModule } from './lib/module';
 export { InjectRedis } from './lib/decorators';
 export type {
-  Redis,
-  RedisClient,
-  RedisCluster,
-  RedisSentinel,
   RedisModuleOptions,
   RedisConnectionConfig,
+  RedisModuleForRootOptions,
+  RedisOptions,
 } from './lib/types';
 export { RedisToken } from './lib/tokens';
 export type {

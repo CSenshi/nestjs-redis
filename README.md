@@ -61,11 +61,12 @@ export class AppModule {}
 ```typescript
 // app.service.ts
 import { Injectable } from '@nestjs/common';
-import { InjectRedis, type Redis } from '@nestjs-redis/kit';
+import { InjectRedis } from '@nestjs-redis/kit';
+import type { RedisClientType } from 'redis';
 
 @Injectable()
 export class AppService {
-  constructor(@InjectRedis() private readonly redis: Redis) {}
+  constructor(@InjectRedis() private readonly redis: RedisClientType) {}
 
   async setValue(key: string, value: string) {
     await this.redis.set(key, value);

@@ -1,7 +1,11 @@
 import type { RedlockOptions } from '@redis-kit/lock';
-import type { RedisClientType, createClient } from 'redis';
+import type {
+  RedisClientType,
+  RedisClusterType,
+  RedisSentinelType,
+} from 'redis';
 
-type RedisClient = ReturnType<typeof createClient> | RedisClientType;
+type RedisInstance = RedisClientType | RedisClusterType | RedisSentinelType;
 
 /**
  * Redis module configuration options.
@@ -9,7 +13,7 @@ type RedisClient = ReturnType<typeof createClient> | RedisClientType;
  */
 export interface RedlockModuleOptions {
   /** Array of Redis clients for distributed locking */
-  clients: RedisClient[];
+  clients: RedisInstance[];
   /** Lock configuration options */
   redlockConfig?: RedlockOptions;
 }

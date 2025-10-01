@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import type { ThrottlerStorage } from '@nestjs/throttler';
 import type { ThrottlerStorageRecord } from '@nestjs/throttler/dist/throttler-storage-record.interface';
-import type { createClient, createCluster, createSentinel } from 'redis';
+import type {
+  RedisClientType,
+  RedisClusterType,
+  RedisSentinelType,
+} from 'redis';
 
-// Import types from the client package for better compatibility
-type RedisClient = ReturnType<typeof createClient>;
-type RedisCluster = ReturnType<typeof createCluster>;
-type RedisSentinel = ReturnType<typeof createSentinel>;
-type Redis = RedisClient | RedisCluster | RedisSentinel;
+type RedisClientLike = RedisClientType | RedisClusterType | RedisSentinelType;
 
 @Injectable()
 export class RedisThrottlerStorage implements ThrottlerStorage {
@@ -25,7 +25,7 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
    * const storage = new RedisThrottlerStorage(createClient({ url: 'redis://localhost:6379' }));
    * ```
    */
-  constructor(private readonly client: Redis) {}
+  constructor(private readonly client: RedisClientLike) {}
 
   /**
    * This logic is modeled after the official NestJS in-memory storage implementation:

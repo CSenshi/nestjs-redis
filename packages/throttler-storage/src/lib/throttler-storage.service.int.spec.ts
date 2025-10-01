@@ -3,6 +3,7 @@ import { ThrottlerStorage } from '@nestjs/throttler';
 import { ThrottlerStorageService } from '@nestjs/throttler';
 import { ThrottlerStorageRecord } from '@nestjs/throttler/dist/throttler-storage-record.interface';
 import { createClient } from 'redis';
+import type { RedisClientType } from 'redis';
 import { RedisThrottlerStorage } from './throttler-storage.service';
 
 @Injectable()
@@ -58,7 +59,7 @@ export class ThrottlerStorageComparator implements ThrottlerStorage {
 }
 
 describe('RedisThrottlerStorage - Exact Implementation Comparison', () => {
-  let redisClient: ReturnType<typeof createClient>;
+  let redisClient: RedisClientType;
   let redisStorage: RedisThrottlerStorage;
   let memoryStorage: ThrottlerStorageService;
   let comparator: ThrottlerStorageComparator;
@@ -260,7 +261,7 @@ describe('RedisThrottlerStorage - Factory Methods Integration', () => {
   const ttl = 60000; // 60 seconds
   const blockDuration = 30000; // 30 seconds
 
-  let activeClients: ReturnType<typeof createClient>[] = [];
+  let activeClients: RedisClientType[] = [];
 
   afterEach(async () => {
     // Clean up active clients

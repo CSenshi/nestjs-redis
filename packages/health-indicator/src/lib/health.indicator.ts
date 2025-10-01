@@ -3,7 +3,12 @@ import {
   HealthIndicatorResult,
   HealthIndicatorService,
 } from '@nestjs/terminus';
-import { Redis } from './interfaces';
+import type { createClient, createCluster, createSentinel } from 'redis';
+
+type Redis =
+  | ReturnType<typeof createClient>
+  | ReturnType<typeof createCluster>
+  | ReturnType<typeof createSentinel>;
 
 @Injectable()
 export class RedisHealthIndicator {

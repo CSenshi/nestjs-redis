@@ -13,7 +13,12 @@ import {
   MODULE_OPTIONS_TOKEN,
 } from './redis-client.module-definition';
 import { RedisToken } from './tokens';
-import { Redis, RedisModuleForRootOptions, RedisModuleOptions } from './types';
+import { RedisModuleForRootOptions, RedisModuleOptions } from './types';
+
+type RedisInstance =
+  | ReturnType<typeof createClient>
+  | ReturnType<typeof createCluster>
+  | ReturnType<typeof createSentinel>;
 
 @Module({})
 export class RedisModule
@@ -68,8 +73,10 @@ export class RedisModule
   ): FactoryProvider {
     return {
       provide: RedisToken(connectionName),
-      useFactory: async (config: RedisModuleOptions): Promise<Redis> => {
-        function getClient(): Redis {
+      useFactory: async (
+        config: RedisModuleOptions,
+      ): Promise<RedisInstance> => {
+        function getClient(): RedisInstance {
           switch (config?.type) {
             case 'client':
             case undefined:
@@ -86,7 +93,10 @@ export class RedisModule
           }
         }
 
-        function addListeners(client: Redis, connectionName?: string): void {
+        function addListeners(
+          client: RedisInstance,
+          connectionName?: string,
+        ): void {
           client.on('connect', () => {
             RedisModule.log(
               `[Event=connect] Connection initiated to Redis server`,
@@ -137,7 +147,9 @@ export class RedisModule
 
   async onApplicationShutdown() {
     RedisModule.log(`Closing Redis connection...`, this.connectionName);
-    await this.moduleRef.get<Redis>(RedisToken(this.connectionName)).quit();
+    await this.moduleRef
+      .get<RedisInstance>(RedisToken(this.connectionName))
+      .quit();
     RedisModule.log(`Redis connection closed`, this.connectionName);
   }
 
