@@ -1,6 +1,6 @@
 {
   "name": "@nestjs-redis/socket.io-adapter",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "license": "MIT",
   "author": "Saba Pochkhua <saba.pochkhua@gmail.com> (https://github.com/CSenshi)",
   "description": "Redis-powered Socket.IO adapter for NestJS enabling scalable WebSocket connections",

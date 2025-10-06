@@ -1,3 +1,13 @@
+## 0.12.1 (2025-10-06)
+
+### 🩹 Fixes
+
+- **health-indicator:** add missing redis types ([abf57a0](https://github.com/CSenshi/nestjs-redis/commit/abf57a0))
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 0.12.0 (2025-10-01)
 
 This was a version bump only, there were no code changes.

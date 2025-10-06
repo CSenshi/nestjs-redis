@@ -1,6 +1,6 @@
 {
   "name": "@nestjs-redis/lock",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "license": "MIT",
   "author": "Saba Pochkhua <saba.pochkhua@gmail.com> (https://github.com/CSenshi)",
   "description": "Redis-based distributed lock module for NestJS, built on @redis-kit/lock",
