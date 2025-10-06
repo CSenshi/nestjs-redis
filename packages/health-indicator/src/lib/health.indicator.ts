@@ -3,12 +3,22 @@ import {
   HealthIndicatorResult,
   HealthIndicatorService,
 } from '@nestjs/terminus';
-import type { createClient, createCluster, createSentinel } from 'redis';
+import type {
+  RedisClientType,
+  RedisClusterType,
+  RedisSentinelType,
+  createClient,
+  createCluster,
+  createSentinel,
+} from 'redis';
 
 type Redis =
   | ReturnType<typeof createClient>
   | ReturnType<typeof createCluster>
-  | ReturnType<typeof createSentinel>;
+  | ReturnType<typeof createSentinel>
+  | RedisClientType
+  | RedisClusterType
+  | RedisSentinelType;
 
 @Injectable()
 export class RedisHealthIndicator {
@@ -31,6 +41,7 @@ export class RedisHealthIndicator {
     const indicator = this.healthIndicatorService.check(key);
 
     try {
+      // @ts-expect-error: for some reason RedisClusterType doesn't have ping method in types but it exists in runtime
       const result = await client.ping();
       const isHealthy = result === 'PONG';
 
