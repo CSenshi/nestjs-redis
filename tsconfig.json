@@ -20,6 +20,9 @@
     },
     {
       "path": "./packages/socket.io-adapter"
+    },
+    {
+      "path": "./examples/full"
     }
   ]
 }
