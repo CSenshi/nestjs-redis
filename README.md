@@ -24,6 +24,11 @@ NestJS Redis Toolkit is a cohesive set of utilities for Redis in NestJS applicat
 - Consistent APIs: NestJS-first patterns and DI integration
 - Production-ready: lifecycle management and clear, minimal APIs
 
+### Learn more
+
+Curious about the story behind this toolkit and how it simplifies Redis in NestJS? Read the introduction on Medium:  
+👉 [The Missing Redis Toolkit for NestJS](https://csenshi.medium.com/the-missing-redis-toolkit-for-nestjs-5e80b5d1d775)
+
 ## Packages
 
 - [@nestjs-redis/kit](packages/kit/README.md) — All-in-one convenience package that bundles all toolkit modules
