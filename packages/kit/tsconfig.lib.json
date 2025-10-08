@@ -15,6 +15,22 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src/**/*.ts"],
-  "references": [],
+  "references": [
+    {
+      "path": "../socket.io-adapter/tsconfig.lib.json"
+    },
+    {
+      "path": "../lock/tsconfig.lib.json"
+    },
+    {
+      "path": "../throttler-storage/tsconfig.lib.json"
+    },
+    {
+      "path": "../health-indicator/tsconfig.lib.json"
+    },
+    {
+      "path": "../client/tsconfig.lib.json"
+    }
+  ],
   "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
 }
