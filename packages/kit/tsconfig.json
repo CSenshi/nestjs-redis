@@ -4,21 +4,6 @@
   "include": [],
   "references": [
     {
-      "path": "../socket.io-adapter"
-    },
-    {
-      "path": "../lock"
-    },
-    {
-      "path": "../throttler-storage"
-    },
-    {
-      "path": "../health-indicator"
-    },
-    {
-      "path": "../client"
-    },
-    {
       "path": "./tsconfig.lib.json"
     },
     {
