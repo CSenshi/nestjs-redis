@@ -7,11 +7,10 @@ import { RedisOptionsFactory } from './redis-options-factory.interface';
  *
  * @publicApi
  */
-export interface RedisModuleAsyncOptions
-  extends ConfigurableModuleAsyncOptions<
-    RedisModuleOptions,
-    keyof RedisOptionsFactory
-  > {
+export interface RedisModuleAsyncOptions extends ConfigurableModuleAsyncOptions<
+  RedisModuleOptions,
+  keyof RedisOptionsFactory
+> {
   /**
    * If "true", register `RedisModule` as a global module.
    */

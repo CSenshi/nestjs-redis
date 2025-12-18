@@ -41,7 +41,6 @@ export class RedisHealthIndicator {
     const indicator = this.healthIndicatorService.check(key);
 
     try {
-      // @ts-expect-error: for some reason RedisClusterType doesn't have ping method in types but it exists in runtime
       const result = await client.ping();
       const isHealthy = result === 'PONG';
 
