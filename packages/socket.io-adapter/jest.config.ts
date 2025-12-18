@@ -1,5 +1,7 @@
 import { readFileSync } from 'fs';
 
+const __dirname = import.meta.dirname;
+
 // Reading the SWC compilation config for the spec files
 const swcJestConfig = JSON.parse(
   readFileSync(`${__dirname}/.spec.swcrc`, 'utf-8'),
