@@ -43,7 +43,7 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
     const ttlMilliseconds = ttl;
     const blockDurationMilliseconds = blockDuration;
 
-    const redisKey = `${this.prefix}:${key}`;
+    const redisKey = `${this.prefix}:{${key}}`;
     const blockKey = `${redisKey}:block:${throttlerName}`;
 
     const luaScript = `

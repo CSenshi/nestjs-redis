@@ -4,6 +4,7 @@ import { ThrottlerStorageService } from '@nestjs/throttler';
 import { ThrottlerStorageRecord } from '@nestjs/throttler/dist/throttler-storage-record.interface';
 import { createClient } from 'redis';
 import type { RedisClientType } from 'redis';
+import { type RedisClusterType, createCluster } from 'redis';
 import { RedisThrottlerStorage } from './throttler-storage.service';
 
 @Injectable()
@@ -251,6 +252,44 @@ describe('RedisThrottlerStorage - Exact Implementation Comparison', () => {
         { ignoreTotalHits: true },
       );
     });
+  });
+});
+
+describe('RedisThrottlerStorage - Cluster Mode CROSSSLOT Issue', () => {
+  const CLUSTER_URL = 'redis://localhost:7010';
+  let clusterClient: RedisClusterType;
+  let redisStorage: RedisThrottlerStorage;
+
+  beforeAll(async () => {
+    clusterClient = createCluster({
+      rootNodes: [{ url: CLUSTER_URL }],
+    });
+    await clusterClient.connect();
+    redisStorage = new RedisThrottlerStorage(clusterClient);
+  });
+
+  afterAll(async () => {
+    await clusterClient.quit();
+  });
+
+  it('should not fail with CROSSSLOT error when keys hash to different slots', async () => {
+    const ttl = 60000;
+    const limit = 2;
+    const blockDuration = 30000;
+    const throttlerName = 'default';
+
+    for (let i = 0; i < 20; i++) {
+      const key = `user-${i}-${Date.now()}`; // Different keys to ensure different slots
+      await expect(
+        redisStorage.increment(key, ttl, limit, blockDuration, throttlerName),
+      ).resolves.not.toThrow();
+      await expect(
+        redisStorage.increment(key, ttl, limit, blockDuration, throttlerName),
+      ).resolves.not.toThrow();
+      await expect(
+        redisStorage.increment(key, ttl, limit, blockDuration, throttlerName),
+      ).resolves.not.toThrow();
+    }
   });
 });
 

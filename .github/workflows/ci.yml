@@ -23,6 +23,13 @@ jobs:
         image: redis:8-alpine
         ports: ['6379:6379']
 
+      redis-cluster:
+        image: grokzen/redis-cluster:7.0.10
+        ports: ['7010-7015:7010-7015']
+        env:
+          IP: 0.0.0.0
+          INITIAL_PORT: 7010
+
     steps:
       - uses: actions/checkout@v4
         with:

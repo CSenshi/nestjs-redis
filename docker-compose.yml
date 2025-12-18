@@ -5,14 +5,9 @@ services:
       - '6379:6379'
 
   redis-cluster:
-    image: redis/redis-stack:latest
-    command: |
-      sh -c '
-        redis-server --port 6380 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly yes --loadmodule /opt/redis-stack/lib/redisearch.so --loadmodule /opt/redis-stack/lib/rejson.so --protected-mode no --bind 0.0.0.0 &
-        sleep 5
-        redis-cli -p 6380 cluster meet 127.0.0.1 6380 || true
-        redis-cli -p 6380 cluster addslots $(seq 0 16383 | tr "\n" " ") || true
-        wait
-      '
+    image: grokzen/redis-cluster:7.0.10
+    environment:
+      - IP=0.0.0.0
+      - INITIAL_PORT=7010
     ports:
-      - '6380:6380'
+      - '7010-7015:7010-7015'
