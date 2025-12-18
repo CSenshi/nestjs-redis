@@ -67,17 +67,17 @@ jobs:
       - name: Install specific NestJS version for testing
         run: |
           # Install specific versions for compatibility testing - install ALL NestJS packages at same version
-          pnpm add -D @nestjs/common@${{ matrix.nestjs-version }} @nestjs/core@${{ matrix.nestjs-version }} @nestjs/testing@${{ matrix.nestjs-version }} @nestjs/platform-express@${{ matrix.nestjs-version }}
+          pnpm add -D @nestjs/common@${{ matrix.nestjs-version }} @nestjs/core@${{ matrix.nestjs-version }} @nestjs/testing@${{ matrix.nestjs-version }} @nestjs/platform-express@${{ matrix.nestjs-version }} -w
 
           # Install package-specific dependencies
           if [ "${{ matrix.package }}" = "health-indicator" ]; then
-            pnpm add -D @nestjs/terminus@${{ matrix.terminus-version }}
+            pnpm add -D @nestjs/terminus@${{ matrix.terminus-version }} -w
           fi
 
           if [ "${{ matrix.package }}" = "throttler-storage" ]; then
             # Update the dependency in the package itself
             cd packages/throttler-storage
-            pnpm add @nestjs/throttler@${{ matrix.throttler-version }}
+            pnpm add @nestjs/throttler@${{ matrix.throttler-version }} -w
             cd ../..
           fi
 
