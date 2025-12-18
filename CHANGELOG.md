@@ -1,3 +1,18 @@
+## 0.13.0 (2025-12-18)
+
+### 🚀 Features
+
+- add examples directory ([b45af47](https://github.com/CSenshi/nestjs-redis/commit/b45af47))
+- **examples:** add redis integrations ([0775190](https://github.com/CSenshi/nestjs-redis/commit/0775190))
+
+### 🩹 Fixes
+
+- **throttler-storage:** fix CROSSSLOT keys problem in cluster using hash tags ([6e4f96a](https://github.com/CSenshi/nestjs-redis/commit/6e4f96a))
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 0.12.1 (2025-10-06)
 
 ### 🩹 Fixes
