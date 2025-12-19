@@ -1,38 +1,48 @@
-import { IoAdapter } from '@nestjs/platform-socket.io';
-import { createAdapter } from '@socket.io/redis-adapter';
+import type { INestApplication, WebSocketAdapter } from '@nestjs/common';
 import type { RedisClientType } from 'redis';
 
-export class RedisIoAdapter extends IoAdapter {
-  private pubClient: RedisClientType | undefined;
-  private subClient: RedisClientType | undefined;
+export interface RedisIoAdapterInstance extends WebSocketAdapter {
+  connectToRedis(redisClient: RedisClientType): Promise<void>;
+  createIOServer(port: number, options?: unknown): unknown;
+}
 
-  private adapterConstructor: ReturnType<typeof createAdapter> | undefined;
+export type RedisIoAdapterConstructor = new (
+  app: INestApplication,
+) => RedisIoAdapterInstance;
 
-  async connectToRedis(redisClient: RedisClientType): Promise<void> {
-    this.pubClient = redisClient;
-    this.subClient = this.pubClient.duplicate();
+export async function getIoAdapterCls(): Promise<RedisIoAdapterConstructor> {
+  const { IoAdapter } = await import('@nestjs/platform-socket.io');
+  const { createAdapter } = await import('@socket.io/redis-adapter');
 
-    await this.subClient.connect();
+  class RedisIoAdapter extends IoAdapter implements RedisIoAdapterInstance {
+    public pubClient: RedisClientType | undefined;
+    public subClient: RedisClientType | undefined;
 
-    this.adapterConstructor = createAdapter(this.pubClient, this.subClient);
-  }
+    public adapterConstructor: ReturnType<typeof createAdapter> | undefined;
 
-  override createIOServer(
-    port: number,
-    options?: Parameters<IoAdapter['createIOServer']>[1],
-  ): ReturnType<IoAdapter['createIOServer']> {
-    const server = super.createIOServer(port, options);
-    server.adapter(this.adapterConstructor);
-    return server;
-  }
+    async connectToRedis(redisClient: RedisClientType): Promise<void> {
+      this.pubClient = redisClient;
+      this.subClient = this.pubClient.duplicate();
 
-  override async close(
-    server: Parameters<IoAdapter['close']>[0],
-  ): Promise<void> {
-    super.close(server);
+      await this.subClient.connect();
 
-    if (this.subClient) {
-      await this.subClient.quit();
+      this.adapterConstructor = createAdapter(this.pubClient, this.subClient);
+    }
+
+    override createIOServer(port: number, options?: any): any {
+      const server = super.createIOServer(port, options);
+      server.adapter(this.adapterConstructor);
+      return server;
+    }
+
+    override async close(server: any): Promise<void> {
+      super.close(server);
+
+      if (this.subClient) {
+        await this.subClient.quit();
+      }
     }
   }
+
+  return RedisIoAdapter as RedisIoAdapterConstructor;
 }
