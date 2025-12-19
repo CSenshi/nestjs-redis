@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {
+import type {
   HealthIndicatorResult,
   HealthIndicatorService,
 } from '@nestjs/terminus';
@@ -32,13 +32,24 @@ export class RedisHealthIndicator {
    *
    * ToDo: Fix this issue in the future.
    */
-  private healthIndicatorService = new HealthIndicatorService();
+  private _healthIndicatorService: HealthIndicatorService | null = null;
+
+  private async ensureHealthIndicatorService(): Promise<HealthIndicatorService> {
+    if (this._healthIndicatorService !== null) {
+      return this._healthIndicatorService;
+    }
+
+    const { HealthIndicatorService } = await import('@nestjs/terminus');
+    this._healthIndicatorService = new HealthIndicatorService();
+    return this._healthIndicatorService;
+  }
 
   async isHealthy(
     key: string,
     { client }: { client: Redis },
   ): Promise<HealthIndicatorResult> {
-    const indicator = this.healthIndicatorService.check(key);
+    const healthIndicatorService = await this.ensureHealthIndicatorService();
+    const indicator = healthIndicatorService.check(key);
 
     try {
       const result = await client.ping();
