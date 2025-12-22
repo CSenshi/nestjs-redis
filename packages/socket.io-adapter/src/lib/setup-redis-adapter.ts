@@ -5,7 +5,7 @@ import {
   RedisAdapterAlreadySetUpException,
   RedisClientNotFoundException,
 } from './exceptions';
-import { RedisIoAdapter } from './redis-io.adapter';
+import { getIoAdapterCls } from './redis-io.adapter';
 
 const appSet = new Set<INestApplication>();
 
@@ -26,7 +26,8 @@ export async function setupRedisAdapter(
   }
 
   appSet.add(app);
-  const redisIoAdapter = new RedisIoAdapter(app);
+  const cls = await getIoAdapterCls();
+  const redisIoAdapter = new cls(app);
 
   try {
     const moduleRef = app.get(ModuleRef);
