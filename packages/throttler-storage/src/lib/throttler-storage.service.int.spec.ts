@@ -69,6 +69,7 @@ describe('RedisThrottlerStorage - Exact Implementation Comparison', () => {
     // Connect to Redis
     redisClient = createClient({
       url: process.env.REDIS_URL || 'redis://localhost:6379',
+      database: 2,
     });
     await redisClient.connect();
 
@@ -314,6 +315,7 @@ describe('RedisThrottlerStorage - Factory Methods Integration', () => {
     // Clean up Redis data
     const cleanupClient = createClient({
       url: process.env.REDIS_URL || 'redis://localhost:6379',
+      database: 2,
     });
     await cleanupClient.connect();
     await cleanupClient.flushDb();
@@ -324,6 +326,7 @@ describe('RedisThrottlerStorage - Factory Methods Integration', () => {
     it('should use existing client and perform increment operations', async () => {
       const client = createClient({
         url: process.env.REDIS_URL || 'redis://localhost:6379',
+        database: 2,
       });
       activeClients.push(client);
       await client.connect();

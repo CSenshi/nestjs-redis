@@ -43,7 +43,11 @@ describe('RedisHealthIndicator Integration Tests', () => {
   describe('with Redis client', () => {
     beforeAll(async () => {
       try {
-        redisClient = createClient({ url: REDIS_URL });
+        // Use database 1 for health-indicator to avoid conflicts with other projects
+        redisClient = createClient({
+          url: REDIS_URL,
+          database: 1,
+        });
         await redisClient.connect();
       } catch {
         console.warn('Redis server not available, skipping integration tests');
@@ -51,13 +55,15 @@ describe('RedisHealthIndicator Integration Tests', () => {
     });
 
     afterAll(async () => {
-      if (redisClient?.isReady) {
-        await redisClient.quit();
+      if (redisClient && 'isReady' in redisClient && redisClient.isReady) {
+        if ('quit' in redisClient) {
+          await redisClient.quit();
+        }
       }
     });
 
     it('should perform successful health check with real Redis', async () => {
-      if (!redisClient?.isReady) {
+      if (!redisClient || !('isReady' in redisClient) || !redisClient.isReady) {
         console.warn('Skipping test: Redis not available');
         return;
       }

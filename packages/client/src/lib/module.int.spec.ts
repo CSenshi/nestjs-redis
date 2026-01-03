@@ -23,6 +23,7 @@ describe('RedisModule Integration forRoot', () => {
     type: 'client',
     options: {
       url: process.env.REDIS_URL || 'redis://localhost:6379',
+      database: 0,
     },
   };
 
@@ -206,6 +207,7 @@ describe('RedisModule Integration forRoot', () => {
         type: 'client',
         options: {
           url: process.env.REDIS_URL || 'redis://localhost:6379',
+          database: 0,
           socket: {
             connectTimeout: 5000,
           },
@@ -282,6 +284,7 @@ describe('RedisModule Integration forRootAsync', () => {
             type: 'client',
             options: {
               url: process.env.REDIS_URL || 'redis://localhost:6379',
+              database: 0,
             },
           }),
         }),
@@ -339,6 +342,7 @@ describe('RedisModule Integration forRootAsync', () => {
                 url:
                   configService.get<string>('REDIS_HOST') ??
                   'redis://localhost:6379',
+                database: 0,
               },
             }),
           }),
@@ -369,6 +373,7 @@ describe('RedisModule Integration forRootAsync', () => {
                 url:
                   configService.get<string>('REDIS_HOST') ??
                   'redis://localhost:6379',
+                database: 0,
               },
             }),
           }),
@@ -402,6 +407,7 @@ describe('Multi-connection Integration', () => {
           type: 'client',
           options: {
             url: process.env.REDIS_URL || 'redis://localhost:6379',
+            database: 0,
           },
         }),
         // Named connection
@@ -410,6 +416,7 @@ describe('Multi-connection Integration', () => {
           type: 'client',
           options: {
             url: process.env.REDIS_URL || 'redis://localhost:6379',
+            database: 0,
           },
         }),
       ],
@@ -525,7 +532,12 @@ describe('RedisModule Service Lifecycle Integration', () => {
     // Create the testing module with the lifecycle service
     module = await Test.createTestingModule({
       imports: [
-        RedisModule.forRoot({ options: { url: process.env.REDIS_URL } }),
+        RedisModule.forRoot({
+          options: {
+            url: process.env.REDIS_URL,
+            database: 0,
+          },
+        }),
       ],
       providers: [
         {
@@ -540,7 +552,12 @@ describe('RedisModule Service Lifecycle Integration', () => {
     asyncModule = await Test.createTestingModule({
       imports: [
         RedisModule.forRootAsync({
-          useFactory: () => ({ options: { url: process.env.REDIS_URL } }),
+          useFactory: () => ({
+            options: {
+              url: process.env.REDIS_URL,
+              database: 0,
+            },
+          }),
           inject: [],
         }),
       ],
