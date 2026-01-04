@@ -1,3 +1,13 @@
+## 0.13.3 (2026-01-04)
+
+### 🔥 Performance
+
+- **throttler-storage:** implement loading lua script and evaluating with sha afterwards ([cfd5b30](https://github.com/CSenshi/nestjs-redis/commit/cfd5b30))
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 0.13.2 (2025-12-28)
 
 This was a version bump only, there were no code changes.
