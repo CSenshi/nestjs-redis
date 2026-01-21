@@ -66,12 +66,12 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
    * Loads the Lua script into Redis and caches its SHA1 hash.
    * This method is called lazily on first use or when the script is not found.
    */
-  private async loadScript(script: string): Promise<string> {
+  private async loadScript(): Promise<string> {
     if (this.scriptSha) {
       return this.scriptSha;
     }
 
-    return (this.scriptSha = await this.client.scriptLoad(script));
+    return (this.scriptSha = await this.client.scriptLoad(this.luaScript));
   }
 
   /**
@@ -82,14 +82,12 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
     keys: string[],
     args: string[],
   ): Promise<ThrottlerStorageRecord> {
-    const options = {
-      keys,
-      arguments: args,
-    };
+    const options = { keys, arguments: args };
+
     const [totalHits, timeToExpireMs, timeToBlockExpireMs, isBlocked] = (
-      /^[a-f0-9]{40}$/i.test(scriptOrSha) // Check if it's a SHA1 hash
-        ? await this.client.evalSha(scriptOrSha, options) // Use EVALSHA for cached scripts to optimize performance
-        : await this.client.eval(scriptOrSha, options) // Use EVAL which also caches the script automatically and be able to use EVALSHA next time
+      this.isSha1Hash(scriptOrSha)
+        ? await this.client.evalSha(scriptOrSha, options)
+        : await this.client.eval(scriptOrSha, options)
     ) as [number, number, number, number];
 
     return {
@@ -125,25 +123,22 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
     ];
 
     // Load script SHA if not already loaded
-    const scriptSha = await this.loadScript(this.luaScript);
+    const scriptSha = await this.loadScript();
 
     try {
       return await this.executeScript(scriptSha, keys, args);
     } catch (error: unknown) {
       // Handle NOSCRIPT error - script was flushed from Redis
       if ((error as Error)?.message.includes('NOSCRIPT')) {
-        // Redis Cluster might not be able to cache scripts properly in each nodes
-        // Retry by passing the full script through EVAL command to force the node to cache it again
-        // Do not use "script load" command here because the node might be different than the one used for execution
-        try {
-          return await this.executeScript(this.luaScript, keys, args);
-        } catch (err) {
-          // Ignore the error here and re-throw the original error below
-        }
+        return await this.executeScript(this.luaScript, keys, args);
       }
 
       // Re-throw if it's not a NOSCRIPT error
       throw error;
     }
+  }
+
+  private isSha1Hash(value: string): boolean {
+    return /^[a-f0-9]{40}$/i.test(value);
   }
 }
