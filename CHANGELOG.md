@@ -1,3 +1,7 @@
+## 0.13.4 (2026-01-21)
+
+This was a version bump only, there were no code changes.
+
 ## 0.13.3 (2026-01-04)
 
 ### 🔥 Performance
