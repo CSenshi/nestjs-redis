@@ -66,12 +66,12 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
    * Loads the Lua script into Redis and caches its SHA1 hash.
    * This method is called lazily on first use or when the script is not found.
    */
-  private async loadScript(script:string): Promise<string> {
+  private async loadScript(script: string): Promise<string> {
     if (this.scriptSha) {
       return this.scriptSha;
     }
-    
-    return this.scriptSha = await this.client.scriptLoad(script);
+
+    return (this.scriptSha = await this.client.scriptLoad(script));
   }
 
   /**
@@ -85,11 +85,12 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
     const options = {
       keys,
       arguments: args,
-    }
-    const [totalHits, timeToExpireMs, timeToBlockExpireMs, isBlocked] =
-      (/^[a-f0-9]{40}$/i.test(scriptOrSha) 
+    };
+    const [totalHits, timeToExpireMs, timeToBlockExpireMs, isBlocked] = (
+      /^[a-f0-9]{40}$/i.test(scriptOrSha)
         ? await this.client.evalSha(scriptOrSha, options)
-        : await this.client.eval(scriptOrSha, options)) as [number, number, number, number];
+        : await this.client.eval(scriptOrSha, options)
+    ) as [number, number, number, number];
 
     return {
       totalHits,
@@ -132,7 +133,7 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
       // Handle NOSCRIPT error - script was flushed from Redis
       if ((error as Error)?.message.includes('NOSCRIPT')) {
         // Retry using EVAL command which will cache the script automatically
-        try{
+        try {
           return await this.executeScript(this.luaScript, keys, args);
         } catch (err) {
           // Ignore the error here and re-throw the original error below
