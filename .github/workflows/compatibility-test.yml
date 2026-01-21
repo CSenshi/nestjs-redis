@@ -34,14 +34,8 @@ jobs:
         nestjs-version: ['9', '10', '11']
         include:
           - nestjs-version: '9'
-            terminus-version: '^9.0.0'
-            throttler-version: '^6.0.0'
           - nestjs-version: '10'
-            terminus-version: '^10.0.0'
-            throttler-version: '^6.0.0'
           - nestjs-version: '11'
-            terminus-version: '^11.0.0'
-            throttler-version: '^6.0.0'
 
     name: Node${{ matrix.node-version }} - Nest${{ matrix.nestjs-version }} - ${{ matrix.package }}
 
@@ -67,18 +61,11 @@ jobs:
       - name: Install specific NestJS version for testing
         run: |
           # Install specific versions for compatibility testing - install ALL NestJS packages at same version
-          pnpm add -D @nestjs/common@${{ matrix.nestjs-version }} @nestjs/core@${{ matrix.nestjs-version }} @nestjs/testing@${{ matrix.nestjs-version }} @nestjs/platform-express@${{ matrix.nestjs-version }} -w
+          pnpm add -D @nestjs/common@${{ matrix.nestjs-version }} @nestjs/core@${{ matrix.nestjs-version }} @nestjs/platform-express@${{ matrix.nestjs-version }} -w
 
           # Install package-specific dependencies
           if [ "${{ matrix.package }}" = "health-indicator" ]; then
-            pnpm add -D @nestjs/terminus@${{ matrix.terminus-version }} -w
-          fi
-
-          if [ "${{ matrix.package }}" = "throttler-storage" ]; then
-            # Update the dependency in the package itself
-            cd packages/throttler-storage
-            pnpm add @nestjs/throttler@${{ matrix.throttler-version }} -w
-            cd ../..
+            pnpm add -D @nestjs/terminus@${{ matrix.nestjs-version }} -w
           fi
 
       - name: Run unit tests
