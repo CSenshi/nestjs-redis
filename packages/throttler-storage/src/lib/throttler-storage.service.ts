@@ -11,8 +11,8 @@ type RedisClientLike = RedisClientType | RedisClusterType | RedisSentinelType;
 
 @Injectable()
 export class RedisThrottlerStorage implements ThrottlerStorage {
+  private scriptSha?: string;
   private readonly prefix = '_throttler';
-  private scriptSha: string | null = null;
   private readonly luaScript = `
     local key = KEYS[1]
     local blockKey = KEYS[2]
@@ -66,28 +66,31 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
    * Loads the Lua script into Redis and caches its SHA1 hash.
    * This method is called lazily on first use or when the script is not found.
    */
-  private async loadScript(): Promise<string> {
+  private async loadScript(script: string): Promise<string> {
     if (this.scriptSha) {
       return this.scriptSha;
     }
 
-    this.scriptSha = await this.client.scriptLoad(this.luaScript);
-    return this.scriptSha;
+    return (this.scriptSha = await this.client.scriptLoad(script));
   }
 
   /**
    * Executes the Lua script using evalSha and converts the result to ThrottlerStorageRecord.
    */
   private async executeScript(
-    scriptSha: string,
+    scriptOrSha: string,
     keys: string[],
     args: string[],
   ): Promise<ThrottlerStorageRecord> {
-    const [totalHits, timeToExpireMs, timeToBlockExpireMs, isBlocked] =
-      (await this.client.evalSha(scriptSha, {
-        keys,
-        arguments: args,
-      })) as [number, number, number, number];
+    const options = {
+      keys,
+      arguments: args,
+    };
+    const [totalHits, timeToExpireMs, timeToBlockExpireMs, isBlocked] = (
+      /^[a-f0-9]{40}$/i.test(scriptOrSha) // Check if it's a SHA1 hash
+        ? await this.client.evalSha(scriptOrSha, options) // Use EVALSHA for cached scripts to optimize performance
+        : await this.client.eval(scriptOrSha, options) // Use EVAL which also caches the script automatically and be able to use EVALSHA next time
+    ) as [number, number, number, number];
 
     return {
       totalHits,
@@ -113,9 +116,6 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
     const redisKey = `${this.prefix}:{${key}}`;
     const blockKey = `${redisKey}:block:${throttlerName}`;
 
-    // Load script SHA if not already loaded
-    let scriptSha = await this.loadScript();
-
     const keys = [redisKey, blockKey];
     const args = [
       throttlerName,
@@ -124,16 +124,22 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
       blockDurationMs.toString(),
     ];
 
+    // Load script SHA if not already loaded
+    const scriptSha = await this.loadScript(this.luaScript);
+
     try {
       return await this.executeScript(scriptSha, keys, args);
     } catch (error: unknown) {
       // Handle NOSCRIPT error - script was flushed from Redis
       if ((error as Error)?.message.includes('NOSCRIPT')) {
-        // Reload the script and retry once
-        this.scriptSha = null;
-        scriptSha = await this.loadScript();
-
-        return await this.executeScript(scriptSha, keys, args);
+        // Redis Cluster might not be able to cache scripts properly in each nodes
+        // Retry by passing the full script through EVAL command to force the node to cache it again
+        // Do not use "script load" command here because the node might be different than the one used for execution
+        try {
+          return await this.executeScript(this.luaScript, keys, args);
+        } catch (err) {
+          // Ignore the error here and re-throw the original error below
+        }
       }
 
       // Re-throw if it's not a NOSCRIPT error
