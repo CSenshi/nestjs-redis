@@ -379,3 +379,63 @@ describe('RedisThrottlerStorage - Factory Methods Integration', () => {
     });
   });
 });
+
+describe('RedisThrottlerStorage - Cluster Mode Database Flush', () => {
+  const CLUSTER_URL = 'redis://localhost:7010';
+  let clusterClient: RedisClusterType;
+  let redisStorage: RedisThrottlerStorage;
+
+  beforeAll(async () => {
+    clusterClient = createCluster({
+      rootNodes: [{ url: CLUSTER_URL }],
+    });
+    await clusterClient.connect();
+    redisStorage = new RedisThrottlerStorage(clusterClient);
+  });
+
+  afterAll(async () => {
+    await clusterClient.quit();
+  });
+
+  it('should reset throttling after database flush and work correctly again', async () => {
+    const ttl = 60000;
+    const limit = 2;
+    const blockDuration = 30000;
+    const throttlerName = 'default';
+
+    // Step 1: Make requests and trigger throttling for 20 different keys
+    for (let i = 0; i < 20; i++) {
+      const key = `user-${i}-${Date.now()}`;
+      await expect(
+        redisStorage.increment(key, ttl, limit, blockDuration, throttlerName),
+      ).resolves.not.toThrow();
+      await expect(
+        redisStorage.increment(key, ttl, limit, blockDuration, throttlerName),
+      ).resolves.not.toThrow();
+      // This should trigger blocking
+      await expect(
+        redisStorage.increment(key, ttl, limit, blockDuration, throttlerName),
+      ).resolves.not.toThrow();
+    }
+
+    // Step 2: Flush the cluster database (flushAll on all nodes)
+    const res = await Promise.all(
+      clusterClient.masters.map((node) => node?.client?.scriptFlush()),
+    );
+    console.log(`masters: ${clusterClient.masters.length} | Flushed: ${res}`);
+
+    // Step 3: After flush, throttling should work correctly again for 20 different keys
+    for (let i = 0; i < 20; i++) {
+      const key = `user-${i}-${Date.now()}`;
+      await expect(
+        redisStorage.increment(key, ttl, limit, blockDuration, throttlerName),
+      ).resolves.not.toThrow();
+      await expect(
+        redisStorage.increment(key, ttl, limit, blockDuration, throttlerName),
+      ).resolves.not.toThrow();
+      await expect(
+        redisStorage.increment(key, ttl, limit, blockDuration, throttlerName),
+      ).resolves.not.toThrow();
+    }
+  });
+});
