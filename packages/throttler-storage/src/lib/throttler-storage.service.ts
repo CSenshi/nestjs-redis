@@ -87,9 +87,9 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
       arguments: args,
     };
     const [totalHits, timeToExpireMs, timeToBlockExpireMs, isBlocked] = (
-      /^[a-f0-9]{40}$/i.test(scriptOrSha)
-        ? await this.client.evalSha(scriptOrSha, options)
-        : await this.client.eval(scriptOrSha, options)
+      /^[a-f0-9]{40}$/i.test(scriptOrSha) // Check if it's a SHA1 hash
+        ? await this.client.evalSha(scriptOrSha, options) // Use EVALSHA for cached scripts to optimize performance
+        : await this.client.eval(scriptOrSha, options) // Use EVAL which also caches the script automatically and be able to use EVALSHA next time
     ) as [number, number, number, number];
 
     return {
@@ -132,7 +132,9 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
     } catch (error: unknown) {
       // Handle NOSCRIPT error - script was flushed from Redis
       if ((error as Error)?.message.includes('NOSCRIPT')) {
-        // Retry using EVAL command which will cache the script automatically
+        // Redis Cluster might not be able to cache scripts properly in each nodes
+        // Retry by passing the full script through EVAL command to force the node to cache it again
+        // Do not use "script load" command here because the node might be different than the one used for execution
         try {
           return await this.executeScript(this.luaScript, keys, args);
         } catch (err) {
