@@ -248,6 +248,12 @@ importers:
         specifier: ^4.0.0
         version: 4.8.1
 
+  packages/streams-transporter:
+    dependencies:
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
   packages/throttler-storage:
     dependencies:
       '@nestjs/common':
