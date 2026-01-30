@@ -59,6 +59,15 @@ pnpm exec nx format:write --all     # format code
 # CI Checks (run before submitting PR)
 pnpm exec nx affected -t lint test build
 pnpm exec nx format:check --all
+
+# Create new library
+pnpm nx g @nx/nest:library \
+	--name=<name> \
+	--directory=packages/<name> \
+	--buildable \
+	--publishable \
+	--linter=eslint \
+	--unitTestRunner=jest
 ```
 
 ## Commit Format
