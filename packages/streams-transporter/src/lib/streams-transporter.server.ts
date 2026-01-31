@@ -11,6 +11,8 @@ export class RedisStreamServer
   private isConsuming = false;
   private consumePromise: Promise<void> | null = null;
   private lastIds = new Map<string, string>();
+  private consumerGroup = 'nestjs-streams';
+  private consumerName = `consumer-${process.pid}`;
 
   constructor() {
     super();
@@ -110,6 +112,7 @@ export class RedisStreamServer
       if (!this.lastIds.has(streamName)) {
         this.lastIds.set(streamName, '0');
       }
+      await this.createConsumerGroup(streamName);
     }
 
     if (!this.isConsuming) {
@@ -118,13 +121,26 @@ export class RedisStreamServer
     }
   }
 
+  private async createConsumerGroup(streamName: string): Promise<void> {
+    if (!this.client) return;
+    try {
+      await this.client.xGroupCreate(streamName, this.consumerGroup, '$', {
+        MKSTREAM: true,
+      });
+    } catch (error: any) {
+      if (!error?.message?.includes('BUSYGROUP')) {
+        throw error;
+      }
+    }
+  }
+
   private async consumeMessages(): Promise<void> {
     if (!this.client) return;
 
     while (this.isConsuming && this.client) {
-      const streams = Array.from(this.lastIds.entries()).map(([key, id]) => ({
+      const streams = Array.from(this.lastIds.keys()).map((key) => ({
         key,
-        id,
+        id: '>' as const,
       }));
       if (streams.length === 0) {
         await new Promise((resolve) => setTimeout(resolve, 100));
@@ -132,10 +148,15 @@ export class RedisStreamServer
       }
 
       try {
-        const result = await this.client.xRead(streams, {
-          BLOCK: 1000,
-          COUNT: 50,
-        });
+        const result = await this.client.xReadGroup(
+          this.consumerGroup,
+          this.consumerName,
+          streams,
+          {
+            BLOCK: 1000,
+            COUNT: 50,
+          },
+        );
 
         if (!result) {
           continue;
@@ -143,8 +164,11 @@ export class RedisStreamServer
 
         for (const streamData of result) {
           for (const message of streamData.messages) {
-            this.lastIds.set(streamData.name, message.id);
-            await this.handleStreamMessage(streamData.name, message.message);
+            await this.handleStreamMessage(
+              streamData.name,
+              message.id,
+              message.message,
+            );
           }
         }
       } catch (error) {
@@ -158,17 +182,34 @@ export class RedisStreamServer
 
   private async handleStreamMessage(
     streamName: string,
+    messageId: string,
     rawMessage: Record<string, string>,
   ): Promise<void> {
-    const pattern = streamName.replace('_microservices:', '');
-    const data = this.parseMessage(rawMessage.data);
+    try {
+      const pattern = streamName.replace('_microservices:', '');
+      const data = this.parseMessage(rawMessage.data);
 
-    if (isRequestPacket(rawMessage)) {
-      return;
+      if (isRequestPacket(rawMessage)) {
+        return;
+      }
+
+      if (isEventPacket(rawMessage)) {
+        await this.handleEvent(pattern, { pattern, data }, {});
+      }
+    } finally {
+      await this.acknowledgeMessage(streamName, messageId);
     }
+  }
 
-    if (isEventPacket(rawMessage)) {
-      await this.handleEvent(pattern, { pattern, data }, {});
+  private async acknowledgeMessage(
+    streamName: string,
+    messageId: string,
+  ): Promise<void> {
+    if (!this.client) return;
+    try {
+      await this.client.xAck(streamName, this.consumerGroup, messageId);
+    } catch (error) {
+      this.logger.error(error);
     }
   }
 
