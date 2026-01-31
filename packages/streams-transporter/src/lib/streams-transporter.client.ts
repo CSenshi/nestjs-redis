@@ -8,6 +8,12 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
   private client: RedisClientType | null = null;
   protected connectionPromise: Promise<any> | null = null;
 
+  constructor() {
+    super();
+    this.initializeSerializer({});
+    this.initializeDeserializer({});
+  }
+
   async connect(): Promise<any> {
     if (this.client) {
       return this.connectionPromise;
@@ -47,7 +53,17 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
   }
 
   async dispatchEvent(packet: ReadPacket): Promise<any> {
-    return console.log('event to dispatch: ', packet);
+    if (!this.client) {
+      throw new Error('Client not connected. Call connect() first.');
+    }
+
+    const pattern = this.normalizePattern(packet.pattern);
+    const streamName = this.getRequestPattern(pattern);
+    const serializedPacket = this.serializer.serialize(packet);
+
+    await this.client.xAdd(streamName, '*', {
+      data: JSON.stringify(serializedPacket),
+    });
   }
 
   publish(
@@ -70,8 +86,10 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
         }),
       5000,
     );
+  }
 
-    return () => console.log('teardown');
+  public getRequestPattern(pattern: string): string {
+    return `_microservices:${pattern}`;
   }
 
   unwrap<T = RedisClientType>(): T {
