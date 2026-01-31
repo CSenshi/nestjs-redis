@@ -12,10 +12,14 @@ export type RequestType = {
 
 export type RedisPacket = EventType | RequestType;
 
-export function isEventPacket(packet: RedisPacket): packet is EventType {
+export function isEventPacket(
+  packet: Record<string, string>,
+): packet is EventType {
   return packet.e === '1';
 }
 
-export function isRequestPacket(packet: RedisPacket): packet is RequestType {
+export function isRequestPacket(
+  packet: Record<string, string>,
+): packet is RequestType {
   return packet.e === '0';
 }
