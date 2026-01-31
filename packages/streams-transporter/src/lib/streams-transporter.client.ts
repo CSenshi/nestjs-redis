@@ -1,13 +1,49 @@
+import { Logger } from '@nestjs/common';
 import { ClientProxy, ReadPacket, WritePacket } from '@nestjs/microservices';
-import type { RedisEvents, RedisStatus } from './redis.events';
+import { RedisClientType, createClient } from 'redis';
+import { type RedisEvents, RedisStatus } from './redis.events';
 
 export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
+  protected readonly logger = new Logger(RedisStreamClient.name);
+  private client: RedisClientType | null = null;
+  protected connectionPromise: Promise<any> | null = null;
+
   async connect(): Promise<any> {
-    console.log('connect');
+    if (this.client) {
+      return this.connectionPromise;
+    }
+
+    this.client = createClient();
+    this.registerEventListeners();
+
+    this.connectionPromise = this.client.connect();
+
+    await this.connectionPromise;
+    return this.connectionPromise;
+  }
+
+  private registerEventListeners(): void {
+    if (!this.client) return;
+
+    this.client.on('error', (err) => this.logger.error(err));
+
+    this.client.on('connect', () => {
+      this._status$.next(RedisStatus.CONNECT);
+    });
+    this.client.on('ready', () => {
+      this._status$.next(RedisStatus.CONNECTED);
+    });
+    this.client.on('reconnecting', () => {
+      this._status$.next(RedisStatus.RECONNECTING);
+    });
+    this.client.on('end', () => {
+      this._status$.next(RedisStatus.DISCONNECTED);
+    });
   }
 
   async close() {
-    console.log('close');
+    if (this.client) await this.client.quit();
+    this.client = null;
   }
 
   async dispatchEvent(packet: ReadPacket): Promise<any> {
@@ -38,7 +74,13 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
     return () => console.log('teardown');
   }
 
-  unwrap<T = never>(): T {
-    throw new Error('Method not implemented.');
+  unwrap<T = RedisClientType>(): T {
+    if (!this.client) {
+      throw new Error(
+        'Not initialized. Please call the "connect" method first.',
+      );
+    }
+
+    return this.client as T;
   }
 }

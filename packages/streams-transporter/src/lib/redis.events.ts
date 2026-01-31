@@ -4,12 +4,14 @@ type VoidCallback = (client: RedisClientType) => void;
 type OnErrorCallback = (client: RedisClientType, error: Error) => void;
 type OnWarningCallback = (client: RedisClientType, warning: any) => void;
 
-export declare const enum RedisStatus {
+export const enum RedisStatus {
+  CONNECT = 'connect',
   DISCONNECTED = 'disconnected',
   RECONNECTING = 'reconnecting',
   CONNECTED = 'connected',
 }
-export declare const enum RedisEventsMap {
+
+export const enum RedisEventsMap {
   CONNECT = 'connect',
   READY = 'ready',
   ERROR = 'error',
