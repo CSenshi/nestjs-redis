@@ -2,6 +2,7 @@ import { Logger } from '@nestjs/common';
 import { ClientProxy, ReadPacket, WritePacket } from '@nestjs/microservices';
 import { RedisClientType, createClient } from 'redis';
 import { type RedisEvents, RedisStatus } from './redis.events';
+import { EventType } from './types';
 
 export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
   protected readonly logger = new Logger(RedisStreamClient.name);
@@ -60,9 +61,14 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
     const pattern = this.normalizePattern(packet.pattern);
     const streamName = this.getRequestPattern(pattern);
     const serializedPacket = this.serializer.serialize(packet);
+    const envelope: EventType = {
+      e: true,
+      pattern: serializedPacket.pattern,
+      data: serializedPacket.data,
+    };
 
     await this.client.xAdd(streamName, '*', {
-      data: JSON.stringify(serializedPacket),
+      data: JSON.stringify(envelope),
     });
   }
 

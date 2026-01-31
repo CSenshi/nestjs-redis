@@ -44,6 +44,7 @@ describe('RedisStreamsTransporter - Integration', () => {
 
       const parsed = JSON.parse(entries[0].message.data as string);
       expect(parsed).toEqual({
+        e: true,
         pattern: 'user.created',
         data: { userId: 123, name: 'John Doe' },
       });
@@ -63,6 +64,7 @@ describe('RedisStreamsTransporter - Integration', () => {
       expect(entries).toHaveLength(1);
       const parsed = JSON.parse(entries[0].message.data as string);
       expect(parsed).toEqual({
+        e: true,
         pattern: { resource: 'user', cmd: 'created' },
         data: { id: 1 },
       });
@@ -82,8 +84,8 @@ describe('RedisStreamsTransporter - Integration', () => {
         JSON.parse(entry.message.data as string),
       );
       expect(parsed).toEqual([
-        { pattern: 'user.updated', data: { id: 1 } },
-        { pattern: 'user.updated', data: { id: 2 } },
+        { e: true, pattern: 'user.updated', data: { id: 1 } },
+        { e: true, pattern: 'user.updated', data: { id: 2 } },
       ]);
     });
 
