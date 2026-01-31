@@ -40,14 +40,11 @@ describe('RedisStreamsTransporter - Integration', () => {
       const entries = await readAllEntries(streamName);
 
       expect(entries).toHaveLength(1);
+      expect(entries[0].message.e).toBe('1');
       expect(entries[0].message.data).toBeDefined();
 
       const parsed = JSON.parse(entries[0].message.data as string);
-      expect(parsed).toEqual({
-        e: true,
-        pattern: 'user.created',
-        data: { userId: 123, name: 'John Doe' },
-      });
+      expect(parsed).toEqual({ userId: 123, name: 'John Doe' });
     });
 
     it('should accept object patterns and normalize the stream name', async () => {
@@ -62,12 +59,9 @@ describe('RedisStreamsTransporter - Integration', () => {
       const entries = await readAllEntries(streamName);
 
       expect(entries).toHaveLength(1);
+      expect(entries[0].message.e).toBe('1');
       const parsed = JSON.parse(entries[0].message.data as string);
-      expect(parsed).toEqual({
-        e: true,
-        pattern: { resource: 'user', cmd: 'created' },
-        data: { id: 1 },
-      });
+      expect(parsed).toEqual({ id: 1 });
     });
 
     it('should write multiple events to the same stream', async () => {
@@ -80,12 +74,13 @@ describe('RedisStreamsTransporter - Integration', () => {
       const entries = await readAllEntries(streamName);
 
       expect(entries).toHaveLength(2);
-      const parsed = entries.map((entry) =>
-        JSON.parse(entry.message.data as string),
-      );
+      const parsed = entries.map((entry) => ({
+        e: entry.message.e,
+        data: JSON.parse(entry.message.data as string),
+      }));
       expect(parsed).toEqual([
-        { e: true, pattern: 'user.updated', data: { id: 1 } },
-        { e: true, pattern: 'user.updated', data: { id: 2 } },
+        { e: '1', data: { id: 1 } },
+        { e: '1', data: { id: 2 } },
       ]);
     });
 

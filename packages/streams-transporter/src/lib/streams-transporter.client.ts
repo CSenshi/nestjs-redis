@@ -61,15 +61,13 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
     const pattern = this.normalizePattern(packet.pattern);
     const streamName = this.getRequestPattern(pattern);
     const serializedPacket = this.serializer.serialize(packet);
-    const envelope: EventType = {
-      e: true,
-      pattern: serializedPacket.pattern,
-      data: serializedPacket.data,
+
+    const data: EventType = {
+      e: '1',
+      data: JSON.stringify(serializedPacket.data),
     };
 
-    await this.client.xAdd(streamName, '*', {
-      data: JSON.stringify(envelope),
-    });
+    await this.client.xAdd(streamName, '*', data);
   }
 
   publish(
