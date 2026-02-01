@@ -2,7 +2,7 @@ import { Logger } from '@nestjs/common';
 import { ClientProxy, ReadPacket, WritePacket } from '@nestjs/microservices';
 import { randomUUID } from 'crypto';
 import { RedisClientType, createClient } from 'redis';
-import { type RedisEvents, RedisStatus } from './redis.events';
+import { type RedisEvents, RedisEventsMap, RedisStatus } from './redis.events';
 import {
   RedisStreamsOptions,
   RedisStreamsResolvedOptions,
@@ -22,6 +22,10 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
   private isListening = false;
   private replyListenerPromise: Promise<void> | null = null;
   private readonly options: RedisStreamsResolvedOptions;
+  private pendingEventListeners: Array<{
+    event: string;
+    callback: (...args: any[]) => void;
+  }> = [];
 
   constructor(options: RedisStreamsOptions = {}) {
     super();
@@ -64,6 +68,14 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
     this.client.on('end', () => {
       this._status$.next(RedisStatus.DISCONNECTED);
     });
+
+    if (this.pendingEventListeners.length > 0) {
+      this.pendingEventListeners.forEach(({ event, callback }) => {
+        if (!this.client) return;
+        this.client.on(event, callback);
+      });
+      this.pendingEventListeners = [];
+    }
   }
 
   async close() {
@@ -72,6 +84,10 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
       await this.replyListenerPromise;
     }
     if (this.client) {
+      for (const callback of this.routingMap.values()) {
+        callback({ err: new Error('Client closed'), isDisposed: true });
+      }
+      this.routingMap.clear();
       try {
         await this.client.del(this.replyStreamName);
       } catch {
@@ -81,6 +97,7 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
     }
     this.client = null;
     this.connectionPromise = null;
+    this.pendingEventListeners = [];
   }
 
   async dispatchEvent(packet: ReadPacket): Promise<any> {
@@ -124,23 +141,28 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
 
       this.routingMap.set(requestPacket.id, callback);
 
-      void this.client.xAdd(
-        streamName,
-        '*',
-        {
-          e: '0',
-          id: requestPacket.id,
-          replyTo: this.replyStreamName,
-          data: JSON.stringify(serializedPacket.data),
-        },
-        {
-          TRIM: {
-            strategy: 'MAXLEN',
-            strategyModifier: '~',
-            threshold: this.options.maxStreamLength,
+      void this.client
+        .xAdd(
+          streamName,
+          '*',
+          {
+            e: '0',
+            id: requestPacket.id,
+            replyTo: this.replyStreamName,
+            data: JSON.stringify(serializedPacket.data),
           },
-        },
-      );
+          {
+            TRIM: {
+              strategy: 'MAXLEN',
+              strategyModifier: '~',
+              threshold: this.options.maxStreamLength,
+            },
+          },
+        )
+        .catch((err) => {
+          cleanup();
+          callback({ err });
+        });
 
       return cleanup;
     } catch (err) {
@@ -151,6 +173,17 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
 
   public getRequestPattern(pattern: string): string {
     return `${this.options.streamPrefix}:${pattern}`;
+  }
+
+  public override on<
+    EventKey extends keyof RedisEvents = keyof RedisEvents,
+    EventCallback extends RedisEvents[EventKey] = RedisEvents[EventKey],
+  >(event: EventKey, callback: EventCallback): void {
+    if (this.client) {
+      this.client.on(event, callback);
+    } else {
+      this.pendingEventListeners.push({ event, callback });
+    }
   }
 
   private async listenForReplies(): Promise<void> {

@@ -1,8 +1,6 @@
-import type { RedisClientType } from 'redis';
-
-type VoidCallback = (client: RedisClientType) => void;
-type OnErrorCallback = (client: RedisClientType, error: Error) => void;
-type OnWarningCallback = (client: RedisClientType, warning: any) => void;
+type VoidCallback = () => void;
+type OnErrorCallback = (error: Error) => void;
+type OnWarningCallback = (warning: any) => void;
 
 export const enum RedisStatus {
   CONNECT = 'connect',
