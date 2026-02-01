@@ -1,8 +1,13 @@
 import { CustomTransportStrategy, Server } from '@nestjs/microservices';
-import { RedisClientOptions, type RedisClientType, createClient } from 'redis';
+import { type RedisClientType, createClient } from 'redis';
 import { firstValueFrom } from 'rxjs';
 import { RedisEvents, RedisStatus } from './redis.events';
 import { isEventPacket, isRequestPacket } from './types';
+import {
+  RedisStreamsOptions,
+  RedisStreamsResolvedOptions,
+  resolveRedisStreamsOptions,
+} from './streams-transporter.options';
 
 export class RedisStreamServer
   extends Server<RedisEvents, RedisStatus>
@@ -13,12 +18,17 @@ export class RedisStreamServer
   private isConsuming = false;
   private consumePromise: Promise<void> | null = null;
   private lastIds = new Map<string, string>();
-  private consumerGroup = 'nestjs-streams';
+  private consumerGroup = '';
   private consumerName = `consumer-${process.pid}`;
   public override transportId = Symbol('REDIS_STREAMS');
+  private readonly options: RedisStreamsResolvedOptions;
 
-  constructor(private readonly options: RedisClientOptions = {}) {
+  constructor(options: RedisStreamsOptions = {}) {
     super();
+    this.options = resolveRedisStreamsOptions(options);
+    this.consumerGroup = this.options.consumerGroup;
+    this.consumerName =
+      this.options.consumerName || `consumer-${process.pid}`;
     this.initializeSerializer({});
     this.initializeDeserializer({});
   }
@@ -163,8 +173,8 @@ export class RedisStreamServer
           this.consumerName,
           streams,
           {
-            BLOCK: 100,
-            COUNT: 50,
+            BLOCK: this.options.blockTimeout,
+            COUNT: this.options.batchSize,
           },
         )) as XReadGroupResult;
 
@@ -184,7 +194,9 @@ export class RedisStreamServer
       } catch (error) {
         if (this.isConsuming) {
           this.logger.error(error);
-          await new Promise((resolve) => setTimeout(resolve, 250));
+          await new Promise((resolve) =>
+            setTimeout(resolve, this.options.retryDelay),
+          );
         }
       }
     }
@@ -196,7 +208,7 @@ export class RedisStreamServer
     rawMessage: Record<string, string>,
   ): Promise<void> {
     try {
-      const pattern = streamName.replace('_microservices:', '');
+      const pattern = streamName.replace(`${this.options.streamPrefix}:`, '');
       const data = this.parseMessage(rawMessage.data);
 
       if (isRequestPacket(rawMessage)) {
@@ -238,7 +250,7 @@ export class RedisStreamServer
   }
 
   public getRequestPattern(pattern: string): string {
-    return `_microservices:${pattern}`;
+    return `${this.options.streamPrefix}:${pattern}`;
   }
 
   private async handleRequest(
@@ -258,21 +270,43 @@ export class RedisStreamServer
     try {
       const response$ = this.transformToObservable(await handler(data, {}));
       const response = await firstValueFrom(response$);
-      await this.client.xAdd(replyTo, '*', {
-        id,
-        data: JSON.stringify(response),
-        isDisposed: '1',
-      });
+      await this.client.xAdd(
+        replyTo,
+        '*',
+        {
+          id,
+          data: JSON.stringify(response),
+          isDisposed: '1',
+        },
+        {
+          TRIM: {
+            strategy: 'MAXLEN',
+            strategyModifier: '~',
+            threshold: this.options.maxStreamLength,
+          },
+        },
+      );
     } catch (error) {
-      await this.client.xAdd(replyTo, '*', {
-        id,
-        err: JSON.stringify(
-          error instanceof Error
-            ? { message: error.message, name: error.name }
-            : error,
-        ),
-        isDisposed: '1',
-      });
+      await this.client.xAdd(
+        replyTo,
+        '*',
+        {
+          id,
+          err: JSON.stringify(
+            error instanceof Error
+              ? { message: error.message, name: error.name }
+              : error,
+          ),
+          isDisposed: '1',
+        },
+        {
+          TRIM: {
+            strategy: 'MAXLEN',
+            strategyModifier: '~',
+            threshold: this.options.maxStreamLength,
+          },
+        },
+      );
     } finally {
       this.onProcessingEndHook?.(this.transportId, {});
     }

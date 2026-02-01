@@ -1,10 +1,15 @@
 import { Logger } from '@nestjs/common';
 import { ClientProxy, ReadPacket, WritePacket } from '@nestjs/microservices';
 import { randomUUID } from 'crypto';
-import { RedisClientOptions, RedisClientType, createClient } from 'redis';
+import { RedisClientType, createClient } from 'redis';
 import { type RedisEvents, RedisStatus } from './redis.events';
 import { isResponsePacket } from './types';
 import { EventType } from './types';
+import {
+  RedisStreamsOptions,
+  RedisStreamsResolvedOptions,
+  resolveRedisStreamsOptions,
+} from './streams-transporter.options';
 
 export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
   protected readonly logger = new Logger(RedisStreamClient.name);
@@ -12,14 +17,15 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
     null;
   protected connectionPromise: Promise<any> | null = null;
   private readonly clientId = `client-${randomUUID()}`;
-  private replyStreamName = `_microservices:reply:${this.clientId}`;
+  private replyStreamName = '';
   private isListening = false;
   private replyListenerPromise: Promise<void> | null = null;
-  private readonly options: RedisClientOptions;
+  private readonly options: RedisStreamsResolvedOptions;
 
-  constructor(options: RedisClientOptions = {}) {
+  constructor(options: RedisStreamsOptions = {}) {
     super();
-    this.options = options;
+    this.options = resolveRedisStreamsOptions(options);
+    this.replyStreamName = `${this.options.streamPrefix}:reply:${this.clientId}`;
     this.initializeSerializer({});
     this.initializeDeserializer({});
   }
@@ -90,7 +96,18 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
       data: JSON.stringify(serializedPacket.data),
     };
 
-    await this.client.xAdd(streamName, '*', data);
+    await this.client.xAdd(
+      streamName,
+      '*',
+      data,
+      {
+        TRIM: {
+          strategy: 'MAXLEN',
+          strategyModifier: '~',
+          threshold: this.options.maxStreamLength,
+        },
+      },
+    );
   }
 
   publish(
@@ -111,12 +128,23 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
 
       this.routingMap.set(requestPacket.id, callback);
 
-      void this.client.xAdd(streamName, '*', {
-        e: '0',
-        id: requestPacket.id,
-        replyTo: this.replyStreamName,
-        data: JSON.stringify(serializedPacket.data),
-      });
+      void this.client.xAdd(
+        streamName,
+        '*',
+        {
+          e: '0',
+          id: requestPacket.id,
+          replyTo: this.replyStreamName,
+          data: JSON.stringify(serializedPacket.data),
+        },
+        {
+          TRIM: {
+            strategy: 'MAXLEN',
+            strategyModifier: '~',
+            threshold: this.options.maxStreamLength,
+          },
+        },
+      );
 
       return cleanup;
     } catch (err) {
@@ -126,7 +154,7 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
   }
 
   public getRequestPattern(pattern: string): string {
-    return `_microservices:${pattern}`;
+    return `${this.options.streamPrefix}:${pattern}`;
   }
 
   private async listenForReplies(): Promise<void> {
@@ -137,7 +165,7 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
       try {
         const result = await this.client.xRead(
           { key: this.replyStreamName, id: lastId },
-          { BLOCK: 100, COUNT: 10 },
+          { BLOCK: this.options.blockTimeout, COUNT: this.options.batchSize },
         );
 
         if (Array.isArray(result) && result.length > 0) {
@@ -154,7 +182,9 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
       } catch (err) {
         if (this.isListening) {
           this.logger.error(err);
-          await new Promise((resolve) => setTimeout(resolve, 250));
+          await new Promise((resolve) =>
+            setTimeout(resolve, this.options.retryDelay),
+          );
         }
       }
     }
