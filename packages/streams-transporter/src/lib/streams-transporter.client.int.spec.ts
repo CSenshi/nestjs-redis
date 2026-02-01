@@ -6,11 +6,12 @@ import { RedisStreamClient } from './streams-transporter.client';
 describe('RedisStreamsTransporter - Integration', () => {
   let redisClient: RedisClientType;
   let client: RedisStreamClient;
+  const database = 1;
   const readAllEntries = async (streamName: string) =>
     redisClient.xRange(streamName, '-', '+');
 
   beforeAll(async () => {
-    redisClient = createClient();
+    redisClient = createClient({ database });
     await redisClient.connect();
   });
 
@@ -20,6 +21,8 @@ describe('RedisStreamsTransporter - Integration', () => {
 
   beforeEach(async () => {
     await redisClient.flushDb();
+    client = new RedisStreamClient({ database });
+    await client.connect();
   });
 
   afterEach(async () => {
@@ -30,8 +33,6 @@ describe('RedisStreamsTransporter - Integration', () => {
 
   describe('Event Pattern (Fire-and-Forget)', () => {
     it('should send an event', async () => {
-      client = new RedisStreamClient();
-
       await firstValueFrom(
         client.emit('user.created', { userId: 123, name: 'John Doe' }),
       );
@@ -48,8 +49,6 @@ describe('RedisStreamsTransporter - Integration', () => {
     });
 
     it('should accept object patterns and normalize the stream name', async () => {
-      client = new RedisStreamClient();
-
       await firstValueFrom(
         client.emit({ resource: 'user', cmd: 'created' }, { id: 1 }),
       );
@@ -65,8 +64,6 @@ describe('RedisStreamsTransporter - Integration', () => {
     });
 
     it('should write multiple events to the same stream', async () => {
-      client = new RedisStreamClient();
-
       await firstValueFrom(client.emit('user.updated', { id: 1 }));
       await firstValueFrom(client.emit('user.updated', { id: 2 }));
 
@@ -85,8 +82,6 @@ describe('RedisStreamsTransporter - Integration', () => {
     });
 
     it('should allow reconnecting after close', async () => {
-      client = new RedisStreamClient();
-
       await firstValueFrom(client.emit('user.reconnected', { id: 1 }));
       await client.close();
       await firstValueFrom(client.emit('user.reconnected', { id: 2 }));
@@ -98,8 +93,6 @@ describe('RedisStreamsTransporter - Integration', () => {
     });
 
     it('should handle many events (load-ish)', async () => {
-      client = new RedisStreamClient();
-
       const total = 2000;
       await Promise.all(
         Array.from({ length: total }, (_, idx) =>
@@ -117,9 +110,9 @@ describe('RedisStreamsTransporter - Integration', () => {
 
     it('should emit from multiple clients to multiple streams', async () => {
       const clients = [
-        new RedisStreamClient(),
-        new RedisStreamClient(),
-        new RedisStreamClient(),
+        new RedisStreamClient({ database }),
+        new RedisStreamClient({ database }),
+        new RedisStreamClient({ database }),
       ];
 
       try {
@@ -154,8 +147,7 @@ describe('RedisStreamsTransporter - Integration', () => {
 
   describe('Client Lifecycle', () => {
     it('should throw when unwrap is called before connect', () => {
-      client = new RedisStreamClient();
-      expect(() => client.unwrap()).toThrow(
+      expect(() => new RedisStreamClient({ database }).unwrap()).toThrow(
         'Not initialized. Please call the "connect" method first.',
       );
     });

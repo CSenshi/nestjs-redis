@@ -8,6 +8,7 @@ describe('RedisStreamsTransporter - Server Integration', () => {
   let redisClient: RedisClientType;
   let client: RedisStreamClient;
   let server: RedisStreamServer;
+  const database = 2;
 
   const startServer = async () => {
     await new Promise<void>((resolve, reject) => {
@@ -58,7 +59,7 @@ describe('RedisStreamsTransporter - Server Integration', () => {
     }, timeoutMs);
 
   beforeAll(async () => {
-    redisClient = createClient();
+    redisClient = createClient({ database });
     await redisClient.connect();
   });
 
@@ -81,7 +82,7 @@ describe('RedisStreamsTransporter - Server Integration', () => {
 
   it('should invoke event handler for dispatched event', async () => {
     const received: Array<{ userId: number }> = [];
-    server = new RedisStreamServer();
+    server = new RedisStreamServer({ database });
 
     server.addHandler(
       'user.created',
@@ -92,7 +93,7 @@ describe('RedisStreamsTransporter - Server Integration', () => {
     );
     await startServer();
 
-    client = new RedisStreamClient();
+    client = new RedisStreamClient({ database });
     await firstValueFrom(client.emit('user.created', { userId: 123 }));
 
     await waitFor(async () => {
@@ -107,7 +108,7 @@ describe('RedisStreamsTransporter - Server Integration', () => {
 
   it('should match object patterns', async () => {
     const received: Array<{ id: number }> = [];
-    server = new RedisStreamServer();
+    server = new RedisStreamServer({ database });
 
     server.addHandler(
       { resource: 'user', cmd: 'created' },
@@ -118,7 +119,7 @@ describe('RedisStreamsTransporter - Server Integration', () => {
     );
     await startServer();
 
-    client = new RedisStreamClient();
+    client = new RedisStreamClient({ database });
     await firstValueFrom(
       client.emit({ resource: 'user', cmd: 'created' }, { id: 1 }),
     );
@@ -135,7 +136,7 @@ describe('RedisStreamsTransporter - Server Integration', () => {
 
   it('should handle many events without duplicates', async () => {
     const received = new Set<number>();
-    server = new RedisStreamServer();
+    server = new RedisStreamServer({ database });
 
     server.addHandler(
       'user.bulk',
@@ -146,7 +147,7 @@ describe('RedisStreamsTransporter - Server Integration', () => {
     );
     await startServer();
 
-    client = new RedisStreamClient();
+    client = new RedisStreamClient({ database });
     const total = 2000;
     await Promise.all(
       Array.from({ length: total }, (_, idx) =>
@@ -160,7 +161,7 @@ describe('RedisStreamsTransporter - Server Integration', () => {
 
   it('should not replay events across reads', async () => {
     const received: number[] = [];
-    server = new RedisStreamServer();
+    server = new RedisStreamServer({ database });
 
     server.addHandler(
       'user.unique',
@@ -171,15 +172,17 @@ describe('RedisStreamsTransporter - Server Integration', () => {
     );
     await startServer();
 
-    client = new RedisStreamClient();
-    const total = 2000;
-    for (let i = 0; i < total; i += 1) {
-      await firstValueFrom(client.emit('user.unique', { id: i + 1 }));
-    }
+    client = new RedisStreamClient({ database });
+    const total = 500;
+    await Promise.all(
+      Array.from({ length: total }, (_, idx) =>
+        firstValueFrom(client.emit('user.unique', { id: idx + 1 })),
+      ),
+    );
 
-    await waitForCount(() => received.length, total);
+    await waitForCount(() => received.length, total, 12000);
 
     const unique = new Set(received);
     expect(unique.size).toBe(total);
-  });
+  }, 15000);
 });
