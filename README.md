@@ -18,7 +18,7 @@ Modern, production-ready Redis integration for NestJS. Unified APIs, type-safe, 
 
 ## Overview
 
-NestJS Redis Toolkit is a cohesive set of utilities for Redis in NestJS applications. It provides a consistent developer experience across client connections, throttling storage, health checks, and distributed locking.
+NestJS Redis Toolkit is a cohesive set of utilities for Redis in NestJS applications. It provides a consistent developer experience across client connections, microservices transport (Redis Streams), throttling storage, health checks, and distributed locking.
 
 - Future‑proof: built on the actively maintained node-redis client
 - Consistent APIs: NestJS-first patterns and DI integration
@@ -37,6 +37,7 @@ Curious about the story behind this toolkit and how it simplifies Redis in NestJ
 - [@nestjs-redis/throttler-storage](packages/throttler-storage/README.md) — Redis storage for NestJS Throttler
 - [@nestjs-redis/health-indicator](packages/health-indicator/README.md) — Redis health checks for Terminus
 - [@nestjs-redis/socket.io-adapter](packages/socket.io-adapter/README.md) — Redis-powered Socket.IO adapter for scalable WebSocket connections
+- [@nestjs-redis/streams-transporter](packages/streams-transporter/README.md) — Custom NestJS microservices transporter using Redis Streams
 
 ## Quick Start
 
@@ -122,12 +123,13 @@ This provides comprehensive operational logging:
 | [`@nestjs-redis/throttler-storage`](https://www.npmjs.com/package/@nestjs-redis/throttler-storage) | 18+     | 9+     | 5+    |
 | [`@nestjs-redis/health-indicator`](https://www.npmjs.com/package/@nestjs-redis/health-indicator)   | 18+     | 9+     | 5+    |
 | [`@nestjs-redis/socket.io-adapter`](https://www.npmjs.com/package/@nestjs-redis/socket.io-adapter) | 18+     | 9+     | 5+    |
+| [`@nestjs-redis/streams-transporter`](https://www.npmjs.com/package/@nestjs-redis/streams-transporter) | 18+     | 9+     | 5+    |
 
 All packages support NestJS 9.x, 10.x, and 11.x.
 
 ## Why use this toolkit?
 
-- Unified, NestJS-first Redis experience across multiple use cases (client, throttling, health, locks)
+- Unified, NestJS-first Redis experience across multiple use cases (client, microservices transport, throttling, health, locks)
 - Built on the official `node-redis` client for long-term maintenance and compatibility
 - Clean APIs with strong TypeScript types and DI-friendly patterns
 - Production-ready lifecycle management (connect/disconnect) and clear error surfaces
