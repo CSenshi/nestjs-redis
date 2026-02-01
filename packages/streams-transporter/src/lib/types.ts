@@ -10,6 +10,13 @@ export type RequestType = {
   replyTo: string;
 };
 
+export type ResponseType = {
+  id: string;
+  data?: string;
+  err?: string;
+  isDisposed?: '0' | '1';
+};
+
 export type RedisPacket = EventType | RequestType;
 
 export function isEventPacket(
@@ -22,4 +29,10 @@ export function isRequestPacket(
   packet: Record<string, string>,
 ): packet is RequestType {
   return packet.e === '0';
+}
+
+export function isResponsePacket(
+  packet: Record<string, string>,
+): packet is ResponseType {
+  return typeof packet.id === 'string' && 'isDisposed' in packet;
 }
