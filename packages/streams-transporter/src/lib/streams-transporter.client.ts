@@ -2,7 +2,7 @@ import { Logger } from '@nestjs/common';
 import { ClientProxy, ReadPacket, WritePacket } from '@nestjs/microservices';
 import { randomUUID } from 'crypto';
 import { RedisClientType, createClient } from 'redis';
-import { type RedisEvents, RedisEventsMap, RedisStatus } from './redis.events';
+import { type RedisEvents, RedisStatus } from './redis.events';
 import {
   RedisStreamsOptions,
   RedisStreamsResolvedOptions,
