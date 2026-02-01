@@ -2,12 +2,13 @@ import { CustomTransportStrategy, Server } from '@nestjs/microservices';
 import { type RedisClientType, createClient } from 'redis';
 import { firstValueFrom } from 'rxjs';
 import { RedisEvents, RedisStatus } from './redis.events';
-import { isEventPacket, isRequestPacket } from './types';
+import { RedisStreamsContext } from './streams-transporter.context';
 import {
   RedisStreamsOptions,
   RedisStreamsResolvedOptions,
   resolveRedisStreamsOptions,
 } from './streams-transporter.options';
+import { isEventPacket, isRequestPacket } from './types';
 
 export class RedisStreamServer
   extends Server<RedisEvents, RedisStatus>
@@ -27,13 +28,12 @@ export class RedisStreamServer
     super();
     this.options = resolveRedisStreamsOptions(options);
     this.consumerGroup = this.options.consumerGroup;
-    this.consumerName =
-      this.options.consumerName || `consumer-${process.pid}`;
+    this.consumerName = this.options.consumerName || `consumer-${process.pid}`;
     this.initializeSerializer({});
     this.initializeDeserializer({});
   }
 
-  async connect(): Promise<any> {
+  async connect(): Promise<void> {
     this.client = createClient(this.options);
     this.registerEventListeners();
 
@@ -140,8 +140,8 @@ export class RedisStreamServer
       await this.client.xGroupCreate(streamName, this.consumerGroup, '$', {
         MKSTREAM: true,
       });
-    } catch (error: any) {
-      if (!error?.message?.includes('BUSYGROUP')) {
+    } catch (error) {
+      if (!(error as Error)?.message?.includes('BUSYGROUP')) {
         throw error;
       }
     }
@@ -210,18 +210,28 @@ export class RedisStreamServer
     try {
       const pattern = streamName.replace(`${this.options.streamPrefix}:`, '');
       const data = this.parseMessage(rawMessage.data);
+      const context = new RedisStreamsContext([
+        streamName,
+        messageId,
+        this.consumerGroup,
+        this.consumerName,
+      ]);
 
       if (isRequestPacket(rawMessage)) {
-        await this.handleRequest(pattern, data, rawMessage);
+        await this.handleRequest(pattern, data, rawMessage, context);
         return;
       }
 
       if (isEventPacket(rawMessage)) {
-        this.onProcessingStartHook(this.transportId, {}, async () => {});
+        this.onProcessingStartHook(
+          this.transportId,
+          context,
+          async () => void 0,
+        );
         try {
-          await this.handleEvent(pattern, { pattern, data }, {});
+          await this.handleEvent(pattern, { pattern, data }, context);
         } finally {
-          this.onProcessingEndHook?.(this.transportId, {});
+          this.onProcessingEndHook?.(this.transportId, context);
         }
       }
     } finally {
@@ -244,7 +254,7 @@ export class RedisStreamServer
   public parseMessage(content: any): Record<string, any> {
     try {
       return JSON.parse(content);
-    } catch (e) {
+    } catch {
       return content;
     }
   }
@@ -257,6 +267,7 @@ export class RedisStreamServer
     pattern: string,
     data: any,
     rawMessage: Record<string, string>,
+    context: RedisStreamsContext,
   ): Promise<void> {
     if (!this.client) return;
     const handler = this.getHandlerByPattern(pattern);
@@ -266,9 +277,11 @@ export class RedisStreamServer
     const id = rawMessage.id;
     if (!replyTo || !id) return;
 
-    this.onProcessingStartHook?.(this.transportId, {}, async () => {});
+    this.onProcessingStartHook?.(this.transportId, context, async () => void 0);
     try {
-      const response$ = this.transformToObservable(await handler(data, {}));
+      const response$ = this.transformToObservable(
+        await handler(data, context),
+      );
       const response = await firstValueFrom(response$);
       await this.client.xAdd(
         replyTo,
@@ -308,7 +321,7 @@ export class RedisStreamServer
         },
       );
     } finally {
-      this.onProcessingEndHook?.(this.transportId, {});
+      this.onProcessingEndHook?.(this.transportId, context);
     }
   }
 }

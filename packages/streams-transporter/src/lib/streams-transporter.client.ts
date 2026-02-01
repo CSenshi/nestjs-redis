@@ -3,19 +3,20 @@ import { ClientProxy, ReadPacket, WritePacket } from '@nestjs/microservices';
 import { randomUUID } from 'crypto';
 import { RedisClientType, createClient } from 'redis';
 import { type RedisEvents, RedisStatus } from './redis.events';
-import { isResponsePacket } from './types';
-import { EventType } from './types';
 import {
   RedisStreamsOptions,
   RedisStreamsResolvedOptions,
   resolveRedisStreamsOptions,
 } from './streams-transporter.options';
+import { isResponsePacket } from './types';
+import { EventType } from './types';
 
 export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
   protected readonly logger = new Logger(RedisStreamClient.name);
   private client: RedisClientType | ReturnType<typeof createClient> | null =
     null;
-  protected connectionPromise: Promise<any> | null = null;
+  protected connectionPromise: Promise<ReturnType<typeof createClient>> | null =
+    null;
   private readonly clientId = `client-${randomUUID()}`;
   private replyStreamName = '';
   private isListening = false;
@@ -30,8 +31,8 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
     this.initializeDeserializer({});
   }
 
-  async connect(): Promise<any> {
-    if (this.client) {
+  async connect(): Promise<ReturnType<typeof createClient>> {
+    if (this.connectionPromise) {
       return this.connectionPromise;
     }
 
@@ -96,18 +97,13 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
       data: JSON.stringify(serializedPacket.data),
     };
 
-    await this.client.xAdd(
-      streamName,
-      '*',
-      data,
-      {
-        TRIM: {
-          strategy: 'MAXLEN',
-          strategyModifier: '~',
-          threshold: this.options.maxStreamLength,
-        },
+    await this.client.xAdd(streamName, '*', data, {
+      TRIM: {
+        strategy: 'MAXLEN',
+        strategyModifier: '~',
+        threshold: this.options.maxStreamLength,
       },
-    );
+    });
   }
 
   publish(
@@ -214,7 +210,7 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
     }
   }
 
-  private parseMessage(content: any): any {
+  private parseMessage(content: string): object | string {
     try {
       return JSON.parse(content);
     } catch {

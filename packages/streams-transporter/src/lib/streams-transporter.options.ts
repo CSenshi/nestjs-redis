@@ -26,14 +26,16 @@ export const REDIS_STREAMS_DEFAULT_OPTIONS: Required<
   streamPrefix: '_microservices',
   consumerGroup: 'nestjs-streams',
   consumerName: '',
-  blockTimeout: 1000,
+  blockTimeout: 100,
   batchSize: 50,
   maxStreamLength: 10000,
   retryDelay: 250,
 };
 
 export type RedisStreamsResolvedOptions = RedisStreamsOptions &
-  Required<Pick<RedisStreamsOptions, keyof typeof REDIS_STREAMS_DEFAULT_OPTIONS>>;
+  Required<
+    Pick<RedisStreamsOptions, keyof typeof REDIS_STREAMS_DEFAULT_OPTIONS>
+  >;
 
 export const resolveRedisStreamsOptions = (
   options: RedisStreamsOptions = {},
