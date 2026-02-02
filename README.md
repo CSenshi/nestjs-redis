@@ -31,7 +31,6 @@ Curious about the story behind this toolkit and how it simplifies Redis in NestJ
 
 ## Packages
 
-- [@nestjs-redis/kit](packages/kit/README.md) — All-in-one convenience package that bundles all toolkit modules
 - [@nestjs-redis/client](packages/client/README.md) — Redis client module with multi-connection support
 - [@nestjs-redis/lock](packages/lock/README.md) — Distributed locking via Redlock
 - [@nestjs-redis/throttler-storage](packages/throttler-storage/README.md) — Redis storage for NestJS Throttler
@@ -41,10 +40,10 @@ Curious about the story behind this toolkit and how it simplifies Redis in NestJ
 
 ## Quick Start
 
-### Recommended: Install the complete toolkit
+Install the packages you need. For a minimal Redis client setup:
 
 ```bash
-npm install @nestjs-redis/kit redis
+npm install @nestjs-redis/client redis
 ```
 
 Minimal setup:
@@ -52,7 +51,7 @@ Minimal setup:
 ```typescript
 // app.module.ts
 import { Module } from '@nestjs/common';
-import { RedisModule } from '@nestjs-redis/kit';
+import { RedisModule } from '@nestjs-redis/client';
 
 @Module({
   imports: [
@@ -67,7 +66,7 @@ export class AppModule {}
 ```typescript
 // app.service.ts
 import { Injectable } from '@nestjs/common';
-import { InjectRedis } from '@nestjs-redis/kit';
+import { InjectRedis } from '@nestjs-redis/client';
 import type { RedisClientType } from 'redis';
 
 @Injectable()
@@ -84,17 +83,7 @@ export class AppService {
 }
 ```
 
-### Alternative: Install individual packages
-
-If you only need specific functionality, install individual packages:
-
-```bash
-npm install @nestjs-redis/client redis
-```
-
-```typescript
-import { RedisModule } from '@nestjs-redis/client';
-```
+For health checks, throttling, locks, Socket.IO, or microservices transport, install the corresponding packages and see their READMEs.
 
 ## Debug Logging
 
@@ -117,7 +106,6 @@ This provides comprehensive operational logging:
 
 | Package                                                                                                | Node.js | NestJS | Redis |
 | ------------------------------------------------------------------------------------------------------ | ------- | ------ | ----- |
-| [`@nestjs-redis/kit`](https://www.npmjs.com/package/@nestjs-redis/kit)                                 | 18+     | 9+     | 5+    |
 | [`@nestjs-redis/client`](https://www.npmjs.com/package/@nestjs-redis/client)                           | 18+     | 9+     | 5+    |
 | [`@nestjs-redis/lock`](https://www.npmjs.com/package/@nestjs-redis/lock)                               | 18+     | 9+     | 5+    |
 | [`@nestjs-redis/throttler-storage`](https://www.npmjs.com/package/@nestjs-redis/throttler-storage)     | 18+     | 9+     | 5+    |

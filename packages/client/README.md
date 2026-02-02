@@ -26,26 +26,16 @@ Flexible, production-ready Redis client module for NestJS with multi-connection 
 
 ## Installation
 
-### Recommended: Install the complete toolkit
-
-```bash
-npm install @nestjs-redis/kit redis
-```
-
-### Alternative: Install client package only
-
 ```bash
 npm install @nestjs-redis/client redis
 ```
 
 ## Quick Start
 
-> **Note**: Examples use `@nestjs-redis/kit` imports (recommended). If you installed only this package, import from `@nestjs-redis/client` instead.
-
 ```typescript
 // app.module.ts
 import { Module } from '@nestjs/common';
-import { RedisModule } from '@nestjs-redis/kit';
+import { RedisModule } from '@nestjs-redis/client';
 
 @Module({
   imports: [
@@ -60,7 +50,7 @@ export class AppModule {}
 ```typescript
 // app.service.ts
 import { Injectable } from '@nestjs/common';
-import { InjectRedis } from '@nestjs-redis/kit';
+import { InjectRedis } from '@nestjs-redis/client';
 import type { RedisClientType } from 'redis';
 
 @Injectable()

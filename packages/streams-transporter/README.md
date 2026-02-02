@@ -27,21 +27,11 @@ Custom NestJS microservices transporter using Redis Streams with event and reque
 
 ## Installation
 
-### Recommended: Install the complete toolkit
-
-```bash
-npm install @nestjs-redis/kit redis
-```
-
-### Alternative: Install streams-transporter package only
-
 ```bash
 npm install @nestjs-redis/streams-transporter redis
 ```
 
 ## Quick Start
-
-> **Note**: Examples use `@nestjs-redis/kit` imports when the package is part of the kit. If you installed only this package, import from `@nestjs-redis/streams-transporter` instead.
 
 ### Server (microservice)
 

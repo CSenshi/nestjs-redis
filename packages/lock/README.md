@@ -25,29 +25,19 @@ Distributed locking for NestJS using Redis and the Redlock algorithm
 
 ## Installation
 
-### Recommended: Install the complete toolkit
-
 ```bash
-npm install @nestjs-redis/kit redis
+npm install @nestjs-redis/lock @nestjs-redis/client redis
 ```
 
-### Alternative: Install lock package only
-
-```bash
-npm install @nestjs-redis/lock redis
-```
+The recommended approach is to use `RedisModule` from `@nestjs-redis/client` so Redis connections are lifecycle-managed by Nest (connect/disconnect with your app). Alternatively, you can pass your own Redis client (e.g. created with `createClient()` from `redis`) and manage its lifecycle yourself.
 
 ## Quick Start
-
-> **Note**: Examples use `@nestjs-redis/kit` imports (recommended). If you installed only this package, import from `@nestjs-redis/lock` and `@nestjs-redis/client` instead.
-
-> Recommended: Use `RedisModule` from `@nestjs-redis/kit` so Redis connections are lifecycle-managed by Nest (connect/disconnect).
-> Alternative: You can create raw Redis clients via `createClient()` from `redis`, but you must manage connecting and disconnecting yourself.
 
 ```typescript
 // app.module.ts
 import { Module } from '@nestjs/common';
-import { RedisModule, RedisToken, RedlockModule } from '@nestjs-redis/kit';
+import { RedisModule, RedisToken } from '@nestjs-redis/client';
+import { RedlockModule } from '@nestjs-redis/lock';
 
 @Module({
   imports: [
@@ -65,7 +55,7 @@ export class AppModule {}
 
 ```typescript
 import { Injectable } from '@nestjs/common';
-import { Redlock } from '@nestjs-redis/kit';
+import { Redlock } from '@nestjs-redis/lock';
 
 @Injectable()
 export class UserService {

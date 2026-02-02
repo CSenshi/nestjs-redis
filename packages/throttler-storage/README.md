@@ -26,32 +26,21 @@ Redis-backed storage for NestJS Throttler enabling distributed rate limiting acr
 
 ## Installation
 
-### Recommended: Install the complete toolkit
-
 ```bash
-npm install @nestjs-redis/kit redis
+npm install @nestjs-redis/throttler-storage @nestjs-redis/client redis
 ```
 
-### Alternative: Install throttler-storage package only
-
-```bash
-npm install @nestjs-redis/throttler-storage redis
-```
+The recommended approach is to use `RedisModule` from `@nestjs-redis/client` so Redis connections are lifecycle-managed by Nest (connect/disconnect with your app). Alternatively, you can pass your own Redis client (e.g. created with `createClient()` from `redis`) and manage its lifecycle yourself.
 
 ## Quick Start
-
-> **Note**: Examples use `@nestjs-redis/kit` imports (recommended). If you installed only this package, import from `@nestjs-redis/throttler-storage` and `@nestjs-redis/client` instead.
 
 ### With existing Redis connection (Recommended)
 
 ```typescript
 import { Module } from '@nestjs/common';
 import { ThrottlerModule, seconds } from '@nestjs/throttler';
-import {
-  RedisModule,
-  RedisThrottlerStorage,
-  RedisToken,
-} from '@nestjs-redis/kit';
+import { RedisModule, RedisToken } from '@nestjs-redis/client';
+import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
 
 @Module({
   imports: [
