@@ -1,0 +1,32 @@
+{
+  "name": "@nestjs-redis/streams-transporter",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "!**/*.tsbuildinfo"
+  ],
+  "nx": {
+    "name": "streams-transporter"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "@nestjs/microservices": "^11.1.12",
+    "redis": "^5.0.0",
+    "tslib": "^2.3.0"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0"
+  }
+}

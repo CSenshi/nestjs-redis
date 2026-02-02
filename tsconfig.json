@@ -23,6 +23,9 @@
     },
     {
       "path": "./examples/full"
+    },
+    {
+      "path": "./packages/streams-transporter"
     }
   ]
 }
