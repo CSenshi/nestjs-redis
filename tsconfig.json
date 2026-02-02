@@ -16,9 +16,6 @@
       "path": "./packages/lock"
     },
     {
-      "path": "./packages/kit"
-    },
-    {
       "path": "./packages/socket.io-adapter"
     },
     {
