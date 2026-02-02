@@ -115,14 +115,14 @@ This provides comprehensive operational logging:
 
 ## Compatibility
 
-| Package                                                                                            | Node.js | NestJS | Redis |
-| -------------------------------------------------------------------------------------------------- | ------- | ------ | ----- |
-| [`@nestjs-redis/kit`](https://www.npmjs.com/package/@nestjs-redis/kit)                             | 18+     | 9+     | 5+    |
-| [`@nestjs-redis/client`](https://www.npmjs.com/package/@nestjs-redis/client)                       | 18+     | 9+     | 5+    |
-| [`@nestjs-redis/lock`](https://www.npmjs.com/package/@nestjs-redis/lock)                           | 18+     | 9+     | 5+    |
-| [`@nestjs-redis/throttler-storage`](https://www.npmjs.com/package/@nestjs-redis/throttler-storage) | 18+     | 9+     | 5+    |
-| [`@nestjs-redis/health-indicator`](https://www.npmjs.com/package/@nestjs-redis/health-indicator)   | 18+     | 9+     | 5+    |
-| [`@nestjs-redis/socket.io-adapter`](https://www.npmjs.com/package/@nestjs-redis/socket.io-adapter) | 18+     | 9+     | 5+    |
+| Package                                                                                                | Node.js | NestJS | Redis |
+| ------------------------------------------------------------------------------------------------------ | ------- | ------ | ----- |
+| [`@nestjs-redis/kit`](https://www.npmjs.com/package/@nestjs-redis/kit)                                 | 18+     | 9+     | 5+    |
+| [`@nestjs-redis/client`](https://www.npmjs.com/package/@nestjs-redis/client)                           | 18+     | 9+     | 5+    |
+| [`@nestjs-redis/lock`](https://www.npmjs.com/package/@nestjs-redis/lock)                               | 18+     | 9+     | 5+    |
+| [`@nestjs-redis/throttler-storage`](https://www.npmjs.com/package/@nestjs-redis/throttler-storage)     | 18+     | 9+     | 5+    |
+| [`@nestjs-redis/health-indicator`](https://www.npmjs.com/package/@nestjs-redis/health-indicator)       | 18+     | 9+     | 5+    |
+| [`@nestjs-redis/socket.io-adapter`](https://www.npmjs.com/package/@nestjs-redis/socket.io-adapter)     | 18+     | 9+     | 5+    |
 | [`@nestjs-redis/streams-transporter`](https://www.npmjs.com/package/@nestjs-redis/streams-transporter) | 18+     | 9+     | 5+    |
 
 All packages support NestJS 9.x, 10.x, and 11.x.
