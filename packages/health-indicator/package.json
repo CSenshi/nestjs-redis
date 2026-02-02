@@ -12,43 +12,25 @@
     "monitoring",
     "typescript"
   ],
-  "homepage": "https://github.com/nestjs-redis/health-indicator#readme",
-  "main": "./src/index.js",
-  "module": "./src/index.js",
-  "types": "./src/index.d.ts",
+  "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/health-indicator",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "development": "./src/index.ts",
-      "types": "./src/index.d.ts",
-      "import": "./src/index.js",
-      "default": "./src/index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "files": [
-    "src",
+    "dist",
     "!**/*.tsbuildinfo"
   ],
   "nx": {
-    "name": "health-indicator",
-    "targets": {
-      "build": {
-        "executor": "@nx/js:tsc",
-        "outputs": [
-          "{options.outputPath}"
-        ],
-        "options": {
-          "outputPath": "dist/packages/health-indicator",
-          "tsConfig": "packages/health-indicator/tsconfig.lib.json",
-          "packageJson": "packages/health-indicator/package.json",
-          "main": "packages/health-indicator/src/index.ts",
-          "assets": [
-            "packages/health-indicator/*.md",
-            "LICENSE"
-          ]
-        }
-      }
-    }
+    "name": "health-indicator"
   },
   "dependencies": {
     "tslib": "^2.3.0"
@@ -68,6 +50,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/CSenshi/nestjs-redis",
-    "directory": "packages/health-indicator.ts"
+    "directory": "packages/health-indicator"
   }
 }

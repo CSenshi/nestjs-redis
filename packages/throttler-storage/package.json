@@ -15,50 +15,24 @@
     "throttling"
   ],
   "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/throttler-storage",
-  "main": "./src/index.js",
-  "module": "./src/index.js",
-  "types": "./src/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "development": "./src/index.ts",
-      "types": "./src/index.d.ts",
-      "import": "./src/index.js",
-      "default": "./src/index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "files": [
-    "src",
+    "dist",
     "!**/*.tsbuildinfo"
   ],
   "nx": {
-    "name": "throttler-storage",
-    "tags": [
-      "scope:throttler",
-      "type:library",
-      "platform:node",
-      "framework:nestjs",
-      "database:redis",
-      "feature:rate-limiting"
-    ],
-    "targets": {
-      "build": {
-        "executor": "@nx/js:tsc",
-        "outputs": [
-          "{options.outputPath}"
-        ],
-        "options": {
-          "outputPath": "dist/packages/throttler-storage",
-          "tsConfig": "packages/throttler-storage/tsconfig.lib.json",
-          "packageJson": "packages/throttler-storage/package.json",
-          "main": "packages/throttler-storage/src/index.ts",
-          "assets": [
-            "packages/throttler-storage/*.md",
-            "LICENSE"
-          ]
-        }
-      }
-    }
+    "name": "throttler-storage"
   },
   "dependencies": {
     "tslib": "^2.3.0"

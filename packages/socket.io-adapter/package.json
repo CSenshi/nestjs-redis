@@ -15,42 +15,24 @@
     "node-redis"
   ],
   "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/socket.io-adapter",
-  "main": "./src/index.js",
-  "module": "./src/index.js",
-  "types": "./src/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "development": "./src/index.ts",
-      "types": "./src/index.d.ts",
-      "import": "./src/index.js",
-      "default": "./src/index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "files": [
-    "src",
+    "dist",
     "!**/*.tsbuildinfo"
   ],
   "nx": {
-    "name": "socket.io-adapter",
-    "targets": {
-      "build": {
-        "executor": "@nx/js:tsc",
-        "outputs": [
-          "{options.outputPath}"
-        ],
-        "options": {
-          "outputPath": "dist/packages/socket.io-adapter",
-          "tsConfig": "packages/socket.io-adapter/tsconfig.lib.json",
-          "packageJson": "packages/socket.io-adapter/package.json",
-          "main": "packages/socket.io-adapter/src/index.ts",
-          "assets": [
-            "packages/socket.io-adapter/*.md",
-            "LICENSE"
-          ]
-        }
-      }
-    }
+    "name": "socket.io-adapter"
   },
   "dependencies": {
     "@nestjs/platform-socket.io": "^11.1.6",
