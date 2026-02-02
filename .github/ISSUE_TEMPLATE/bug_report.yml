@@ -10,7 +10,6 @@ body:
       label: Package
       multiple: true
       options:
-        - '@nestjs-redis/kit'
         - '@nestjs-redis/client'
         - '@nestjs-redis/lock'
         - '@nestjs-redis/socket.io-adapter'

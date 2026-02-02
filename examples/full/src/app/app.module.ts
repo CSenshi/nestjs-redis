@@ -2,13 +2,10 @@
 import { Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
 import { ThrottlerModule, seconds } from '@nestjs/throttler';
-import {
-  RedisHealthIndicator,
-  RedisModule,
-  RedisThrottlerStorage,
-  RedisToken,
-  RedlockModule,
-} from '@nestjs-redis/kit';
+import { RedisModule, RedisToken } from '@nestjs-redis/client';
+import { RedisHealthIndicator } from '@nestjs-redis/health-indicator';
+import { RedlockModule } from '@nestjs-redis/lock';
+import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
 import type { RedisClientType } from 'redis';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';

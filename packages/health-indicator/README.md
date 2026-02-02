@@ -25,27 +25,20 @@ Redis health indicator for NestJS with first-class Terminus integration.
 
 ## Installation
 
-### Recommended: Install the complete toolkit
-
 ```bash
-npm install @nestjs-redis/kit redis
+npm install @nestjs-redis/health-indicator @nestjs-redis/client redis
 ```
 
-### Alternative: Install health-indicator package only
-
-```bash
-npm install @nestjs-redis/health-indicator redis
-```
+The recommended approach is to use `RedisModule` from `@nestjs-redis/client` so Redis connections are lifecycle-managed by Nest (connect/disconnect with your app). Alternatively, you can pass your own Redis client (e.g. created with `createClient()` from `redis`) and manage its lifecycle yourself.
 
 ## Quick Start
-
-> **Note**: Examples use `@nestjs-redis/kit` imports (recommended). If you installed only this package, import from `@nestjs-redis/health-indicator` and `@nestjs-redis/client` instead.
 
 ```typescript
 // app.module.ts
 import { Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
-import { RedisHealthIndicator, RedisModule } from '@nestjs-redis/kit';
+import { RedisModule } from '@nestjs-redis/client';
+import { RedisHealthIndicator } from '@nestjs-redis/health-indicator';
 
 @Module({
   imports: [
@@ -64,7 +57,8 @@ export class AppModule {}
 // health.controller.ts
 import { Controller, Get } from '@nestjs/common';
 import { HealthCheck, HealthCheckService } from '@nestjs/terminus';
-import { InjectRedis, RedisHealthIndicator } from '@nestjs-redis/kit';
+import { InjectRedis } from '@nestjs-redis/client';
+import { RedisHealthIndicator } from '@nestjs-redis/health-indicator';
 import type { RedisClientType } from 'redis';
 
 @Controller('health')

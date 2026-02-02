@@ -1,6 +1,7 @@
 // app.service.ts
 import { Injectable } from '@nestjs/common';
-import { InjectRedis, Redlock } from '@nestjs-redis/kit';
+import { InjectRedis } from '@nestjs-redis/client';
+import { Redlock } from '@nestjs-redis/lock';
 import type { RedisClientType } from 'redis';
 
 @Injectable()

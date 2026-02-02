@@ -75,7 +75,7 @@ pnpm nx g @nx/nest:library \
 Use [Conventional Commits](https://conventionalcommits.org/): `<type>(scope): description`
 
 **Types:** `feat`, `fix`, `docs`, `test`, `chore`, `refactor`  
-**Scopes:** Use package names (e.g., `client`, `lock`, `kit`) or omit for general changes
+**Scopes:** Use package names (e.g., `client`, `lock`) or omit for general changes
 
 **Examples:**
 

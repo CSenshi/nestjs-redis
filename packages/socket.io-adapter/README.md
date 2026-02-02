@@ -24,26 +24,18 @@ Redis-powered Socket.IO adapter for NestJS
 
 ## Installation
 
-### Recommended: Install the complete toolkit
-
 ```bash
-npm install @nestjs-redis/kit redis
+npm install @nestjs-redis/socket.io-adapter @nestjs-redis/client redis
 ```
 
-### Alternative: Install socket.io-adapter package only
-
-```bash
-npm install @nestjs-redis/socket.io-adapter redis
-```
+The recommended approach is to use `RedisModule` from `@nestjs-redis/client` so Redis connections are lifecycle-managed by Nest (connect/disconnect with your app). Alternatively, you can pass your own Redis client (e.g. created with `createClient()` from `redis`) and manage its lifecycle yourself.
 
 ## Quick Start
-
-> **Note**: Examples use `@nestjs-redis/kit` imports (recommended). If you installed only this package, import from `@nestjs-redis/socket.io-adapter` and `@nestjs-redis/client` instead.
 
 ```typescript
 // app.module.ts
 import { Module } from '@nestjs/common';
-import { RedisModule } from '@nestjs-redis/kit';
+import { RedisModule } from '@nestjs-redis/client';
 
 @Module({
   imports: [
@@ -58,7 +50,7 @@ export class AppModule {}
 ```typescript
 // main.ts
 import { NestFactory } from '@nestjs/core';
-import { setupRedisAdapter } from '@nestjs-redis/kit';
+import { setupRedisAdapter } from '@nestjs-redis/socket.io-adapter';
 import { AppModule } from './app.module';
 
 async function bootstrap() {

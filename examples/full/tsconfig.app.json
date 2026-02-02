@@ -13,7 +13,19 @@
   "exclude": ["eslint.config.js", "eslint.config.cjs", "eslint.config.mjs"],
   "references": [
     {
-      "path": "../../packages/kit/tsconfig.lib.json"
+      "path": "../../packages/socket.io-adapter/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/lock/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/throttler-storage/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/health-indicator/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/client/tsconfig.lib.json"
     }
   ]
 }
