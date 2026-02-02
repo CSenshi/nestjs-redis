@@ -138,9 +138,21 @@ importers:
 
   examples/full:
     dependencies:
-      '@nestjs-redis/kit':
-        specifier: '*'
-        version: 0.12.1(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/core@11.1.9)(@nestjs/terminus@11.0.0(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/core@11.1.9)(@nestjs/microservices@11.1.12)(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/websockets@11.1.9)(redis@5.10.0)(rxjs@7.8.2)(socket.io-adapter@2.5.5)
+      '@nestjs-redis/client':
+        specifier: workspace:*
+        version: link:../../packages/client
+      '@nestjs-redis/health-indicator':
+        specifier: workspace:*
+        version: link:../../packages/health-indicator
+      '@nestjs-redis/lock':
+        specifier: workspace:*
+        version: link:../../packages/lock
+      '@nestjs-redis/socket.io-adapter':
+        specifier: workspace:*
+        version: link:../../packages/socket.io-adapter
+      '@nestjs-redis/throttler-storage':
+        specifier: workspace:*
+        version: link:../../packages/throttler-storage
       redis:
         specifier: ^5.0.0
         version: 5.10.0
@@ -1178,45 +1190,6 @@ packages:
 
   '@napi-rs/wasm-runtime@1.1.0':
     resolution: {integrity: sha512-Fq6DJW+Bb5jaWE69/qOE0D1TUN9+6uWhCeZpdnSBk14pjLcCWR7Q8n49PTSPHazM37JqrsdpEthXy2xn6jWWiA==}
-
-  '@nestjs-redis/client@0.12.1':
-    resolution: {integrity: sha512-BhP1k0X7AijXWw5XKtj2MR6tK8dPPZIXfevAurXh6r05PyOgrH/WojymKyfXhWt/93sjCTcTHepsNDUjJ9K+Og==}
-    engines: {node: '>=18.0.0', npm: '>=8.0.0'}
-    peerDependencies:
-      '@nestjs/common': ^9.0.0 || ^10.0.0 || ^11.0.0
-      '@nestjs/core': ^9.0.0 || ^10.0.0 || ^11.0.0
-      redis: ^5.0.0
-
-  '@nestjs-redis/health-indicator@0.12.1':
-    resolution: {integrity: sha512-OIbSXRqiCMA3n2bLWosI9N/guZn9dP2QWoVpS67u8PumFbJLW7qZXZNjT6rV/siVGshS/Mlz/e/B3RxSBg0nLw==}
-    engines: {node: '>=18.0.0', npm: '>=8.0.0'}
-    peerDependencies:
-      '@nestjs/common': ^9.0.0 || ^10.0.0 || ^11.0.0
-      '@nestjs/terminus': ^9.0.0 || ^10.0.0 || ^11.0.0
-      redis: ^5.0.0
-
-  '@nestjs-redis/kit@0.12.1':
-    resolution: {integrity: sha512-1cT+/qveGEcou9y7Oe5PXvzUpBMC5HrEyvHgn/AgmS9XZjGkrKNQaPh8QI3aA/iswf1kxxYiFymRa2wMOKodYQ==}
-    engines: {node: '>=18.0.0', npm: '>=8.0.0'}
-
-  '@nestjs-redis/lock@0.12.1':
-    resolution: {integrity: sha512-hOt6WY6ok1FXZoq35QtFx2SITjKZIRgKMlVkWcQOzg9zlXl9vU1SeoeetE9CI2dIRFN7xXIeqzcMWkdRNFJW3g==}
-    engines: {node: '>=18.0.0', npm: '>=8.0.0'}
-    peerDependencies:
-      '@nestjs/common': ^9.0.0 || ^10.0.0 || ^11.0.0
-
-  '@nestjs-redis/socket.io-adapter@0.12.1':
-    resolution: {integrity: sha512-Li64qs/rgt3ypavk0y7b8Bzt9jtaOwXyC8hgr9LjNENzL1ZRtBZjEeYTqJURO+taKs82aQAf7mJacOhLaHwaEQ==}
-    engines: {node: '>=18.0.0', npm: '>=8.0.0'}
-    peerDependencies:
-      '@nestjs/common': ^9.0.0 || ^10.0.0 || ^11.0.0
-      '@nestjs/core': ^9.0.0 || ^10.0.0 || ^11.0.0
-
-  '@nestjs-redis/throttler-storage@0.12.1':
-    resolution: {integrity: sha512-1oV9WQMTPwTJ1nslqHHFdLA25lRYSygV/xRo5YL1VfumtsvqQugcp1O+ZRyXHPGZawH5Z7fwfAlFcWww8KeAVA==}
-    engines: {node: '>=18.0.0', npm: '>=8.0.0'}
-    peerDependencies:
-      '@nestjs/common': ^9.0.0 || ^10.0.0 || ^11.0.0
 
   '@nestjs/common@11.1.9':
     resolution: {integrity: sha512-zDntUTReRbAThIfSp3dQZ9kKqI+LjgLp5YZN5c1bgNRDuoeLySAoZg46Bg1a+uV8TMgIRziHocglKGNzr6l+bQ==}
@@ -7572,68 +7545,6 @@ snapshots:
       '@emnapi/runtime': 1.7.1
       '@tybys/wasm-util': 0.10.1
     optional: true
-
-  '@nestjs-redis/client@0.12.1(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/core@11.1.9)(redis@5.10.0)':
-    dependencies:
-      '@nestjs/common': 11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2)
-      '@nestjs/core': 11.1.9(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/microservices@11.1.12)(@nestjs/platform-express@11.1.9)(@nestjs/websockets@11.1.9)(reflect-metadata@0.1.14)(rxjs@7.8.2)
-      redis: 5.10.0
-      tslib: 2.8.1
-
-  '@nestjs-redis/health-indicator@0.12.1(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/terminus@11.0.0(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/core@11.1.9)(@nestjs/microservices@11.1.12)(reflect-metadata@0.1.14)(rxjs@7.8.2))(redis@5.10.0)':
-    dependencies:
-      '@nestjs/common': 11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2)
-      '@nestjs/terminus': 11.0.0(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/core@11.1.9)(@nestjs/microservices@11.1.12)(reflect-metadata@0.1.14)(rxjs@7.8.2)
-      redis: 5.10.0
-      tslib: 2.8.1
-
-  '@nestjs-redis/kit@0.12.1(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/core@11.1.9)(@nestjs/terminus@11.0.0(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/core@11.1.9)(@nestjs/microservices@11.1.12)(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/websockets@11.1.9)(redis@5.10.0)(rxjs@7.8.2)(socket.io-adapter@2.5.5)':
-    dependencies:
-      '@nestjs-redis/client': 0.12.1(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/core@11.1.9)(redis@5.10.0)
-      '@nestjs-redis/health-indicator': 0.12.1(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/terminus@11.0.0(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/core@11.1.9)(@nestjs/microservices@11.1.12)(reflect-metadata@0.1.14)(rxjs@7.8.2))(redis@5.10.0)
-      '@nestjs-redis/lock': 0.12.1(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(redis@5.10.0)
-      '@nestjs-redis/socket.io-adapter': 0.12.1(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/core@11.1.9)(@nestjs/websockets@11.1.9)(rxjs@7.8.2)(socket.io-adapter@2.5.5)
-      '@nestjs-redis/throttler-storage': 0.12.1(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - '@nestjs/common'
-      - '@nestjs/core'
-      - '@nestjs/terminus'
-      - '@nestjs/websockets'
-      - bufferutil
-      - redis
-      - rxjs
-      - socket.io-adapter
-      - supports-color
-      - utf-8-validate
-
-  '@nestjs-redis/lock@0.12.1(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(redis@5.10.0)':
-    dependencies:
-      '@nestjs/common': 11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2)
-      '@redis-kit/lock': 0.1.0-3(redis@5.10.0)
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - redis
-
-  '@nestjs-redis/socket.io-adapter@0.12.1(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/core@11.1.9)(@nestjs/websockets@11.1.9)(rxjs@7.8.2)(socket.io-adapter@2.5.5)':
-    dependencies:
-      '@nestjs/common': 11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2)
-      '@nestjs/core': 11.1.9(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/microservices@11.1.12)(@nestjs/platform-express@11.1.9)(@nestjs/websockets@11.1.9)(reflect-metadata@0.1.14)(rxjs@7.8.2)
-      '@nestjs/platform-socket.io': 11.1.9(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))(@nestjs/websockets@11.1.9)(rxjs@7.8.2)
-      '@socket.io/redis-adapter': 8.3.0(socket.io-adapter@2.5.5)
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - '@nestjs/websockets'
-      - bufferutil
-      - rxjs
-      - socket.io-adapter
-      - supports-color
-      - utf-8-validate
-
-  '@nestjs-redis/throttler-storage@0.12.1(@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2))':
-    dependencies:
-      '@nestjs/common': 11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2)
-      tslib: 2.8.1
 
   '@nestjs/common@11.1.9(reflect-metadata@0.1.14)(rxjs@7.8.2)':
     dependencies:
