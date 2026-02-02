@@ -1,3 +1,28 @@
+## 1.0.0-0 (2026-02-02)
+
+### 🚀 Features
+
+- **dependencies:** migrate to individual @nestjs-redis packages and update pnpm lockfile ([f9736c7](https://github.com/CSenshi/nestjs-redis/commit/f9736c7))
+- **eslint:** add 'rxjs' to ignoredDependencies in ESLint config ([de3e420](https://github.com/CSenshi/nestjs-redis/commit/de3e420))
+- **package:** update package.json with metadata and dependencies ([3180826](https://github.com/CSenshi/nestjs-redis/commit/3180826))
+- **package:** update package.json files to use 'dist' directory for builds ([394b72e](https://github.com/CSenshi/nestjs-redis/commit/394b72e))
+- **streams-transporter:** initialize ([dee5a1a](https://github.com/CSenshi/nestjs-redis/commit/dee5a1a))
+- **streams-transporter:** add stream client/server wip ([7e3419a](https://github.com/CSenshi/nestjs-redis/commit/7e3419a))
+- **streams-transporter:** add client initialization ([642c23c](https://github.com/CSenshi/nestjs-redis/commit/642c23c))
+- **streams-transporter:** implement RedisStreamClient with event dispatching and integration tests ([9e73ce1](https://github.com/CSenshi/nestjs-redis/commit/9e73ce1))
+- **streams-transporter:** add EventType and RequestType for event handling ([906059c](https://github.com/CSenshi/nestjs-redis/commit/906059c))
+- **streams-transporter:** add integration tests for RedisStreamServer and improve event handling ([661560c](https://github.com/CSenshi/nestjs-redis/commit/661560c))
+- **streams-transporter:** implement consumer group management and message acknowledgment in RedisStreamServer ([b954359](https://github.com/CSenshi/nestjs-redis/commit/b954359))
+- **streams-transporter:** enhance RedisStreamClient and RedisStreamServer with request/response handling and integration tests ([c4c4740](https://github.com/CSenshi/nestjs-redis/commit/c4c4740))
+- **streams-transporter:** introduce RedisStreamsOptions and enhance RedisStreamClient/Server with improved configuration handling ([cf2932b](https://github.com/CSenshi/nestjs-redis/commit/cf2932b))
+- **streams-transporter:** enhance RedisStreamClient and RedisStreamServer with RedisStreamsContext for improved message handling ([2b21650](https://github.com/CSenshi/nestjs-redis/commit/2b21650))
+- **streams-transporter:** enhance RedisStreamClient to support pending event listeners and improve event handling ([9670f15](https://github.com/CSenshi/nestjs-redis/commit/9670f15))
+- **streams-transporter:** export client and server ([03f9e40](https://github.com/CSenshi/nestjs-redis/commit/03f9e40))
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 0.13.4 (2026-01-21)
 
 This was a version bump only, there were no code changes.
