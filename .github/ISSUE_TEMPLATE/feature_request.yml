@@ -9,7 +9,6 @@ body:
     attributes:
       label: Package
       options:
-        - '@nestjs-redis/kit'
         - '@nestjs-redis/client'
         - '@nestjs-redis/lock'
         - '@nestjs-redis/socket.io-adapter'

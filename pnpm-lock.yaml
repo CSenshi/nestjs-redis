@@ -192,27 +192,6 @@ importers:
         specifier: ^5.0.0
         version: 5.10.0
 
-  packages/kit:
-    dependencies:
-      '@nestjs-redis/client':
-        specifier: workspace:*
-        version: link:../client
-      '@nestjs-redis/health-indicator':
-        specifier: workspace:*
-        version: link:../health-indicator
-      '@nestjs-redis/lock':
-        specifier: workspace:*
-        version: link:../lock
-      '@nestjs-redis/socket.io-adapter':
-        specifier: workspace:*
-        version: link:../socket.io-adapter
-      '@nestjs-redis/throttler-storage':
-        specifier: workspace:*
-        version: link:../throttler-storage
-      tslib:
-        specifier: ^2.8.0
-        version: 2.8.1
-
   packages/lock:
     dependencies:
       '@nestjs/common':
