@@ -1,6 +1,28 @@
 {
   "name": "@nestjs-redis/streams-transporter",
   "version": "0.0.1",
+  "license": "MIT",
+  "author": "Saba Pochkhua <saba.pochkhua@gmail.com> (https://github.com/CSenshi)",
+  "description": "Redis Streams-based transporter for NestJS microservices, enabling message passing via Redis Streams",
+  "keywords": [
+    "nestjs",
+    "redis",
+    "streams",
+    "transporter",
+    "microservices",
+    "typescript",
+    "node-redis"
+  ],
+  "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/streams-transporter",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CSenshi/nestjs-redis",
+    "directory": "packages/streams-transporter"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -20,7 +42,6 @@
   "nx": {
     "name": "streams-transporter"
   },
-  "devDependencies": {},
   "dependencies": {
     "@nestjs/microservices": "^11.1.12",
     "redis": "^5.0.0",

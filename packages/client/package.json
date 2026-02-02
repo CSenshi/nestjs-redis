@@ -15,49 +15,24 @@
     "multi-connection"
   ],
   "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/client",
-  "main": "./src/index.js",
-  "module": "./src/index.js",
-  "types": "./src/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "development": "./src/index.ts",
-      "types": "./src/index.d.ts",
-      "import": "./src/index.js",
-      "default": "./src/index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "files": [
-    "src",
+    "dist",
     "!**/*.tsbuildinfo"
   ],
   "nx": {
-    "name": "client",
-    "tags": [
-      "scope:client",
-      "type:library",
-      "platform:node",
-      "framework:nestjs",
-      "database:redis"
-    ],
-    "targets": {
-      "build": {
-        "executor": "@nx/js:tsc",
-        "outputs": [
-          "{options.outputPath}"
-        ],
-        "options": {
-          "outputPath": "dist/packages/client",
-          "tsConfig": "packages/client/tsconfig.lib.json",
-          "packageJson": "packages/client/package.json",
-          "main": "packages/client/src/index.ts",
-          "assets": [
-            "packages/client/*.md",
-            "LICENSE"
-          ]
-        }
-      }
-    }
+    "name": "client"
   },
   "dependencies": {
     "tslib": "^2.8.0"
