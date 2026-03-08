@@ -1,5 +1,21 @@
 # 1.0.0 (2026-02-02)
 
+### ⚠️ Breaking changes
+
+- **@nestjs-redis/kit** has been removed. Use the individual packages instead:
+  - `@nestjs-redis/client` — Redis client and `RedisModule`
+  - `@nestjs-redis/health-indicator` — Terminus health checks
+  - `@nestjs-redis/lock` — Distributed locking (Redlock)
+  - `@nestjs-redis/throttler-storage` — Throttler storage
+  - `@nestjs-redis/socket.io-adapter` — Socket.IO adapter
+  - `@nestjs-redis/streams-transporter` — Redis Streams microservices transport  
+    Install only the packages you need; see the [README](https://github.com/CSenshi/nestjs-redis#quick-start) and each package’s README for setup.
+
+### ⚠️ Deprecations
+
+- **@nestjs-redis/kit** is deprecated and will be removed in the next major release.
+  Migrate to the individual packages: `@nestjs-redis/client`, `@nestjs-redis/health-indicator`, `@nestjs-redis/lock`, `@nestjs-redis/throttler-storage`, `@nestjs-redis/socket.io-adapter`, `@nestjs-redis/streams-transporter`. See the README for setup.
+
 ### 🚀 Features
 
 - **dependencies:** migrate to individual @nestjs-redis packages and update pnpm lockfile ([f9736c7](https://github.com/CSenshi/nestjs-redis/commit/f9736c7))
