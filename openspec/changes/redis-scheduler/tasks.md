@@ -81,7 +81,7 @@
 
 ## 12. Public API (index.ts)
 
-- [ ] 12.1 Create `src/index.ts` exporting: `ScheduleModule`, `SchedulerRegistry`, `SchedulerMetadataAccessor`, `Cron`, `Interval`, `Timeout`, `CronExpression`, `SchedulerType`, `CronOptions`, `ScheduleModuleOptions`, `ScheduleModuleAsyncOptions`, `ScheduleModuleOptionsFactory`, `IntervalMetadata`, `TimeoutMetadata`
+- [x] 12.1 Create `src/index.ts` exporting: `ScheduleModule`, `SchedulerRegistry`, `SchedulerMetadataAccessor`, `Cron`, `Interval`, `Timeout`, `CronExpression`, `SchedulerType`, `CronOptions`, `ScheduleModuleOptions`, `ScheduleModuleAsyncOptions`, `ScheduleModuleOptionsFactory`, `IntervalMetadata`, `TimeoutMetadata`
 
 ## 13. Tests
 
