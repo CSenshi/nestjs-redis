@@ -22,9 +22,9 @@
 
 ## 4. Interfaces
 
-- [ ] 4.1 Create `interfaces/schedule-module-options.interface.ts` — `ScheduleModuleOptions` (client, keyPrefix?, shutdownTimeout?, cronJobs?, intervals?, timeouts?), `ScheduleModuleOptionsFactory`, `ScheduleModuleAsyncOptions`
-- [ ] 4.2 Create `interfaces/interval-metadata.interface.ts` — `IntervalMetadata { timeout: number }`
-- [ ] 4.3 Create `interfaces/timeout-metadata.interface.ts` — `TimeoutMetadata { timeout: number }`
+- [x] 4.1 Create `interfaces/schedule-module-options.interface.ts` — `ScheduleModuleOptions` (client, keyPrefix?, shutdownTimeout?, cronJobs?, intervals?, timeouts?), `ScheduleModuleOptionsFactory`, `ScheduleModuleAsyncOptions`
+- [x] 4.2 Create `interfaces/interval-metadata.interface.ts` — `IntervalMetadata { timeout: number }`
+- [x] 4.3 Create `interfaces/timeout-metadata.interface.ts` — `TimeoutMetadata { timeout: number }`
 
 ## 5. Metadata Accessor
 
