@@ -59,11 +59,11 @@
 
 ## 9. Orchestrator
 
-- [ ] 9.1 Create `scheduler.orchestrator.ts` — `SchedulerOrchestrator` implementing `OnApplicationBootstrap` and `BeforeApplicationShutdown`
-- [ ] 9.2 Implement `addCron(fn, options)` — store handler + expression in `cronJobs` record (keyed by resolved name)
-- [ ] 9.3 Implement `addInterval(fn, timeout, name)` and `addTimeout(fn, timeout, name)` — identical to `@nestjs/schedule`
-- [ ] 9.4 Implement `onApplicationBootstrap`: for each cron job call `RedisJobStore.registerJob`, create `CronJobHandle`, add to registry; mount intervals + timeouts; start poll loop
-- [ ] 9.5 Implement `beforeApplicationShutdown`: stop poll loop, await in-flight handlers up to `shutdownTimeout`, clear intervals + timeouts, close cron jobs
+- [x] 9.1 Create `scheduler.orchestrator.ts` — `SchedulerOrchestrator` implementing `OnApplicationBootstrap` and `BeforeApplicationShutdown`
+- [x] 9.2 Implement `addCron(fn, options)` — store handler + expression in `cronJobs` record (keyed by resolved name)
+- [x] 9.3 Implement `addInterval(fn, timeout, name)` and `addTimeout(fn, timeout, name)` — identical to `@nestjs/schedule`
+- [x] 9.4 Implement `onApplicationBootstrap`: for each cron job call `RedisJobStore.registerJob`, create `CronJobHandle`, add to registry; mount intervals + timeouts; start poll loop
+- [x] 9.5 Implement `beforeApplicationShutdown`: stop poll loop, await in-flight handlers up to `shutdownTimeout`, clear intervals + timeouts, close cron jobs
 
 ## 10. Explorer
 
