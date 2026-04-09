@@ -28,7 +28,7 @@
 
 ## 5. Metadata Accessor
 
-- [ ] 5.1 Create `schedule-metadata.accessor.ts` — `SchedulerMetadataAccessor` injectable; methods: `getSchedulerType`, `getSchedulerName`, `getCronMetadata`, `getIntervalMetadata`, `getTimeoutMetadata`
+- [x] 5.1 Create `schedule-metadata.accessor.ts` — `SchedulerMetadataAccessor` injectable; methods: `getSchedulerType`, `getSchedulerName`, `getCronMetadata`, `getIntervalMetadata`, `getTimeoutMetadata`
 
 ## 6. Redis Job Store
 
