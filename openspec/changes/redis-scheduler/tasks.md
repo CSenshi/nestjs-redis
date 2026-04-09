@@ -50,12 +50,12 @@
 
 ## 8. Scheduler Registry
 
-- [ ] 8.1 Create `scheduler.registry.ts` — `SchedulerRegistry` injectable with `Map<string, CronJobHandle>`, `Map<string, any>` for intervals/timeouts
-- [ ] 8.2 Implement `getCronJob`, `getCronJobs`, `addCronJob` (throws on duplicate), `deleteCronJob` (removes from ZSET via `RedisJobStore.removeJob` + stops local ref)
-- [ ] 8.3 Implement `doesExist(type, name)` returning boolean
-- [ ] 8.4 Implement `getIntervals`, `getTimeouts`, `addInterval`, `addTimeout`, `deleteInterval`, `deleteTimeout`, `getInterval`, `getTimeout`
-- [ ] 8.5 Define `CronJobHandle` interface/class with `start()` (ZADD) and `stop()` (ZREM) methods that mutate the Redis ZSET
-- [ ] 8.6 Create `schedule.messages.ts` — `DUPLICATE_SCHEDULER(type, name)` and `NO_SCHEDULER_FOUND(type, name)` message helpers
+- [x] 8.1 Create `scheduler.registry.ts` — `SchedulerRegistry` injectable with `Map<string, CronJobHandle>`, `Map<string, any>` for intervals/timeouts
+- [x] 8.2 Implement `getCronJob`, `getCronJobs`, `addCronJob` (throws on duplicate), `deleteCronJob` (removes from ZSET via `RedisJobStore.removeJob` + stops local ref)
+- [x] 8.3 Implement `doesExist(type, name)` returning boolean
+- [x] 8.4 Implement `getIntervals`, `getTimeouts`, `addInterval`, `addTimeout`, `deleteInterval`, `deleteTimeout`, `getInterval`, `getTimeout`
+- [x] 8.5 Define `CronJobHandle` interface/class with `start()` (ZADD) and `stop()` (ZREM) methods that mutate the Redis ZSET
+- [x] 8.6 Create `schedule.messages.ts` — `DUPLICATE_SCHEDULER(type, name)` and `NO_SCHEDULER_FOUND(type, name)` message helpers
 
 ## 9. Orchestrator
 
