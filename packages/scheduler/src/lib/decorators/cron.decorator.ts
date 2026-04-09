@@ -6,15 +6,16 @@ import {
 } from '../schedule.constants';
 import { SchedulerType } from '../enums/scheduler-type.enum';
 
-export interface CronOptions {
+export type CronOptions = {
   name?: string;
-  timeZone?: string;
-  utcOffset?: number | string;
   disabled?: boolean;
   threshold?: number;
   waitForCompletion?: boolean;
   unrefTimeout?: boolean;
-}
+} & (
+  | { timeZone?: string; utcOffset?: never }
+  | { timeZone?: never; utcOffset?: number }
+);
 
 export function Cron(
   cronTime: string | Date,

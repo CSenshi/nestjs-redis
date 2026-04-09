@@ -4,6 +4,7 @@ import { createClient } from 'redis';
 import { ScheduleModule } from './schedule.module.js';
 import { SchedulerRegistry } from './scheduler.registry.js';
 import { Cron } from './decorators/cron.decorator.js';
+import type { ScheduleModuleOptions } from './interfaces/schedule-module-options.interface.js';
 
 const REDIS_URL = process.env['REDIS_URL'] ?? 'redis://localhost:6379';
 const TEST_PREFIX = `test:scheduler:${Date.now()}`;
@@ -34,7 +35,7 @@ describe('ScheduleModule integration', () => {
         }
       }
 
-      type ClientArg = Parameters<typeof ScheduleModule.forRoot>[0]['client'];
+      type ClientArg = ScheduleModuleOptions['client'];
       const buildModule = () =>
         Test.createTestingModule({
           imports: [
@@ -65,7 +66,7 @@ describe('ScheduleModule integration', () => {
   describe('expression-change detection', () => {
     it('reschedules when cron expression changes', async () => {
       const jobName = `${TEST_PREFIX}:changeJob`;
-      type ClientArg = Parameters<typeof ScheduleModule.forRoot>[0]['client'];
+      type ClientArg = ScheduleModuleOptions['client'];
 
       @Injectable()
       class ServiceV1 {
@@ -119,7 +120,7 @@ describe('ScheduleModule integration', () => {
     it('does not fire when disabled: true', async () => {
       const executed: string[] = [];
       const jobName = `${TEST_PREFIX}:disabledJob`;
-      type ClientArg = Parameters<typeof ScheduleModule.forRoot>[0]['client'];
+      type ClientArg = ScheduleModuleOptions['client'];
 
       @Injectable()
       class DisabledService {
@@ -154,7 +155,7 @@ describe('ScheduleModule integration', () => {
   describe('SchedulerRegistry', () => {
     it('getCronJob returns a handle with start/stop methods', async () => {
       const jobName = `${TEST_PREFIX}:registryJob`;
-      type ClientArg = Parameters<typeof ScheduleModule.forRoot>[0]['client'];
+      type ClientArg = ScheduleModuleOptions['client'];
 
       @Injectable()
       class RegistryService {

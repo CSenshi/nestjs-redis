@@ -11,6 +11,7 @@ import { Interval } from './decorators/interval.decorator.js';
 import { Timeout } from './decorators/timeout.decorator.js';
 import { CronExpression } from './enums/cron-expression.enum.js';
 import { SchedulerRegistry } from './scheduler.registry.js';
+import type { ScheduleModuleOptions } from './interfaces/schedule-module-options.interface.js';
 
 const REDIS_URL = process.env['REDIS_URL'] ?? 'redis://localhost:6379';
 const TEST_PREFIX = `test:compat:${Date.now()}`;
@@ -58,7 +59,7 @@ describe('Drop-in compatibility', () => {
       handleNamedTimeout() {}
     }
 
-    type ClientArg = Parameters<typeof ScheduleModule.forRoot>[0]['client'];
+    type ClientArg = ScheduleModuleOptions['client'];
     const module = await Test.createTestingModule({
       imports: [
         ScheduleModule.forRoot({

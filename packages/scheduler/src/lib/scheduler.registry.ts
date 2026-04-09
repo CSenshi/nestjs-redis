@@ -18,8 +18,10 @@ export interface CronJobHandle {
 @Injectable()
 export class SchedulerRegistry {
   private readonly cronJobs = new Map<string, CronJobHandle>();
-  private readonly intervals = new Map<string, NodeJS.Timeout>();
-  private readonly timeouts = new Map<string, NodeJS.Timeout>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private readonly intervals = new Map<string, any>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private readonly timeouts = new Map<string, any>();
 
   constructor(
     private readonly store: RedisJobStore,
@@ -53,7 +55,7 @@ export class SchedulerRegistry {
     await this.store.removeJob(name);
   }
 
-  doesExist(type: 'cron' | 'interval' | 'timeout', name: string): boolean {
+  doesExist(type: 'cron' | 'timeout' | 'interval', name: string): boolean {
     switch (type) {
       case 'cron':
         return this.cronJobs.has(name);
@@ -72,30 +74,30 @@ export class SchedulerRegistry {
     return [...this.timeouts.keys()];
   }
 
-  getInterval(name: string): NodeJS.Timeout {
-    const interval = this.intervals.get(name);
-    if (!interval) {
+  getInterval<T = NodeJS.Timeout>(name: string): T {
+    const interval = this.intervals.get(name) as T | undefined;
+    if (interval === undefined) {
       throw new Error(NO_SCHEDULER_FOUND(SchedulerType.INTERVAL, name));
     }
     return interval;
   }
 
-  getTimeout(name: string): NodeJS.Timeout {
-    const timeout = this.timeouts.get(name);
-    if (!timeout) {
+  getTimeout<T = NodeJS.Timeout>(name: string): T {
+    const timeout = this.timeouts.get(name) as T | undefined;
+    if (timeout === undefined) {
       throw new Error(NO_SCHEDULER_FOUND(SchedulerType.TIMEOUT, name));
     }
     return timeout;
   }
 
-  addInterval(name: string, ref: NodeJS.Timeout): void {
+  addInterval<T = NodeJS.Timeout>(name: string, ref: T): void {
     if (this.intervals.has(name)) {
       throw new Error(DUPLICATE_SCHEDULER(SchedulerType.INTERVAL, name));
     }
     this.intervals.set(name, ref);
   }
 
-  addTimeout(name: string, ref: NodeJS.Timeout): void {
+  addTimeout<T = NodeJS.Timeout>(name: string, ref: T): void {
     if (this.timeouts.has(name)) {
       throw new Error(DUPLICATE_SCHEDULER(SchedulerType.TIMEOUT, name));
     }
@@ -104,13 +106,13 @@ export class SchedulerRegistry {
 
   deleteInterval(name: string): void {
     const ref = this.getInterval(name);
-    clearInterval(ref);
+    clearInterval(ref as NodeJS.Timeout);
     this.intervals.delete(name);
   }
 
   deleteTimeout(name: string): void {
     const ref = this.getTimeout(name);
-    clearTimeout(ref);
+    clearTimeout(ref as NodeJS.Timeout);
     this.timeouts.delete(name);
   }
 }
