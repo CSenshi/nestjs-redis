@@ -1,10 +1,10 @@
-import { Test } from '@nestjs/testing';
 import { Injectable } from '@nestjs/common';
+import { Test } from '@nestjs/testing';
 import { createClient } from 'redis';
-import { ScheduleModule } from './schedule.module.js';
-import { SchedulerRegistry } from './scheduler.registry.js';
 import { Cron } from './decorators/cron.decorator.js';
 import type { ScheduleModuleOptions } from './interfaces/schedule-module-options.interface.js';
+import { ScheduleModule } from './schedule.module.js';
+import { SchedulerRegistry } from './scheduler.registry.js';
 
 const REDIS_URL = process.env['REDIS_URL'] ?? 'redis://localhost:6379';
 const TEST_PREFIX = `test:scheduler:${Date.now()}`;
@@ -50,7 +50,10 @@ describe('ScheduleModule integration', () => {
           providers: [ServiceA],
         }).compile();
 
-      const [moduleA, moduleB] = await Promise.all([buildModule(), buildModule()]);
+      const [moduleA, moduleB] = await Promise.all([
+        buildModule(),
+        buildModule(),
+      ]);
       await moduleA.init();
       await moduleB.init();
 

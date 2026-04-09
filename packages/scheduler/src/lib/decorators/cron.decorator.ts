@@ -1,10 +1,10 @@
 import { SetMetadata, applyDecorators } from '@nestjs/common';
+import { SchedulerType } from '../enums/scheduler-type.enum';
 import {
-  SCHEDULE_CRON_OPTIONS,
   SCHEDULER_NAME,
   SCHEDULER_TYPE,
+  SCHEDULE_CRON_OPTIONS,
 } from '../schedule.constants';
-import { SchedulerType } from '../enums/scheduler-type.enum';
 
 export type CronOptions = {
   name?: string;

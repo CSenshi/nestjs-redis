@@ -34,7 +34,10 @@ import { ScheduleModule } from '@nestjs-redis/scheduler';
 
 @Module({
   imports: [
-    RedisModule.forRoot({ type: 'single', options: { url: 'redis://localhost:6379' } }),
+    RedisModule.forRoot({
+      type: 'single',
+      options: { url: 'redis://localhost:6379' },
+    }),
     ScheduleModule.forRootAsync({
       inject: [RedisToken()],
       useFactory: (redis) => ({ client: redis }),
@@ -48,7 +51,12 @@ export class AppModule {}
 
 ```ts
 import { Injectable } from '@nestjs/common';
-import { Cron, CronExpression, Interval, Timeout } from '@nestjs-redis/scheduler';
+import {
+  Cron,
+  CronExpression,
+  Interval,
+  Timeout,
+} from '@nestjs-redis/scheduler';
 
 @Injectable()
 export class TasksService {
@@ -74,22 +82,22 @@ export class TasksService {
 
 ### Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `client` | `RedisClientType` | required | Redis client instance |
-| `keyPrefix` | `string` | `'scheduler'` | Redis key namespace (`{prefix}:jobs`, `{prefix}:meta`) |
-| `shutdownTimeout` | `number` | `5000` | Ms to wait for in-flight handlers on shutdown |
-| `cronJobs` | `boolean` | `true` | Enable/disable `@Cron` discovery |
-| `intervals` | `boolean` | `true` | Enable/disable `@Interval` discovery |
-| `timeouts` | `boolean` | `true` | Enable/disable `@Timeout` discovery |
+| Option            | Type              | Default       | Description                                            |
+| ----------------- | ----------------- | ------------- | ------------------------------------------------------ |
+| `client`          | `RedisClientType` | required      | Redis client instance                                  |
+| `keyPrefix`       | `string`          | `'scheduler'` | Redis key namespace (`{prefix}:jobs`, `{prefix}:meta`) |
+| `shutdownTimeout` | `number`          | `5000`        | Ms to wait for in-flight handlers on shutdown          |
+| `cronJobs`        | `boolean`         | `true`        | Enable/disable `@Cron` discovery                       |
+| `intervals`       | `boolean`         | `true`        | Enable/disable `@Interval` discovery                   |
+| `timeouts`        | `boolean`         | `true`        | Enable/disable `@Timeout` discovery                    |
 
 ### `@Cron` options
 
-| Option | Description |
-|--------|-------------|
-| `name` | Unique job name (default: `ClassName.methodName`) |
-| `timeZone` | IANA timezone (e.g. `'America/New_York'`) |
-| `disabled` | Skip Redis registration; job won't fire automatically |
+| Option      | Description                                            |
+| ----------- | ------------------------------------------------------ |
+| `name`      | Unique job name (default: `ClassName.methodName`)      |
+| `timeZone`  | IANA timezone (e.g. `'America/New_York'`)              |
+| `disabled`  | Skip Redis registration; job won't fire automatically  |
 | `threshold` | Max ms late before skipping execution (default: `250`) |
 
 ### SchedulerRegistry

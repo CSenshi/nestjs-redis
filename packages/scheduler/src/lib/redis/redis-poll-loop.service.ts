@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { RedisJobStore } from './redis-job-store.service';
 import { CronExpressionParser } from 'cron-parser';
+import { RedisJobStore } from './redis-job-store.service';
 
 const DEFAULT_EMPTY_SLEEP_MS = 1000;
 
@@ -125,10 +125,14 @@ export class RedisPollLoop {
         return;
       }
       const timer = setTimeout(resolve, ms);
-      signal.addEventListener('abort', () => {
-        clearTimeout(timer);
-        resolve();
-      }, { once: true });
+      signal.addEventListener(
+        'abort',
+        () => {
+          clearTimeout(timer);
+          resolve();
+        },
+        { once: true },
+      );
     });
   }
 }

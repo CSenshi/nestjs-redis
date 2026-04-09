@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { RedisJobStore } from './redis-job-store.service.js';
 import { SCHEDULE_MODULE_OPTIONS } from '../schedule.constants.js';
+import { RedisJobStore } from './redis-job-store.service.js';
 
 const makeClient = () => ({
   hGet: jest.fn(),
@@ -36,11 +36,15 @@ describe('RedisJobStore', () => {
     it('uses ZADD without NX when expression changed', async () => {
       client.hGet.mockResolvedValue('old-expr');
       await store.registerJob('myJob', 'new-expr', 1000);
-      expect(client.hSet).toHaveBeenCalledWith('test:meta', 'myJob', 'new-expr');
-      expect(client.zAdd).toHaveBeenCalledWith(
-        'test:jobs',
-        { score: 1000, value: 'myJob' },
+      expect(client.hSet).toHaveBeenCalledWith(
+        'test:meta',
+        'myJob',
+        'new-expr',
       );
+      expect(client.zAdd).toHaveBeenCalledWith('test:jobs', {
+        score: 1000,
+        value: 'myJob',
+      });
     });
 
     it('uses ZADD NX when expression unchanged', async () => {
@@ -63,22 +67,30 @@ describe('RedisJobStore', () => {
 
   describe('claimDueJob', () => {
     it('returns job name on successful claim', async () => {
-      client.scriptLoad.mockResolvedValue('deadbeefdeadbeefdeadbeefdeadbeefdeadbeef');
+      client.scriptLoad.mockResolvedValue(
+        'deadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
+      );
       client.evalSha.mockResolvedValue('myJob');
       const result = await store.claimDueJob(Date.now());
       expect(result).toBe('myJob');
     });
 
     it('returns null when no job is due', async () => {
-      client.scriptLoad.mockResolvedValue('deadbeefdeadbeefdeadbeefdeadbeefdeadbeef');
+      client.scriptLoad.mockResolvedValue(
+        'deadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
+      );
       client.evalSha.mockResolvedValue(null);
       const result = await store.claimDueJob(Date.now());
       expect(result).toBeNull();
     });
 
     it('falls back to raw script on NOSCRIPT error', async () => {
-      client.scriptLoad.mockResolvedValue('deadbeefdeadbeefdeadbeefdeadbeefdeadbeef');
-      client.evalSha.mockRejectedValue(new Error('NOSCRIPT No matching script'));
+      client.scriptLoad.mockResolvedValue(
+        'deadbeefdeadbeefdeadbeefdeadbeefdeadbeef',
+      );
+      client.evalSha.mockRejectedValue(
+        new Error('NOSCRIPT No matching script'),
+      );
       client.eval.mockResolvedValue('fallbackJob');
       const result = await store.claimDueJob(Date.now());
       expect(result).toBe('fallbackJob');
@@ -92,7 +104,9 @@ describe('RedisJobStore', () => {
     });
 
     it('returns name and score of earliest entry', async () => {
-      client.zRangeWithScores.mockResolvedValue([{ value: 'job1', score: 12345 }]);
+      client.zRangeWithScores.mockResolvedValue([
+        { value: 'job1', score: 12345 },
+      ]);
       expect(await store.peekNextJob()).toEqual({ name: 'job1', score: 12345 });
     });
   });
@@ -100,7 +114,10 @@ describe('RedisJobStore', () => {
   describe('enqueueJob', () => {
     it('calls ZADD to overwrite entry', async () => {
       await store.enqueueJob('job1', 99999);
-      expect(client.zAdd).toHaveBeenCalledWith('test:jobs', { score: 99999, value: 'job1' });
+      expect(client.zAdd).toHaveBeenCalledWith('test:jobs', {
+        score: 99999,
+        value: 'job1',
+      });
     });
   });
 

@@ -1,13 +1,15 @@
-import { SchedulerRegistry, CronJobHandle } from './scheduler.registry.js';
+import { SchedulerType } from './enums/scheduler-type.enum.js';
 import { RedisJobStore } from './redis/redis-job-store.service.js';
 import { RedisPollLoop } from './redis/redis-poll-loop.service.js';
-import { SchedulerType } from './enums/scheduler-type.enum.js';
+import { CronJobHandle, SchedulerRegistry } from './scheduler.registry.js';
 
 const makeMockStore = (): jest.Mocked<Pick<RedisJobStore, 'removeJob'>> => ({
   removeJob: jest.fn().mockResolvedValue(undefined),
 });
 
-const makeMockPollLoop = (): jest.Mocked<Pick<RedisPollLoop, 'unregisterJob'>> => ({
+const makeMockPollLoop = (): jest.Mocked<
+  Pick<RedisPollLoop, 'unregisterJob'>
+> => ({
   unregisterJob: jest.fn(),
 });
 

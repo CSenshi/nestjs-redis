@@ -7,6 +7,7 @@ The reference implementation (`@nestjs/schedule` source) defines the component m
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Exactly one instance executes each `@Cron` job per scheduled tick across all ECS tasks
 - `import { ScheduleModule, Cron, CronExpression, SchedulerRegistry, ... } from '@nestjs-redis/scheduler'` is a drop-in replacement for `@nestjs/schedule`
 - Support 5-field and 6-field (seconds) cron expressions with timezone
@@ -15,6 +16,7 @@ The reference implementation (`@nestjs/schedule` source) defines the component m
 - `@Interval` / `@Timeout` remain process-local (identical to `@nestjs/schedule`)
 
 **Non-Goals:**
+
 - Distributed `@Interval` (sorted-set backed) — out of scope; process-local is the correct semantic
 - Job history / audit log
 - `waitForCompletion` distributed enforcement (V1: per-process only via local guard)
@@ -64,12 +66,13 @@ loop:
 
 Two Redis keys per `keyPrefix`:
 
-| Key | Type | Purpose |
-|-----|------|---------|
-| `{prefix}:jobs` | ZSET | Score = next run (ms); member = job name |
+| Key             | Type | Purpose                                          |
+| --------------- | ---- | ------------------------------------------------ |
+| `{prefix}:jobs` | ZSET | Score = next run (ms); member = job name         |
 | `{prefix}:meta` | Hash | Field = job name; value = cron expression string |
 
 On startup, for each `@Cron` job:
+
 ```
 stored = HGET {prefix}:meta  jobName
 if stored != currentExpression OR stored == nil:
@@ -89,14 +92,14 @@ Auto-generated from the provider class name and method name via NestJS `Discover
 
 ### 6. Module structure mirrors `@nestjs/schedule`
 
-| Component | Role |
-|-----------|------|
-| `ScheduleExplorer` | `OnModuleInit` — scans providers+controllers via `DiscoveryService` + `MetadataScanner`; calls orchestrator |
-| `SchedulerOrchestrator` | `OnApplicationBootstrap` / `BeforeApplicationShutdown` — mounts intervals/timeouts, registers cron jobs in Redis, starts poll loop |
-| `SchedulerRegistry` | Public injectable — identical API surface to `@nestjs/schedule`'s registry |
-| `SchedulerMetadataAccessor` | Reads reflect-metadata set by decorators |
-| `RedisJobStore` | Internal — ZADD, HGET/HSET, Lua claim; SHA cache + NOSCRIPT fallback |
-| `RedisPollLoop` | Internal — smart sleep loop, cancel token, background job dispatch |
+| Component                   | Role                                                                                                                               |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `ScheduleExplorer`          | `OnModuleInit` — scans providers+controllers via `DiscoveryService` + `MetadataScanner`; calls orchestrator                        |
+| `SchedulerOrchestrator`     | `OnApplicationBootstrap` / `BeforeApplicationShutdown` — mounts intervals/timeouts, registers cron jobs in Redis, starts poll loop |
+| `SchedulerRegistry`         | Public injectable — identical API surface to `@nestjs/schedule`'s registry                                                         |
+| `SchedulerMetadataAccessor` | Reads reflect-metadata set by decorators                                                                                           |
+| `RedisJobStore`             | Internal — ZADD, HGET/HSET, Lua claim; SHA cache + NOSCRIPT fallback                                                               |
+| `RedisPollLoop`             | Internal — smart sleep loop, cancel token, background job dispatch                                                                 |
 
 **Rationale:** Preserves the three-layer design of `@nestjs/schedule` so the codebase is immediately navigable to anyone familiar with the original. Isolates Redis concerns to `RedisJobStore` + `RedisPollLoop`.
 
@@ -114,13 +117,13 @@ Used to compute next occurrence from a cron expression + timezone. Supports both
 
 ## Risks / Trade-offs
 
-| Risk | Mitigation |
-|------|-----------|
-| Clock skew between ECS tasks causes two instances to both think a job is due at "now" | Lua claim is atomic — only one ZREM succeeds regardless of clock skew |
-| Rolling deployment with expression change: Instance A (old) re-enqueues with old expression after Instance B (new) has updated meta | Acceptable race; expression converges after the next claim cycle. Document as expected behaviour. |
-| Instance crashes after claim but before re-enqueue | Re-enqueue happens _before_ handler invocation, so this can't happen in the normal path. If the instance crashes between claim and re-enqueue (e.g., OOM kill in the Lua-to-ZADD gap), the job is orphaned. Mitigation: keep the gap minimal (synchronous ZADD before any async work). |
-| Very large number of jobs (thousands) with frequent ticks | `ZRANGE 0 0` is O(log N) — scales fine. Lua claim is also O(log N). Not a concern in practice. |
-| `waitForCompletion` not distributed | Document limitation. V2 can use a per-job Redis lock with TTL to enforce cross-instance no-overlap. |
+| Risk                                                                                                                                | Mitigation                                                                                                                                                                                                                                                                             |
+| ----------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Clock skew between ECS tasks causes two instances to both think a job is due at "now"                                               | Lua claim is atomic — only one ZREM succeeds regardless of clock skew                                                                                                                                                                                                                  |
+| Rolling deployment with expression change: Instance A (old) re-enqueues with old expression after Instance B (new) has updated meta | Acceptable race; expression converges after the next claim cycle. Document as expected behaviour.                                                                                                                                                                                      |
+| Instance crashes after claim but before re-enqueue                                                                                  | Re-enqueue happens _before_ handler invocation, so this can't happen in the normal path. If the instance crashes between claim and re-enqueue (e.g., OOM kill in the Lua-to-ZADD gap), the job is orphaned. Mitigation: keep the gap minimal (synchronous ZADD before any async work). |
+| Very large number of jobs (thousands) with frequent ticks                                                                           | `ZRANGE 0 0` is O(log N) — scales fine. Lua claim is also O(log N). Not a concern in practice.                                                                                                                                                                                         |
+| `waitForCompletion` not distributed                                                                                                 | Document limitation. V2 can use a per-job Redis lock with TTL to enforce cross-instance no-overlap.                                                                                                                                                                                    |
 
 ## Migration Plan
 

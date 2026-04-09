@@ -1,5 +1,5 @@
-import { RedisPollLoop, CronJobEntry } from './redis-poll-loop.service.js';
 import { RedisJobStore } from './redis-job-store.service.js';
+import { CronJobEntry, RedisPollLoop } from './redis-poll-loop.service.js';
 
 const makeStore = (): jest.Mocked<
   Pick<RedisJobStore, 'peekNextJob' | 'claimDueJob' | 'enqueueJob'>
@@ -33,7 +33,10 @@ describe('RedisPollLoop', () => {
     loop.registerJob(entry);
 
     const now = Date.now();
-    store.peekNextJob.mockResolvedValueOnce({ name: 'testJob', score: now - 10 });
+    store.peekNextJob.mockResolvedValueOnce({
+      name: 'testJob',
+      score: now - 10,
+    });
     store.claimDueJob.mockResolvedValueOnce('testJob');
     store.enqueueJob.mockResolvedValue(undefined);
     store.peekNextJob.mockResolvedValue(null);
@@ -58,7 +61,10 @@ describe('RedisPollLoop', () => {
     loop.registerJob(entry);
 
     const now = Date.now();
-    store.peekNextJob.mockResolvedValueOnce({ name: 'orderJob', score: now - 5 });
+    store.peekNextJob.mockResolvedValueOnce({
+      name: 'orderJob',
+      score: now - 5,
+    });
     store.enqueueJob.mockImplementation(async () => {
       callOrder.push('enqueue');
     });
@@ -84,7 +90,10 @@ describe('RedisPollLoop', () => {
     loop.registerJob(entry);
 
     const overdueScore = Date.now() - 500;
-    store.peekNextJob.mockResolvedValueOnce({ name: 'lateJob', score: overdueScore });
+    store.peekNextJob.mockResolvedValueOnce({
+      name: 'lateJob',
+      score: overdueScore,
+    });
     store.claimDueJob.mockResolvedValueOnce('lateJob');
     store.enqueueJob.mockResolvedValue(undefined);
     store.peekNextJob.mockResolvedValue(null);

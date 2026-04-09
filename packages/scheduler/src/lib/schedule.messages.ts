@@ -6,8 +6,5 @@ export const DUPLICATE_SCHEDULER = (
 ): string =>
   `Scheduler with type "${type}" and name "${name}" already exists. Check your decorated methods.`;
 
-export const NO_SCHEDULER_FOUND = (
-  type: SchedulerType,
-  name: string,
-): string =>
+export const NO_SCHEDULER_FOUND = (type: SchedulerType, name: string): string =>
   `No scheduler with type "${type}" and name "${name}" was found.`;

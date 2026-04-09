@@ -1,10 +1,10 @@
 import { SetMetadata, applyDecorators } from '@nestjs/common';
+import { SchedulerType } from '../enums/scheduler-type.enum';
 import {
-  SCHEDULE_TIMEOUT_OPTIONS,
   SCHEDULER_NAME,
   SCHEDULER_TYPE,
+  SCHEDULE_TIMEOUT_OPTIONS,
 } from '../schedule.constants';
-import { SchedulerType } from '../enums/scheduler-type.enum';
 
 export function Timeout(timeout: number): MethodDecorator;
 export function Timeout(name: string, timeout: number): MethodDecorator;

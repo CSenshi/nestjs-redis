@@ -1,17 +1,17 @@
 import {
+  BeforeApplicationShutdown,
   Inject,
   Injectable,
   Logger,
   OnApplicationBootstrap,
-  BeforeApplicationShutdown,
 } from '@nestjs/common';
 import { CronExpressionParser } from 'cron-parser';
+import type { CronOptions } from './decorators/cron.decorator';
+import type { ScheduleModuleOptions } from './interfaces/schedule-module-options.interface';
 import { RedisJobStore } from './redis/redis-job-store.service';
 import { RedisPollLoop } from './redis/redis-poll-loop.service';
-import { SchedulerRegistry, CronJobHandle } from './scheduler.registry';
 import { SCHEDULE_MODULE_OPTIONS } from './schedule.constants';
-import type { ScheduleModuleOptions } from './interfaces/schedule-module-options.interface';
-import type { CronOptions } from './decorators/cron.decorator';
+import { CronJobHandle, SchedulerRegistry } from './scheduler.registry';
 
 const DEFAULT_THRESHOLD_MS = 250;
 const DEFAULT_SHUTDOWN_TIMEOUT_MS = 5000;
@@ -34,10 +34,14 @@ export class SchedulerOrchestrator
     private readonly store: RedisJobStore,
     private readonly pollLoop: RedisPollLoop,
     private readonly registry: SchedulerRegistry,
-    @Inject(SCHEDULE_MODULE_OPTIONS) private readonly options: ScheduleModuleOptions,
+    @Inject(SCHEDULE_MODULE_OPTIONS)
+    private readonly options: ScheduleModuleOptions,
   ) {}
 
-  addCron(fn: () => unknown, options: CronOptions & { cronTime: string | Date }): void {
+  addCron(
+    fn: () => unknown,
+    options: CronOptions & { cronTime: string | Date },
+  ): void {
     const name = this.resolveCronName(options);
     this.cronDefs.set(name, { handler: fn, options });
   }
@@ -85,9 +89,22 @@ export class SchedulerOrchestrator
 
       const nextTs = this.computeNext(expression, timeZone);
 
-      const handle = this.createCronJobHandle(name, expression, timeZone, threshold, nextTs, def.handler);
+      const handle = this.createCronJobHandle(
+        name,
+        expression,
+        timeZone,
+        threshold,
+        nextTs,
+        def.handler,
+      );
       this.registry.addCronJob(name, handle);
-      this.pollLoop.registerJob({ name, expression, timeZone, threshold, handler: def.handler });
+      this.pollLoop.registerJob({
+        name,
+        expression,
+        timeZone,
+        threshold,
+        handler: def.handler,
+      });
 
       if (!def.options.disabled) {
         await this.store.registerJob(name, expression, nextTs);
@@ -112,7 +129,10 @@ export class SchedulerOrchestrator
 
   private computeNext(expression: string, timeZone?: string): number {
     const opts = timeZone ? { tz: timeZone } : undefined;
-    return CronExpressionParser.parse(expression, opts).next().toDate().getTime();
+    return CronExpressionParser.parse(expression, opts)
+      .next()
+      .toDate()
+      .getTime();
   }
 
   private createCronJobHandle(
@@ -130,7 +150,9 @@ export class SchedulerOrchestrator
     return {
       name,
       expression,
-      get nextTs() { return nextTs; },
+      get nextTs() {
+        return nextTs;
+      },
       async start() {
         const newNext = computeNext(expression, timeZone);
         nextTs = newNext;
@@ -142,7 +164,9 @@ export class SchedulerOrchestrator
     };
   }
 
-  private resolveCronName(options: CronOptions & { cronTime: string | Date }): string {
+  private resolveCronName(
+    options: CronOptions & { cronTime: string | Date },
+  ): string {
     return options.name ?? options.cronTime.toString();
   }
 }

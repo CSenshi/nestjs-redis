@@ -2,16 +2,16 @@
  * Drop-in compatibility test: verifies that the same decorator shapes
  * used with @nestjs/schedule compile and run correctly with @nestjs-redis/scheduler.
  */
-import { Test } from '@nestjs/testing';
 import { Injectable } from '@nestjs/common';
+import { Test } from '@nestjs/testing';
 import { createClient } from 'redis';
-import { ScheduleModule } from './schedule.module.js';
 import { Cron } from './decorators/cron.decorator.js';
 import { Interval } from './decorators/interval.decorator.js';
 import { Timeout } from './decorators/timeout.decorator.js';
 import { CronExpression } from './enums/cron-expression.enum.js';
-import { SchedulerRegistry } from './scheduler.registry.js';
 import type { ScheduleModuleOptions } from './interfaces/schedule-module-options.interface.js';
+import { ScheduleModule } from './schedule.module.js';
+import { SchedulerRegistry } from './scheduler.registry.js';
 
 const REDIS_URL = process.env['REDIS_URL'] ?? 'redis://localhost:6379';
 const TEST_PREFIX = `test:compat:${Date.now()}`;

@@ -7,18 +7,18 @@ import {
   Type,
 } from '@nestjs/common';
 import { DiscoveryModule, Reflector } from '@nestjs/core';
-import { SCHEDULE_MODULE_OPTIONS } from './schedule.constants';
 import type {
   ScheduleModuleAsyncOptions,
   ScheduleModuleOptions,
   ScheduleModuleOptionsFactory,
 } from './interfaces/schedule-module-options.interface';
-import { SchedulerRegistry } from './scheduler.registry';
-import { SchedulerOrchestrator } from './scheduler.orchestrator';
-import { ScheduleExplorer } from './schedule.explorer';
-import { SchedulerMetadataAccessor } from './schedule-metadata.accessor';
 import { RedisJobStore } from './redis/redis-job-store.service';
 import { RedisPollLoop } from './redis/redis-poll-loop.service';
+import { SchedulerMetadataAccessor } from './schedule-metadata.accessor';
+import { SCHEDULE_MODULE_OPTIONS } from './schedule.constants';
+import { ScheduleExplorer } from './schedule.explorer';
+import { SchedulerOrchestrator } from './scheduler.orchestrator';
+import { SchedulerRegistry } from './scheduler.registry';
 
 const CORE_PROVIDERS: Type[] = [
   SchedulerMetadataAccessor,
@@ -66,11 +66,7 @@ export class ScheduleModule {
       global: true,
       module: ScheduleModule,
       imports: [DiscoveryModule, ...(options.imports ?? [])],
-      providers: [
-        ...asyncProviders,
-        Reflector,
-        ...CORE_PROVIDERS,
-      ],
+      providers: [...asyncProviders, Reflector, ...CORE_PROVIDERS],
       exports: [SchedulerRegistry],
     };
   }
@@ -91,7 +87,10 @@ export class ScheduleModule {
               ...result,
             };
           },
-          inject: (options.inject ?? []) as (InjectionToken | OptionalFactoryDependency)[],
+          inject: (options.inject ?? []) as (
+            | InjectionToken
+            | OptionalFactoryDependency
+          )[],
         },
       ];
     }

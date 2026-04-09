@@ -1,10 +1,10 @@
 import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { DiscoveryService, MetadataScanner } from '@nestjs/core';
-import { SchedulerMetadataAccessor } from './schedule-metadata.accessor';
-import { SchedulerOrchestrator } from './scheduler.orchestrator';
 import { SchedulerType } from './enums/scheduler-type.enum';
-import { SCHEDULE_MODULE_OPTIONS } from './schedule.constants';
 import type { ScheduleModuleOptions } from './interfaces/schedule-module-options.interface';
+import { SchedulerMetadataAccessor } from './schedule-metadata.accessor';
+import { SCHEDULE_MODULE_OPTIONS } from './schedule.constants';
+import { SchedulerOrchestrator } from './scheduler.orchestrator';
 
 @Injectable()
 export class ScheduleExplorer implements OnModuleInit {
@@ -34,9 +34,16 @@ export class ScheduleExplorer implements OnModuleInit {
       if (!instance || typeof instance !== 'object') continue;
 
       const prototype = Object.getPrototypeOf(instance) as object;
-      this.scanner.scanFromPrototype(instance, prototype, (methodName: string) => {
-        this.lookupSchedulers(instance as Record<string, unknown>, methodName);
-      });
+      this.scanner.scanFromPrototype(
+        instance,
+        prototype,
+        (methodName: string) => {
+          this.lookupSchedulers(
+            instance as Record<string, unknown>,
+            methodName,
+          );
+        },
+      );
     }
   }
 
@@ -61,7 +68,8 @@ export class ScheduleExplorer implements OnModuleInit {
         const meta = this.accessor.getCronMetadata(methodKey);
         if (!meta) return;
         const handler = this.wrapHandler(instance, methodName);
-        const resolvedName = name ?? `${instance.constructor?.name ?? 'Unknown'}.${methodName}`;
+        const resolvedName =
+          name ?? `${instance.constructor?.name ?? 'Unknown'}.${methodName}`;
         this.orchestrator.addCron(handler, { ...meta, name: resolvedName });
         break;
       }
@@ -70,7 +78,8 @@ export class ScheduleExplorer implements OnModuleInit {
         const meta = this.accessor.getIntervalMetadata(methodKey);
         if (!meta) return;
         const handler = this.wrapHandler(instance, methodName);
-        const resolvedName = name ?? `${instance.constructor?.name ?? 'Unknown'}.${methodName}`;
+        const resolvedName =
+          name ?? `${instance.constructor?.name ?? 'Unknown'}.${methodName}`;
         this.orchestrator.addInterval(handler, meta.timeout, resolvedName);
         break;
       }
@@ -79,7 +88,8 @@ export class ScheduleExplorer implements OnModuleInit {
         const meta = this.accessor.getTimeoutMetadata(methodKey);
         if (!meta) return;
         const handler = this.wrapHandler(instance, methodName);
-        const resolvedName = name ?? `${instance.constructor?.name ?? 'Unknown'}.${methodName}`;
+        const resolvedName =
+          name ?? `${instance.constructor?.name ?? 'Unknown'}.${methodName}`;
         this.orchestrator.addTimeout(handler, meta.timeout, resolvedName);
         break;
       }
@@ -96,10 +106,7 @@ export class ScheduleExplorer implements OnModuleInit {
         const result = (instance[methodName] as Function).call(instance);
         return result;
       } catch (error: unknown) {
-        this.logger.error(
-          `Error in scheduled method "${methodName}"`,
-          error,
-        );
+        this.logger.error(`Error in scheduled method "${methodName}"`, error);
       }
     };
   }

@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import type { CronOptions } from './decorators/cron.decorator';
+import type { SchedulerType } from './enums/scheduler-type.enum';
+import type { IntervalMetadata } from './interfaces/interval-metadata.interface';
+import type { TimeoutMetadata } from './interfaces/timeout-metadata.interface';
 import {
+  SCHEDULER_NAME,
+  SCHEDULER_TYPE,
   SCHEDULE_CRON_OPTIONS,
   SCHEDULE_INTERVAL_OPTIONS,
   SCHEDULE_TIMEOUT_OPTIONS,
-  SCHEDULER_NAME,
-  SCHEDULER_TYPE,
 } from './schedule.constants';
-import type { SchedulerType } from './enums/scheduler-type.enum';
-import type { CronOptions } from './decorators/cron.decorator';
-import type { IntervalMetadata } from './interfaces/interval-metadata.interface';
-import type { TimeoutMetadata } from './interfaces/timeout-metadata.interface';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 type TargetFn = Function;

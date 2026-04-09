@@ -1,10 +1,10 @@
 import { SetMetadata, applyDecorators } from '@nestjs/common';
+import { SchedulerType } from '../enums/scheduler-type.enum';
 import {
-  SCHEDULE_INTERVAL_OPTIONS,
   SCHEDULER_NAME,
   SCHEDULER_TYPE,
+  SCHEDULE_INTERVAL_OPTIONS,
 } from '../schedule.constants';
-import { SchedulerType } from '../enums/scheduler-type.enum';
 
 export function Interval(timeout: number): MethodDecorator;
 export function Interval(name: string, timeout: number): MethodDecorator;

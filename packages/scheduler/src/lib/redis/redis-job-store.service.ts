@@ -1,7 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { RedisClientType, RedisClusterType, RedisSentinelType } from 'redis';
-import { SCHEDULE_MODULE_OPTIONS } from '../schedule.constants';
+import type {
+  RedisClientType,
+  RedisClusterType,
+  RedisSentinelType,
+} from 'redis';
 import type { ScheduleModuleOptions } from '../interfaces/schedule-module-options.interface';
+import { SCHEDULE_MODULE_OPTIONS } from '../schedule.constants';
 
 type RedisClientLike = RedisClientType | RedisClusterType | RedisSentinelType;
 
@@ -19,9 +23,7 @@ export class RedisJobStore {
   private readonly metaKey: string;
   private claimScriptSha?: string;
 
-  constructor(
-    @Inject(SCHEDULE_MODULE_OPTIONS) options: ScheduleModuleOptions,
-  ) {
+  constructor(@Inject(SCHEDULE_MODULE_OPTIONS) options: ScheduleModuleOptions) {
     this.client = options.client as RedisClientLike;
     const prefix = options.keyPrefix ?? 'scheduler';
     this.jobsKey = `${prefix}:jobs`;
@@ -43,7 +45,11 @@ export class RedisJobStore {
       await this.client.hSet(this.metaKey, name, expression);
       await this.client.zAdd(this.jobsKey, { score: nextTs, value: name });
     } else {
-      await this.client.zAdd(this.jobsKey, { score: nextTs, value: name }, { NX: true });
+      await this.client.zAdd(
+        this.jobsKey,
+        { score: nextTs, value: name },
+        { NX: true },
+      );
     }
   }
 
