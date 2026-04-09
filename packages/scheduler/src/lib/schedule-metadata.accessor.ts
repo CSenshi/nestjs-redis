@@ -6,11 +6,11 @@ import {
   SCHEDULE_TIMEOUT_OPTIONS,
   SCHEDULER_NAME,
   SCHEDULER_TYPE,
-} from './schedule.constants.js';
-import type { SchedulerType } from './enums/scheduler-type.enum.js';
-import type { CronOptions } from './decorators/cron.decorator.js';
-import type { IntervalMetadata } from './interfaces/interval-metadata.interface.js';
-import type { TimeoutMetadata } from './interfaces/timeout-metadata.interface.js';
+} from './schedule.constants';
+import type { SchedulerType } from './enums/scheduler-type.enum';
+import type { CronOptions } from './decorators/cron.decorator';
+import type { IntervalMetadata } from './interfaces/interval-metadata.interface';
+import type { TimeoutMetadata } from './interfaces/timeout-metadata.interface';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 type TargetFn = Function;

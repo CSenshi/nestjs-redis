@@ -7,18 +7,18 @@ import {
   Type,
 } from '@nestjs/common';
 import { DiscoveryModule, Reflector } from '@nestjs/core';
-import { SCHEDULE_MODULE_OPTIONS } from './schedule.constants.js';
+import { SCHEDULE_MODULE_OPTIONS } from './schedule.constants';
 import type {
   ScheduleModuleAsyncOptions,
   ScheduleModuleOptions,
   ScheduleModuleOptionsFactory,
-} from './interfaces/schedule-module-options.interface.js';
-import { SchedulerRegistry } from './scheduler.registry.js';
-import { SchedulerOrchestrator } from './scheduler.orchestrator.js';
-import { ScheduleExplorer } from './schedule.explorer.js';
-import { SchedulerMetadataAccessor } from './schedule-metadata.accessor.js';
-import { RedisJobStore } from './redis/redis-job-store.service.js';
-import { RedisPollLoop } from './redis/redis-poll-loop.service.js';
+} from './interfaces/schedule-module-options.interface';
+import { SchedulerRegistry } from './scheduler.registry';
+import { SchedulerOrchestrator } from './scheduler.orchestrator';
+import { ScheduleExplorer } from './schedule.explorer';
+import { SchedulerMetadataAccessor } from './schedule-metadata.accessor';
+import { RedisJobStore } from './redis/redis-job-store.service';
+import { RedisPollLoop } from './redis/redis-poll-loop.service';
 
 const CORE_PROVIDERS: Type[] = [
   SchedulerMetadataAccessor,

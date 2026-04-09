@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { RedisJobStore } from './redis/redis-job-store.service.js';
-import { RedisPollLoop } from './redis/redis-poll-loop.service.js';
-import { SchedulerType } from './enums/scheduler-type.enum.js';
+import { RedisJobStore } from './redis/redis-job-store.service';
+import { RedisPollLoop } from './redis/redis-poll-loop.service';
+import { SchedulerType } from './enums/scheduler-type.enum';
 import {
   DUPLICATE_SCHEDULER,
   NO_SCHEDULER_FOUND,
-} from './schedule.messages.js';
+} from './schedule.messages';
 
 export interface CronJobHandle {
   start(): Promise<void>;

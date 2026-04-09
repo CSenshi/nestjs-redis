@@ -3,8 +3,8 @@ import {
   SCHEDULE_CRON_OPTIONS,
   SCHEDULER_NAME,
   SCHEDULER_TYPE,
-} from '../schedule.constants.js';
-import { SchedulerType } from '../enums/scheduler-type.enum.js';
+} from '../schedule.constants';
+import { SchedulerType } from '../enums/scheduler-type.enum';
 
 export interface CronOptions {
   name?: string;

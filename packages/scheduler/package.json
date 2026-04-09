@@ -35,7 +35,7 @@
     "name": "scheduler"
   },
   "dependencies": {
-    "tslib": "^2.3.0",
+    "tslib": "^2.8.0",
     "cron-parser": "^5.0.0"
   },
   "peerDependencies": {

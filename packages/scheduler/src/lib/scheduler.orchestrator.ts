@@ -6,12 +6,12 @@ import {
   BeforeApplicationShutdown,
 } from '@nestjs/common';
 import { CronExpressionParser } from 'cron-parser';
-import { RedisJobStore } from './redis/redis-job-store.service.js';
-import { RedisPollLoop } from './redis/redis-poll-loop.service.js';
-import { SchedulerRegistry, CronJobHandle } from './scheduler.registry.js';
-import { SCHEDULE_MODULE_OPTIONS } from './schedule.constants.js';
-import type { ScheduleModuleOptions } from './interfaces/schedule-module-options.interface.js';
-import type { CronOptions } from './decorators/cron.decorator.js';
+import { RedisJobStore } from './redis/redis-job-store.service';
+import { RedisPollLoop } from './redis/redis-poll-loop.service';
+import { SchedulerRegistry, CronJobHandle } from './scheduler.registry';
+import { SCHEDULE_MODULE_OPTIONS } from './schedule.constants';
+import type { ScheduleModuleOptions } from './interfaces/schedule-module-options.interface';
+import type { CronOptions } from './decorators/cron.decorator';
 
 const DEFAULT_THRESHOLD_MS = 250;
 const DEFAULT_SHUTDOWN_TIMEOUT_MS = 5000;

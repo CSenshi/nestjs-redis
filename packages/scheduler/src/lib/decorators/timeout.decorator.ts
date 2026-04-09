@@ -3,8 +3,8 @@ import {
   SCHEDULE_TIMEOUT_OPTIONS,
   SCHEDULER_NAME,
   SCHEDULER_TYPE,
-} from '../schedule.constants.js';
-import { SchedulerType } from '../enums/scheduler-type.enum.js';
+} from '../schedule.constants';
+import { SchedulerType } from '../enums/scheduler-type.enum';
 
 export function Timeout(timeout: number): MethodDecorator;
 export function Timeout(name: string, timeout: number): MethodDecorator;

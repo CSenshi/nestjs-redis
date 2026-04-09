@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { RedisJobStore } from './redis-job-store.service.js';
+import { RedisJobStore } from './redis-job-store.service';
 import { CronExpressionParser } from 'cron-parser';
 
 const DEFAULT_EMPTY_SLEEP_MS = 1000;

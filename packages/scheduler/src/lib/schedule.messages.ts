@@ -1,4 +1,4 @@
-import type { SchedulerType } from './enums/scheduler-type.enum.js';
+import type { SchedulerType } from './enums/scheduler-type.enum';
 
 export const DUPLICATE_SCHEDULER = (
   type: SchedulerType,
