@@ -32,12 +32,12 @@
 
 ## 6. Redis Job Store
 
-- [ ] 6.1 Create `redis/redis-job-store.service.ts` — injectable service wrapping all Redis operations
-- [ ] 6.2 Implement `registerJob(name, expression, nextTs, force)` — HGET meta, compare expression, ZADD NX or ZADD based on change detection
-- [ ] 6.3 Implement `claimDueJob(nowMs)` — Lua script (ZRANGEBYSCORE + ZREM atomic); SHA cache + NOSCRIPT fallback pattern (same as throttler-storage)
-- [ ] 6.4 Implement `peekNextJob()` — `ZRANGE jobs 0 0 WITHSCORES` returning `{ name, score } | null`
-- [ ] 6.5 Implement `enqueueJob(name, nextTs)` — plain `ZADD jobs nextTs name` (overwrite)
-- [ ] 6.6 Implement `removeJob(name)` — `ZREM jobs name` + `HDEL meta name`
+- [x] 6.1 Create `redis/redis-job-store.service.ts` — injectable service wrapping all Redis operations
+- [x] 6.2 Implement `registerJob(name, expression, nextTs, force)` — HGET meta, compare expression, ZADD NX or ZADD based on change detection
+- [x] 6.3 Implement `claimDueJob(nowMs)` — Lua script (ZRANGEBYSCORE + ZREM atomic); SHA cache + NOSCRIPT fallback pattern (same as throttler-storage)
+- [x] 6.4 Implement `peekNextJob()` — `ZRANGE jobs 0 0 WITHSCORES` returning `{ name, score } | null`
+- [x] 6.5 Implement `enqueueJob(name, nextTs)` — plain `ZADD jobs nextTs name` (overwrite)
+- [x] 6.6 Implement `removeJob(name)` — `ZREM jobs name` + `HDEL meta name`
 
 ## 7. Redis Poll Loop
 
