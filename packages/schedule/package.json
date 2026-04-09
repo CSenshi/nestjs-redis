@@ -21,6 +21,7 @@
     "name": "schedule"
   },
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "cron": "4.4.0"
   }
 }

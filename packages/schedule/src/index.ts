@@ -1,1 +1,1 @@
-export * from './lib/schedule.module';
+export * from './lib';
