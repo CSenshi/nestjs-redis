@@ -15,10 +15,10 @@
 
 ## 3. Decorators
 
-- [ ] 3.1 Create `decorators/cron.decorator.ts` — `@Cron(cronTime, options?)` with `CronOptions` type (name, timeZone, utcOffset, disabled, threshold, waitForCompletion, unrefTimeout); sets `SCHEDULE_CRON_OPTIONS`, `SCHEDULER_NAME`, `SCHEDULER_TYPE` metadata
-- [ ] 3.2 Create `decorators/interval.decorator.ts` — `@Interval(timeout)` and `@Interval(name, timeout)` overloads
-- [ ] 3.3 Create `decorators/timeout.decorator.ts` — `@Timeout(timeout)` and `@Timeout(name, timeout)` overloads
-- [ ] 3.4 Create `decorators/index.ts` re-exporting all three decorators and `CronOptions`
+- [x] 3.1 Create `decorators/cron.decorator.ts` — `@Cron(cronTime, options?)` with `CronOptions` type (name, timeZone, utcOffset, disabled, threshold, waitForCompletion, unrefTimeout); sets `SCHEDULE_CRON_OPTIONS`, `SCHEDULER_NAME`, `SCHEDULER_TYPE` metadata
+- [x] 3.2 Create `decorators/interval.decorator.ts` — `@Interval(timeout)` and `@Interval(name, timeout)` overloads
+- [x] 3.3 Create `decorators/timeout.decorator.ts` — `@Timeout(timeout)` and `@Timeout(name, timeout)` overloads
+- [x] 3.4 Create `decorators/index.ts` re-exporting all three decorators and `CronOptions`
 
 ## 4. Interfaces
 
