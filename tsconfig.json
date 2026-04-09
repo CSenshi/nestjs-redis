@@ -23,6 +23,9 @@
     },
     {
       "path": "./packages/streams-transporter"
+    },
+    {
+      "path": "./packages/scheduler"
     }
   ]
 }

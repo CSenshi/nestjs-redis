@@ -12,20 +12,23 @@ import type { CronOptions } from './decorators/cron.decorator.js';
 import type { IntervalMetadata } from './interfaces/interval-metadata.interface.js';
 import type { TimeoutMetadata } from './interfaces/timeout-metadata.interface.js';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+type TargetFn = Function;
+
 @Injectable()
 export class SchedulerMetadataAccessor {
   constructor(private readonly reflector: Reflector) {}
 
-  getSchedulerType(target: Function): SchedulerType | undefined {
+  getSchedulerType(target: TargetFn): SchedulerType | undefined {
     return this.reflector.get<SchedulerType>(SCHEDULER_TYPE, target);
   }
 
-  getSchedulerName(target: Function): string | undefined {
+  getSchedulerName(target: TargetFn): string | undefined {
     return this.reflector.get<string>(SCHEDULER_NAME, target);
   }
 
   getCronMetadata(
-    target: Function,
+    target: TargetFn,
   ): (CronOptions & { cronTime: string | Date }) | undefined {
     return this.reflector.get<CronOptions & { cronTime: string | Date }>(
       SCHEDULE_CRON_OPTIONS,
@@ -33,14 +36,14 @@ export class SchedulerMetadataAccessor {
     );
   }
 
-  getIntervalMetadata(target: Function): IntervalMetadata | undefined {
+  getIntervalMetadata(target: TargetFn): IntervalMetadata | undefined {
     return this.reflector.get<IntervalMetadata>(
       SCHEDULE_INTERVAL_OPTIONS,
       target,
     );
   }
 
-  getTimeoutMetadata(target: Function): TimeoutMetadata | undefined {
+  getTimeoutMetadata(target: TargetFn): TimeoutMetadata | undefined {
     return this.reflector.get<TimeoutMetadata>(
       SCHEDULE_TIMEOUT_OPTIONS,
       target,

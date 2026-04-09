@@ -93,8 +93,8 @@
 
 ## 14. Verification
 
-- [ ] 14.1 `pnpm nx lint scheduler` passes
-- [ ] 14.2 `pnpm nx typecheck scheduler` passes
-- [ ] 14.3 `pnpm nx test scheduler` passes (Redis running)
-- [ ] 14.4 `pnpm nx build scheduler` produces valid dist
+- [x] 14.1 `pnpm nx lint scheduler` passes
+- [x] 14.2 `pnpm nx typecheck scheduler` passes
+- [x] 14.3 `pnpm nx test scheduler` passes (Redis running)
+- [x] 14.4 `pnpm nx build scheduler` produces valid dist
 - [ ] 14.5 Update root `README.md` or add `packages/scheduler/README.md` with usage example

@@ -63,21 +63,21 @@ describe('RedisJobStore', () => {
 
   describe('claimDueJob', () => {
     it('returns job name on successful claim', async () => {
-      client.scriptLoad.mockResolvedValue('abc123sha1abc123sha1abc123sha1abc123sha1');
+      client.scriptLoad.mockResolvedValue('deadbeefdeadbeefdeadbeefdeadbeefdeadbeef');
       client.evalSha.mockResolvedValue('myJob');
       const result = await store.claimDueJob(Date.now());
       expect(result).toBe('myJob');
     });
 
     it('returns null when no job is due', async () => {
-      client.scriptLoad.mockResolvedValue('abc123sha1abc123sha1abc123sha1abc123sha1');
+      client.scriptLoad.mockResolvedValue('deadbeefdeadbeefdeadbeefdeadbeefdeadbeef');
       client.evalSha.mockResolvedValue(null);
       const result = await store.claimDueJob(Date.now());
       expect(result).toBeNull();
     });
 
     it('falls back to raw script on NOSCRIPT error', async () => {
-      client.scriptLoad.mockResolvedValue('abc123sha1abc123sha1abc123sha1abc123sha1');
+      client.scriptLoad.mockResolvedValue('deadbeefdeadbeefdeadbeefdeadbeefdeadbeef');
       client.evalSha.mockRejectedValue(new Error('NOSCRIPT No matching script'));
       client.eval.mockResolvedValue('fallbackJob');
       const result = await store.claimDueJob(Date.now());

@@ -35,8 +35,8 @@ describe('Drop-in compatibility', () => {
 
     @Injectable()
     class CompatService {
-      // Same as @nestjs/schedule — name can be omitted
       @Cron(CronExpression.EVERY_YEAR, { name: `${TEST_PREFIX}:yearly` })
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       handleYearly() {}
 
       @Interval(500)
@@ -50,16 +50,19 @@ describe('Drop-in compatibility', () => {
       }
 
       @Interval('namedInterval', 600)
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       handleNamedInterval() {}
 
       @Timeout('namedTimeout', 300)
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       handleNamedTimeout() {}
     }
 
+    type ClientArg = Parameters<typeof ScheduleModule.forRoot>[0]['client'];
     const module = await Test.createTestingModule({
       imports: [
         ScheduleModule.forRoot({
-          client: client as unknown as Parameters<typeof ScheduleModule.forRoot>[0]['client'],
+          client: client as unknown as ClientArg,
           keyPrefix: TEST_PREFIX,
         }),
       ],
@@ -72,16 +75,9 @@ describe('Drop-in compatibility', () => {
 
     const registry = module.get(SchedulerRegistry);
 
-    // Cron job is registered
     expect(registry.getCronJob(`${TEST_PREFIX}:yearly`)).toBeDefined();
-
-    // Intervals fired
     expect(intervalFired.length).toBeGreaterThanOrEqual(1);
-
-    // Timeout fired exactly once
     expect(timeoutFired).toHaveLength(1);
-
-    // Named interval and timeout are accessible in registry
     expect(registry.doesExist('interval', 'namedInterval')).toBe(true);
     expect(registry.doesExist('timeout', 'namedTimeout')).toBe(true);
 

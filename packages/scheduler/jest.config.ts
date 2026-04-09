@@ -1,9 +1,8 @@
 import { readFileSync } from 'fs';
 
-const __dirname = import.meta.dirname;
-
 // Reading the SWC compilation config for the spec files
 const swcJestConfig = JSON.parse(
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   readFileSync(`${__dirname}/.spec.swcrc`, 'utf-8'),
 );
 

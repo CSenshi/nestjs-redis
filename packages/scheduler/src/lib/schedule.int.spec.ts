@@ -1,4 +1,4 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { Injectable } from '@nestjs/common';
 import { createClient } from 'redis';
 import { ScheduleModule } from './schedule.module.js';
@@ -34,11 +34,12 @@ describe('ScheduleModule integration', () => {
         }
       }
 
+      type ClientArg = Parameters<typeof ScheduleModule.forRoot>[0]['client'];
       const buildModule = () =>
         Test.createTestingModule({
           imports: [
             ScheduleModule.forRoot({
-              client: client as unknown as Parameters<typeof ScheduleModule.forRoot>[0]['client'],
+              client: client as unknown as ClientArg,
               keyPrefix: TEST_PREFIX,
               cronJobs: true,
               intervals: false,
@@ -52,12 +53,10 @@ describe('ScheduleModule integration', () => {
       await moduleA.init();
       await moduleB.init();
 
-      // Wait for at least one tick (1s job)
       await new Promise((r) => setTimeout(r, 1500));
 
       await Promise.all([moduleA.close(), moduleB.close()]);
 
-      // With distributed lock, only one execution per tick — allow 1-2 total
       expect(executionCounts.jobA).toBeLessThanOrEqual(2);
       expect(executionCounts.jobA).toBeGreaterThanOrEqual(1);
     }, 10000);
@@ -66,18 +65,19 @@ describe('ScheduleModule integration', () => {
   describe('expression-change detection', () => {
     it('reschedules when cron expression changes', async () => {
       const jobName = `${TEST_PREFIX}:changeJob`;
+      type ClientArg = Parameters<typeof ScheduleModule.forRoot>[0]['client'];
 
-      // First: register with one expression
       @Injectable()
       class ServiceV1 {
-        @Cron('0 0 1 1 *', { name: jobName }) // yearly — far future
+        @Cron('0 0 1 1 *', { name: jobName })
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         yearly() {}
       }
 
       const module1 = await Test.createTestingModule({
         imports: [
           ScheduleModule.forRoot({
-            client: client as unknown as Parameters<typeof ScheduleModule.forRoot>[0]['client'],
+            client: client as unknown as ClientArg,
             keyPrefix: TEST_PREFIX,
           }),
         ],
@@ -86,21 +86,20 @@ describe('ScheduleModule integration', () => {
       await module1.init();
       await module1.close();
 
-      // Check it was stored
       const originalScore = await client.zScore(`${TEST_PREFIX}:jobs`, jobName);
       expect(originalScore).not.toBeNull();
 
-      // Second: register with a different expression
       @Injectable()
       class ServiceV2 {
-        @Cron('* * * * * *', { name: jobName }) // every second — near future
+        @Cron('* * * * * *', { name: jobName })
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         everySecond() {}
       }
 
       const module2 = await Test.createTestingModule({
         imports: [
           ScheduleModule.forRoot({
-            client: client as unknown as Parameters<typeof ScheduleModule.forRoot>[0]['client'],
+            client: client as unknown as ClientArg,
             keyPrefix: TEST_PREFIX,
           }),
         ],
@@ -111,8 +110,8 @@ describe('ScheduleModule integration', () => {
 
       const newScore = await client.zScore(`${TEST_PREFIX}:jobs`, jobName);
       expect(newScore).not.toBeNull();
-      // The new score should be much sooner than the original (yearly) schedule
-      expect(newScore!).toBeLessThan(originalScore!);
+      // New score should be much sooner than the original yearly schedule
+      expect(newScore).toBeLessThan(originalScore as number);
     }, 15000);
   });
 
@@ -120,6 +119,7 @@ describe('ScheduleModule integration', () => {
     it('does not fire when disabled: true', async () => {
       const executed: string[] = [];
       const jobName = `${TEST_PREFIX}:disabledJob`;
+      type ClientArg = Parameters<typeof ScheduleModule.forRoot>[0]['client'];
 
       @Injectable()
       class DisabledService {
@@ -132,7 +132,7 @@ describe('ScheduleModule integration', () => {
       const module = await Test.createTestingModule({
         imports: [
           ScheduleModule.forRoot({
-            client: client as unknown as Parameters<typeof ScheduleModule.forRoot>[0]['client'],
+            client: client as unknown as ClientArg,
             keyPrefix: TEST_PREFIX,
           }),
         ],
@@ -146,7 +146,6 @@ describe('ScheduleModule integration', () => {
 
       expect(executed).toHaveLength(0);
 
-      // Verify not in ZSET
       const score = await client.zScore(`${TEST_PREFIX}:jobs`, jobName);
       expect(score).toBeNull();
     }, 10000);
@@ -155,17 +154,19 @@ describe('ScheduleModule integration', () => {
   describe('SchedulerRegistry', () => {
     it('getCronJob returns a handle with start/stop methods', async () => {
       const jobName = `${TEST_PREFIX}:registryJob`;
+      type ClientArg = Parameters<typeof ScheduleModule.forRoot>[0]['client'];
 
       @Injectable()
       class RegistryService {
-        @Cron('0 0 1 1 *', { name: jobName }) // yearly — won't fire
+        @Cron('0 0 1 1 *', { name: jobName })
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         myJob() {}
       }
 
       const module = await Test.createTestingModule({
         imports: [
           ScheduleModule.forRoot({
-            client: client as unknown as Parameters<typeof ScheduleModule.forRoot>[0]['client'],
+            client: client as unknown as ClientArg,
             keyPrefix: TEST_PREFIX,
           }),
         ],

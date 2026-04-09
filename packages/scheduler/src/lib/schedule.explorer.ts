@@ -47,6 +47,7 @@ export class ScheduleExplorer implements OnModuleInit {
     const methodRef = instance[methodName];
     if (typeof methodRef !== 'function') return;
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
     const methodKey = methodRef as Function;
 
     const schedulerType = this.accessor.getSchedulerType(methodKey);
@@ -91,6 +92,7 @@ export class ScheduleExplorer implements OnModuleInit {
   ): () => unknown {
     return () => {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
         const result = (instance[methodName] as Function).call(instance);
         return result;
       } catch (error: unknown) {

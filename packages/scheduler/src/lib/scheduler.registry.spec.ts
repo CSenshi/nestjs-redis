@@ -42,7 +42,7 @@ describe('SchedulerRegistry', () => {
 
     it('throws for unknown job', () => {
       expect(() => registry.getCronJob('ghost')).toThrow(
-        NO_SCHEDULER_FOUND_MSG(SchedulerType.CRON, 'ghost'),
+        `No scheduler with type "${SchedulerType.CRON}" and name "ghost" was found.`,
       );
     });
   });
@@ -59,7 +59,7 @@ describe('SchedulerRegistry', () => {
     it('throws on duplicate name', () => {
       registry.addCronJob('dup', makeHandle('dup'));
       expect(() => registry.addCronJob('dup', makeHandle('dup'))).toThrow(
-        DUPLICATE_MSG(SchedulerType.CRON, 'dup'),
+        `Scheduler with type "${SchedulerType.CRON}" and name "dup" already exists`,
       );
     });
   });
@@ -92,6 +92,7 @@ describe('SchedulerRegistry', () => {
     });
 
     it('checks interval existence', () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       const ref = setInterval(() => {}, 10000);
       registry.addInterval('myInterval', ref);
       expect(registry.doesExist('interval', 'myInterval')).toBe(true);
@@ -99,6 +100,7 @@ describe('SchedulerRegistry', () => {
     });
 
     it('checks timeout existence', () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       const ref = setTimeout(() => {}, 10000);
       registry.addTimeout('myTimeout', ref);
       expect(registry.doesExist('timeout', 'myTimeout')).toBe(true);
@@ -108,6 +110,7 @@ describe('SchedulerRegistry', () => {
 
   describe('intervals', () => {
     it('returns interval names', () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       const ref = setInterval(() => {}, 10000);
       registry.addInterval('i1', ref);
       expect(registry.getIntervals()).toContain('i1');
@@ -115,6 +118,7 @@ describe('SchedulerRegistry', () => {
     });
 
     it('throws on duplicate interval', () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       const ref = setInterval(() => {}, 10000);
       registry.addInterval('dup', ref);
       expect(() => registry.addInterval('dup', ref)).toThrow();
@@ -122,6 +126,7 @@ describe('SchedulerRegistry', () => {
     });
 
     it('deletes interval and clears it', () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       const ref = setInterval(() => {}, 10000);
       registry.addInterval('del', ref);
       registry.deleteInterval('del');
@@ -131,6 +136,7 @@ describe('SchedulerRegistry', () => {
 
   describe('timeouts', () => {
     it('returns timeout names', () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       const ref = setTimeout(() => {}, 10000);
       registry.addTimeout('t1', ref);
       expect(registry.getTimeouts()).toContain('t1');
@@ -138,6 +144,7 @@ describe('SchedulerRegistry', () => {
     });
 
     it('deletes timeout and clears it', () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       const ref = setTimeout(() => {}, 10000);
       registry.addTimeout('del', ref);
       registry.deleteTimeout('del');
@@ -145,11 +152,3 @@ describe('SchedulerRegistry', () => {
     });
   });
 });
-
-function NO_SCHEDULER_FOUND_MSG(type: SchedulerType, name: string): string {
-  return `No scheduler with type "${type}" and name "${name}" was found.`;
-}
-
-function DUPLICATE_MSG(type: SchedulerType, name: string): string {
-  return `Scheduler with type "${type}" and name "${name}" already exists. Check your decorated methods.`;
-}
