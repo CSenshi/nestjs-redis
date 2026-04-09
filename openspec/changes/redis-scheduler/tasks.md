@@ -67,10 +67,10 @@
 
 ## 10. Explorer
 
-- [ ] 10.1 Create `schedule.explorer.ts` — `ScheduleExplorer` implementing `OnModuleInit`; inject `DiscoveryService`, `MetadataScanner`, `SchedulerMetadataAccessor`, `SchedulerOrchestrator`, `SCHEDULE_MODULE_OPTIONS`
-- [ ] 10.2 Implement `explore()`: scan all providers + controllers, for each method call `lookupSchedulers`
-- [ ] 10.3 Implement `lookupSchedulers`: switch on `SchedulerType`; respect `cronJobs`/`intervals`/`timeouts` feature flags; warn on non-static providers
-- [ ] 10.4 Wrap all discovered handlers in try/catch blocks (log error, don't rethrow)
+- [x] 10.1 Create `schedule.explorer.ts` — `ScheduleExplorer` implementing `OnModuleInit`; inject `DiscoveryService`, `MetadataScanner`, `SchedulerMetadataAccessor`, `SchedulerOrchestrator`, `SCHEDULE_MODULE_OPTIONS`
+- [x] 10.2 Implement `explore()`: scan all providers + controllers, for each method call `lookupSchedulers`
+- [x] 10.3 Implement `lookupSchedulers`: switch on `SchedulerType`; respect `cronJobs`/`intervals`/`timeouts` feature flags; warn on non-static providers
+- [x] 10.4 Wrap all discovered handlers in try/catch blocks (log error, don't rethrow)
 
 ## 11. Module
 
