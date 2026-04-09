@@ -1,0 +1,59 @@
+{
+  "name": "@nestjs-redis/scheduler",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": "Saba Pochkhua <saba.pochkhua@gmail.com> (https://github.com/CSenshi)",
+  "description": "Redis-backed distributed cron scheduler for NestJS — drop-in replacement for @nestjs/schedule with exactly-one-instance-per-tick guarantee",
+  "keywords": [
+    "nestjs",
+    "redis",
+    "scheduler",
+    "cron",
+    "distributed",
+    "typescript",
+    "node-redis",
+    "schedule"
+  ],
+  "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/scheduler",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "development": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "!**/*.tsbuildinfo"
+  ],
+  "nx": {
+    "name": "scheduler"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "cron-parser": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0",
+    "@nestjs/core": "^9.0.0 || ^10.0.0 || ^11.0.0",
+    "redis": "^5.0.0"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^11.0.0",
+    "redis": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CSenshi/nestjs-redis",
+    "directory": "packages/scheduler"
+  }
+}

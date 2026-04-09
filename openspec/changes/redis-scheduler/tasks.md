@@ -1,17 +1,17 @@
 ## 1. Package Scaffold
 
-- [ ] 1.1 Run `pnpm nx g @nx/nest:library --name=scheduler --directory=packages/scheduler --buildable --publishable --linter=eslint --unitTestRunner=jest` to generate the package scaffold
-- [ ] 1.2 Update generated `package.json`: set name to `@nestjs-redis/scheduler`, add peer deps (`redis ^5`, `@nestjs/common ^9-11`, `@nestjs/core ^9-11`), add dep `cron-parser`, align `exports`/`files`/`engines` fields with other packages
-- [ ] 1.3 Update `tsconfig.json` to extend `tsconfig.base.json` and set `moduleResolution: nodenext` (match other packages)
-- [ ] 1.4 Update generated `project.json` to add `typecheck` target and align `lint`/`test`/`build` target config with other packages
-- [ ] 1.5 Register the new package in `nx.json` release config
+- [x] 1.1 Run `pnpm nx g @nx/nest:library --name=scheduler --directory=packages/scheduler --buildable --publishable --linter=eslint --unitTestRunner=jest` to generate the package scaffold
+- [x] 1.2 Update generated `package.json`: set name to `@nestjs-redis/scheduler`, add peer deps (`redis ^5`, `@nestjs/common ^9-11`, `@nestjs/core ^9-11`), add dep `cron-parser`, align `exports`/`files`/`engines` fields with other packages
+- [x] 1.3 Update `tsconfig.json` to extend `tsconfig.base.json` and set `moduleResolution: nodenext` (match other packages)
+- [x] 1.4 Update generated `project.json` to add `typecheck` target and align `lint`/`test`/`build` target config with other packages
+- [x] 1.5 Register the new package in `nx.json` release config
 
 ## 2. Constants and Enums
 
-- [ ] 2.1 Create `schedule.constants.ts` — metadata keys: `SCHEDULE_CRON_OPTIONS`, `SCHEDULE_INTERVAL_OPTIONS`, `SCHEDULE_TIMEOUT_OPTIONS`, `SCHEDULER_NAME`, `SCHEDULER_TYPE`; module token: `SCHEDULE_MODULE_OPTIONS`
-- [ ] 2.2 Create `enums/scheduler-type.enum.ts` — `SchedulerType.CRON | INTERVAL | TIMEOUT`
-- [ ] 2.3 Create `enums/cron-expression.enum.ts` — verbatim copy of `CronExpression` from `@nestjs/schedule`
-- [ ] 2.4 Create `enums/index.ts` re-exporting both enums
+- [x] 2.1 Create `schedule.constants.ts` — metadata keys: `SCHEDULE_CRON_OPTIONS`, `SCHEDULE_INTERVAL_OPTIONS`, `SCHEDULE_TIMEOUT_OPTIONS`, `SCHEDULER_NAME`, `SCHEDULER_TYPE`; module token: `SCHEDULE_MODULE_OPTIONS`
+- [x] 2.2 Create `enums/scheduler-type.enum.ts` — `SchedulerType.CRON | INTERVAL | TIMEOUT`
+- [x] 2.3 Create `enums/cron-expression.enum.ts` — verbatim copy of `CronExpression` from `@nestjs/schedule`
+- [x] 2.4 Create `enums/index.ts` re-exporting both enums
 
 ## 3. Decorators
 
