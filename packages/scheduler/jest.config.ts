@@ -19,5 +19,4 @@ export default {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../test-output/scheduler',
-  testPathIgnorePatterns: ['.*\\.int\\.spec\\.ts$'],
 };

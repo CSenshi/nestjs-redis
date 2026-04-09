@@ -1,6 +1,8 @@
 import {
   DynamicModule,
+  InjectionToken,
   Module,
+  OptionalFactoryDependency,
   Provider,
   Type,
 } from '@nestjs/common';
@@ -89,7 +91,7 @@ export class ScheduleModule {
               ...result,
             };
           },
-          inject: options.inject ?? [],
+          inject: (options.inject ?? []) as (InjectionToken | OptionalFactoryDependency)[],
         },
       ];
     }

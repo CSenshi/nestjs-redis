@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import type { RedisClientType, RedisClusterType, RedisSentinelType } from 'redis';
 import { SCHEDULE_MODULE_OPTIONS } from '../schedule.constants.js';
 import type { ScheduleModuleOptions } from '../interfaces/schedule-module-options.interface.js';
@@ -14,7 +14,6 @@ return jobs[1]
 
 @Injectable()
 export class RedisJobStore {
-  private readonly logger = new Logger(RedisJobStore.name);
   private readonly client: RedisClientLike;
   private readonly jobsKey: string;
   private readonly metaKey: string;

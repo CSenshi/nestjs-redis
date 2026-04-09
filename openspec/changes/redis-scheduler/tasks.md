@@ -85,11 +85,11 @@
 
 ## 13. Tests
 
-- [ ] 13.1 Write unit tests for `RedisJobStore` — mock redis client, verify ZADD NX vs overwrite logic, verify Lua claim returns job name or null
-- [ ] 13.2 Write unit tests for `RedisPollLoop` — mock job store, verify sleep duration, threshold skip, re-enqueue before dispatch
-- [ ] 13.3 Write unit tests for `SchedulerRegistry` — duplicate throw, doesExist, deleteCronJob
-- [ ] 13.4 Write integration tests (`*.int.spec.ts`) — bootstrap a NestJS test module with real Redis; verify exactly-one-execution across two parallel orchestrators; verify expression-change reschedule; verify disabled job never fires
-- [ ] 13.5 Write integration test for drop-in compat — same decorator shapes as `@nestjs/schedule` compile and run correctly
+- [x] 13.1 Write unit tests for `RedisJobStore` — mock redis client, verify ZADD NX vs overwrite logic, verify Lua claim returns job name or null
+- [x] 13.2 Write unit tests for `RedisPollLoop` — mock job store, verify sleep duration, threshold skip, re-enqueue before dispatch
+- [x] 13.3 Write unit tests for `SchedulerRegistry` — duplicate throw, doesExist, deleteCronJob
+- [x] 13.4 Write integration tests (`*.int.spec.ts`) — bootstrap a NestJS test module with real Redis; verify exactly-one-execution across two parallel orchestrators; verify expression-change reschedule; verify disabled job never fires
+- [x] 13.5 Write integration test for drop-in compat — same decorator shapes as `@nestjs/schedule` compile and run correctly
 
 ## 14. Verification
 

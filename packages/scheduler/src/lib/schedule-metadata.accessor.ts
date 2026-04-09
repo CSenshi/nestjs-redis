@@ -16,16 +16,16 @@ import type { TimeoutMetadata } from './interfaces/timeout-metadata.interface.js
 export class SchedulerMetadataAccessor {
   constructor(private readonly reflector: Reflector) {}
 
-  getSchedulerType(target: object): SchedulerType | undefined {
+  getSchedulerType(target: Function): SchedulerType | undefined {
     return this.reflector.get<SchedulerType>(SCHEDULER_TYPE, target);
   }
 
-  getSchedulerName(target: object): string | undefined {
+  getSchedulerName(target: Function): string | undefined {
     return this.reflector.get<string>(SCHEDULER_NAME, target);
   }
 
   getCronMetadata(
-    target: object,
+    target: Function,
   ): (CronOptions & { cronTime: string | Date }) | undefined {
     return this.reflector.get<CronOptions & { cronTime: string | Date }>(
       SCHEDULE_CRON_OPTIONS,
@@ -33,14 +33,14 @@ export class SchedulerMetadataAccessor {
     );
   }
 
-  getIntervalMetadata(target: object): IntervalMetadata | undefined {
+  getIntervalMetadata(target: Function): IntervalMetadata | undefined {
     return this.reflector.get<IntervalMetadata>(
       SCHEDULE_INTERVAL_OPTIONS,
       target,
     );
   }
 
-  getTimeoutMetadata(target: object): TimeoutMetadata | undefined {
+  getTimeoutMetadata(target: Function): TimeoutMetadata | undefined {
     return this.reflector.get<TimeoutMetadata>(
       SCHEDULE_TIMEOUT_OPTIONS,
       target,

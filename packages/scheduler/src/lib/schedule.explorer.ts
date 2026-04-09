@@ -47,19 +47,17 @@ export class ScheduleExplorer implements OnModuleInit {
     const methodRef = instance[methodName];
     if (typeof methodRef !== 'function') return;
 
-    const methodKey = (instance[methodName] as object).constructor
-      ? (instance[methodName] as Function)
-      : methodRef;
+    const methodKey = methodRef as Function;
 
-    const schedulerType = this.accessor.getSchedulerType(methodKey as object);
+    const schedulerType = this.accessor.getSchedulerType(methodKey);
     if (!schedulerType) return;
 
-    const name = this.accessor.getSchedulerName(methodKey as object);
+    const name = this.accessor.getSchedulerName(methodKey);
 
     switch (schedulerType) {
       case SchedulerType.CRON: {
         if (this.options.cronJobs === false) return;
-        const meta = this.accessor.getCronMetadata(methodKey as object);
+        const meta = this.accessor.getCronMetadata(methodKey);
         if (!meta) return;
         const handler = this.wrapHandler(instance, methodName);
         const resolvedName = name ?? `${instance.constructor?.name ?? 'Unknown'}.${methodName}`;
@@ -68,7 +66,7 @@ export class ScheduleExplorer implements OnModuleInit {
       }
       case SchedulerType.INTERVAL: {
         if (this.options.intervals === false) return;
-        const meta = this.accessor.getIntervalMetadata(methodKey as object);
+        const meta = this.accessor.getIntervalMetadata(methodKey);
         if (!meta) return;
         const handler = this.wrapHandler(instance, methodName);
         const resolvedName = name ?? `${instance.constructor?.name ?? 'Unknown'}.${methodName}`;
@@ -77,7 +75,7 @@ export class ScheduleExplorer implements OnModuleInit {
       }
       case SchedulerType.TIMEOUT: {
         if (this.options.timeouts === false) return;
-        const meta = this.accessor.getTimeoutMetadata(methodKey as object);
+        const meta = this.accessor.getTimeoutMetadata(methodKey);
         if (!meta) return;
         const handler = this.wrapHandler(instance, methodName);
         const resolvedName = name ?? `${instance.constructor?.name ?? 'Unknown'}.${methodName}`;
