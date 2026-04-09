@@ -41,12 +41,12 @@
 
 ## 7. Redis Poll Loop
 
-- [ ] 7.1 Create `redis/redis-poll-loop.service.ts` — injectable service with `start()` and `stop()` methods
-- [ ] 7.2 Implement smart sleep: peek next job → sleep until score (or 1 s if empty) → attempt claim; loop
-- [ ] 7.3 Make sleep interruptible via `AbortController` / cancel token so `stop()` wakes the loop immediately
-- [ ] 7.4 On successful claim: call `RedisJobStore.enqueueJob` with next occurrence (computed from in-memory expression) BEFORE dispatching handler
-- [ ] 7.5 Implement `threshold` check: if `Date.now() - score > threshold` log warning and skip handler (still re-enqueue)
-- [ ] 7.6 Dispatch handler in background (unhandled rejections caught and logged; don't block the loop)
+- [x] 7.1 Create `redis/redis-poll-loop.service.ts` — injectable service with `start()` and `stop()` methods
+- [x] 7.2 Implement smart sleep: peek next job → sleep until score (or 1 s if empty) → attempt claim; loop
+- [x] 7.3 Make sleep interruptible via `AbortController` / cancel token so `stop()` wakes the loop immediately
+- [x] 7.4 On successful claim: call `RedisJobStore.enqueueJob` with next occurrence (computed from in-memory expression) BEFORE dispatching handler
+- [x] 7.5 Implement `threshold` check: if `Date.now() - score > threshold` log warning and skip handler (still re-enqueue)
+- [x] 7.6 Dispatch handler in background (unhandled rejections caught and logged; don't block the loop)
 
 ## 8. Scheduler Registry
 
