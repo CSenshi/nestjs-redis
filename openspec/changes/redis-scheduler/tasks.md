@@ -74,10 +74,10 @@
 
 ## 11. Module
 
-- [ ] 11.1 Create `schedule.module.ts` — `ScheduleModule` with manual `forRoot(options?)` and `forRootAsync(options)` static methods (no `ConfigurableModuleBuilder` — needs DiscoveryModule import and non-standard wiring)
-- [ ] 11.2 `forRoot`: return `{ global: true, module: ScheduleModule, imports: [DiscoveryModule], providers: [...], exports: [SchedulerRegistry] }`
-- [ ] 11.3 `forRootAsync`: support `useFactory`, `useClass`, `useExisting` patterns; inject `SCHEDULE_MODULE_OPTIONS` token; apply default values (`cronJobs: true`, `intervals: true`, `timeouts: true`)
-- [ ] 11.4 Provide `RedisJobStore` and `RedisPollLoop` in module providers, injecting `SCHEDULE_MODULE_OPTIONS` for the Redis client and keyPrefix
+- [x] 11.1 Create `schedule.module.ts` — `ScheduleModule` with manual `forRoot(options?)` and `forRootAsync(options)` static methods (no `ConfigurableModuleBuilder` — needs DiscoveryModule import and non-standard wiring)
+- [x] 11.2 `forRoot`: return `{ global: true, module: ScheduleModule, imports: [DiscoveryModule], providers: [...], exports: [SchedulerRegistry] }`
+- [x] 11.3 `forRootAsync`: support `useFactory`, `useClass`, `useExisting` patterns; inject `SCHEDULE_MODULE_OPTIONS` token; apply default values (`cronJobs: true`, `intervals: true`, `timeouts: true`)
+- [x] 11.4 Provide `RedisJobStore` and `RedisPollLoop` in module providers, injecting `SCHEDULE_MODULE_OPTIONS` for the Redis client and keyPrefix
 
 ## 12. Public API (index.ts)
 
