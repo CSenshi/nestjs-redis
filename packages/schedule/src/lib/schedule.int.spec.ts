@@ -67,6 +67,32 @@ describe('@Cron decorator (integration)', () => {
     expect(service.everyTwoSecondsCount).toBeLessThanOrEqual(4);
   }, 15_000);
 
+  it('recovers after Redis FLUSHDB — job re-registers on next bootstrap', async () => {
+    // First module instance runs normally for 1.5 s
+    const mod1 = await makeModule([TestService]);
+    const service1 = mod1.get(TestService);
+
+    await new Promise((r) => setTimeout(r, 1_500));
+    await mod1.close();
+
+    expect(service1.callCount).toBeGreaterThanOrEqual(1);
+
+    // Simulate Redis eviction / FLUSHDB — wipes ZSET and meta entirely
+    await client.flushDb();
+    expect(await client.zCard('cron-test:jobs')).toBe(0);
+    expect(await client.hLen('cron-test:meta')).toBe(0);
+
+    // Second module instance boots against empty Redis — bootstrap must re-register
+    const mod2 = await makeModule([TestService]);
+    const service2 = mod2.get(TestService);
+
+    await new Promise((r) => setTimeout(r, 1_500));
+    await mod2.close();
+
+    // If bootstrap recovery works the job fires again after the flush
+    expect(service2.callCount).toBeGreaterThanOrEqual(1);
+  }, 15_000);
+
   it('fires exactly once per tick across 3 competing module instances', async () => {
     const mods = await Promise.all([
       makeModule([TestService]),
