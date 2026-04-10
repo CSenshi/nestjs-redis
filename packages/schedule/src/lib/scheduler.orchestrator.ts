@@ -123,16 +123,16 @@ export class SchedulerOrchestrator
         nextTs,
       );
       this.registry.addCronJob(name, handle);
-      this.pollLoop.registerJob({
-        name,
-        expression,
-        timeZone,
-        utcOffset,
-        threshold,
-        handler: def.handler,
-      });
 
       if (!def.options.disabled) {
+        this.pollLoop.registerJob({
+          name,
+          expression,
+          timeZone,
+          utcOffset,
+          threshold,
+          handler: def.handler,
+        });
         await this.store.registerJob(name, expression, nextTs);
       }
     }
