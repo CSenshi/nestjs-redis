@@ -18,7 +18,7 @@ const DEFAULT_SHUTDOWN_TIMEOUT_MS = 5000;
 
 interface CronJobDef {
   handler: () => unknown;
-  options: CronOptions & { cronTime: string | Date };
+  options: CronOptions & { cronTime: string };
 }
 
 @Injectable()
@@ -40,7 +40,7 @@ export class SchedulerOrchestrator
 
   addCron(
     fn: () => unknown,
-    options: CronOptions & { cronTime: string | Date },
+    options: CronOptions & { cronTime: string },
   ): void {
     const name = this.resolveCronName(options);
     this.cronDefs.set(name, { handler: fn, options });
@@ -161,7 +161,7 @@ export class SchedulerOrchestrator
   }
 
   private resolveCronName(
-    options: CronOptions & { cronTime: string | Date },
+    options: CronOptions & { cronTime: string },
   ): string {
     return options.name ?? options.cronTime.toString();
   }

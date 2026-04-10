@@ -61,13 +61,13 @@ export type CronOptions = {
 
 /**
  * Creates a scheduled job.
- * @param cronTime The time to fire off your job. This can be in the form of cron syntax or a JS ```Date``` object.
+ * @param cronTime The time to fire off your job as a cron expression string (e.g. `"* * * * *"`).
  * @param options Job execution options.
  *
  * @publicApi
  */
 export function Cron(
-  cronTime: string | Date,
+  cronTime: string,
   options: CronOptions = {},
 ): MethodDecorator {
   const name = options?.name;
