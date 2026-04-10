@@ -3,11 +3,7 @@
     "nx": {
       "type": "stdio",
       "command": "pnpm",
-      "args": [
-        "exec",
-        "nx",
-        "mcp"
-      ],
+      "args": ["exec", "nx", "mcp"],
       "env": {}
     }
   }
