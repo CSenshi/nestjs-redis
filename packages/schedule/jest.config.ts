@@ -1,4 +1,6 @@
-const { readFileSync } = require('fs');
+import { readFileSync } from 'fs';
+
+const __dirname = import.meta.dirname;
 
 // Reading the SWC compilation config for the spec files
 const swcJestConfig = JSON.parse(
@@ -8,7 +10,7 @@ const swcJestConfig = JSON.parse(
 // Disable .swcrc look-up by SWC core because we're passing in swcJestConfig ourselves
 swcJestConfig.swcrc = false;
 
-module.exports = {
+export default {
   displayName: 'schedule',
   preset: '../../jest.preset.js',
   testEnvironment: 'node',

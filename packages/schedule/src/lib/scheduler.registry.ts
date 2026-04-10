@@ -1,16 +1,31 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { CronJob } from 'cron';
+import { Injectable } from '@nestjs/common';
+import { SchedulerType } from './enums/scheduler-type.enum';
+import { RedisJobStore } from './redis/redis-job-store.service';
+import { RedisPollLoop } from './redis/redis-poll-loop.service';
 import { DUPLICATE_SCHEDULER, NO_SCHEDULER_FOUND } from './schedule.messages';
+
+export interface CronJobHandle {
+  start(): Promise<void>;
+  stop(): Promise<void>;
+  readonly name: string;
+  readonly expression: string;
+  readonly nextTs: number;
+}
 
 @Injectable()
 export class SchedulerRegistry {
-  private readonly logger = new Logger(SchedulerRegistry.name);
-
-  private readonly cronJobs = new Map<string, CronJob>();
-  private readonly timeouts = new Map<string, any>();
+  private readonly cronJobs = new Map<string, CronJobHandle>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly intervals = new Map<string, any>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private readonly timeouts = new Map<string, any>();
 
-  doesExist(type: 'cron' | 'timeout' | 'interval', name: string) {
+  constructor(
+    private readonly store: RedisJobStore,
+    private readonly pollLoop: RedisPollLoop,
+  ) {}
+
+  doesExist(type: 'cron' | 'timeout' | 'interval', name: string): boolean {
     switch (type) {
       case 'cron':
         return this.cronJobs.has(name);
@@ -18,101 +33,83 @@ export class SchedulerRegistry {
         return this.intervals.has(name);
       case 'timeout':
         return this.timeouts.has(name);
-      default:
-        return false;
     }
   }
 
-  getCronJob(name: string) {
+  getCronJob(name: string): CronJobHandle {
     const ref = this.cronJobs.get(name);
     if (!ref) {
-      throw new Error(NO_SCHEDULER_FOUND('Cron Job', name));
+      throw new Error(NO_SCHEDULER_FOUND(SchedulerType.CRON, name));
     }
     return ref;
   }
 
-  getInterval(name: string) {
-    const ref = this.intervals.get(name);
-    if (typeof ref === 'undefined') {
-      throw new Error(NO_SCHEDULER_FOUND('Interval', name));
-    }
-    return ref;
+  getCronJobs(): Map<string, CronJobHandle> {
+    return new Map(this.cronJobs);
   }
 
-  getTimeout(name: string) {
-    const ref = this.timeouts.get(name);
-    if (typeof ref === 'undefined') {
-      throw new Error(NO_SCHEDULER_FOUND('Timeout', name));
+  addCronJob(name: string, job: CronJobHandle): void {
+    if (this.cronJobs.has(name)) {
+      throw new Error(DUPLICATE_SCHEDULER(SchedulerType.CRON, name));
     }
-    return ref;
-  }
-
-  addCronJob(name: string, job: CronJob) {
-    const ref = this.cronJobs.get(name);
-    if (ref) {
-      throw new Error(DUPLICATE_SCHEDULER('Cron Job', name));
-    }
-
-    job.fireOnTick = this.wrapFunctionInTryCatchBlocks(job.fireOnTick, job);
     this.cronJobs.set(name, job);
   }
 
-  addInterval<T = any>(name: string, intervalId: T) {
-    const ref = this.intervals.get(name);
-    if (ref) {
-      throw new Error(DUPLICATE_SCHEDULER('Interval', name));
-    }
-    this.intervals.set(name, intervalId);
-  }
-
-  addTimeout<T = any>(name: string, timeoutId: T) {
-    const ref = this.timeouts.get(name);
-    if (ref) {
-      throw new Error(DUPLICATE_SCHEDULER('Timeout', name));
-    }
-    this.timeouts.set(name, timeoutId);
-  }
-
-  getCronJobs(): Map<string, CronJob> {
-    return this.cronJobs;
-  }
-
-  deleteCronJob(name: string) {
-    const cronJob = this.getCronJob(name);
-    cronJob.stop();
+  async deleteCronJob(name: string): Promise<void> {
+    const job = this.getCronJob(name);
+    await job.stop();
     this.cronJobs.delete(name);
+    this.pollLoop.unregisterJob(name);
+    await this.store.removeJob(name);
+  }
+
+  getInterval<T = NodeJS.Timeout>(name: string): T {
+    const ref = this.intervals.get(name) as T | undefined;
+    if (ref === undefined) {
+      throw new Error(NO_SCHEDULER_FOUND(SchedulerType.INTERVAL, name));
+    }
+    return ref;
   }
 
   getIntervals(): string[] {
     return [...this.intervals.keys()];
   }
 
-  deleteInterval(name: string) {
-    const interval = this.getInterval(name);
-    clearInterval(interval);
+  addInterval<T = NodeJS.Timeout>(name: string, intervalId: T): void {
+    if (this.intervals.has(name)) {
+      throw new Error(DUPLICATE_SCHEDULER(SchedulerType.INTERVAL, name));
+    }
+    this.intervals.set(name, intervalId);
+  }
+
+  deleteInterval(name: string): void {
+    const ref = this.getInterval(name);
+    clearInterval(ref as NodeJS.Timeout);
     this.intervals.delete(name);
+  }
+
+  getTimeout<T = NodeJS.Timeout>(name: string): T {
+    const ref = this.timeouts.get(name) as T | undefined;
+    if (ref === undefined) {
+      throw new Error(NO_SCHEDULER_FOUND(SchedulerType.TIMEOUT, name));
+    }
+    return ref;
   }
 
   getTimeouts(): string[] {
     return [...this.timeouts.keys()];
   }
 
-  deleteTimeout(name: string) {
-    const timeout = this.getTimeout(name);
-    clearTimeout(timeout);
-    this.timeouts.delete(name);
+  addTimeout<T = NodeJS.Timeout>(name: string, timeoutId: T): void {
+    if (this.timeouts.has(name)) {
+      throw new Error(DUPLICATE_SCHEDULER(SchedulerType.TIMEOUT, name));
+    }
+    this.timeouts.set(name, timeoutId);
   }
 
-  private wrapFunctionInTryCatchBlocks(
-    methodRef: Function,
-    instance: object,
-  ): (...args: unknown[]) => Promise<void> {
-    return async (...args: unknown[]) => {
-      try {
-        await methodRef.call(instance, ...args);
-      } catch (error) {
-        this.logger.error(error);
-      }
-    };
+  deleteTimeout(name: string): void {
+    const ref = this.getTimeout(name);
+    clearTimeout(ref as NodeJS.Timeout);
+    this.timeouts.delete(name);
   }
 }

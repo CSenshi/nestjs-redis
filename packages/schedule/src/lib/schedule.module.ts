@@ -1,26 +1,34 @@
 import { DynamicModule, Module, Provider, Type } from '@nestjs/common';
-import { DiscoveryModule } from '@nestjs/core';
+import { DiscoveryModule, Reflector } from '@nestjs/core';
 import {
   ScheduleModuleAsyncOptions,
   ScheduleModuleOptions,
   ScheduleModuleOptionsFactory,
 } from './interfaces/schedule-module-options.interface';
+import { RedisJobStore } from './redis/redis-job-store.service';
+import { RedisPollLoop } from './redis/redis-poll-loop.service';
 import { SchedulerMetadataAccessor } from './schedule-metadata.accessor';
 import { SCHEDULE_MODULE_OPTIONS } from './schedule.constants';
 import { ScheduleExplorer } from './schedule.explorer';
 import { SchedulerOrchestrator } from './scheduler.orchestrator';
 import { SchedulerRegistry } from './scheduler.registry';
 
+const CORE_PROVIDERS: Type[] = [
+  SchedulerMetadataAccessor,
+  RedisJobStore,
+  RedisPollLoop,
+  SchedulerRegistry,
+  SchedulerOrchestrator,
+  ScheduleExplorer,
+];
+
 /**
  * @publicApi
  */
-@Module({
-  imports: [DiscoveryModule],
-  providers: [SchedulerMetadataAccessor, SchedulerOrchestrator],
-})
+@Module({})
 export class ScheduleModule {
-  static forRoot(options?: ScheduleModuleOptions): DynamicModule {
-    const optionsWithDefaults = {
+  static forRoot(options: ScheduleModuleOptions): DynamicModule {
+    const resolvedOptions: ScheduleModuleOptions = {
       cronJobs: true,
       intervals: true,
       timeouts: true,
@@ -29,13 +37,11 @@ export class ScheduleModule {
     return {
       global: true,
       module: ScheduleModule,
+      imports: [DiscoveryModule],
       providers: [
-        ScheduleExplorer,
-        SchedulerRegistry,
-        {
-          provide: SCHEDULE_MODULE_OPTIONS,
-          useValue: optionsWithDefaults,
-        },
+        { provide: SCHEDULE_MODULE_OPTIONS, useValue: resolvedOptions },
+        Reflector,
+        ...CORE_PROVIDERS,
       ],
       exports: [SchedulerRegistry],
     };
@@ -45,11 +51,11 @@ export class ScheduleModule {
     return {
       global: true,
       module: ScheduleModule,
-      imports: options.imports || [],
+      imports: [DiscoveryModule, ...(options.imports ?? [])],
       providers: [
-        ScheduleExplorer,
-        SchedulerRegistry,
         ...this.createAsyncProviders(options),
+        Reflector,
+        ...CORE_PROVIDERS,
       ],
       exports: [SchedulerRegistry],
     };
@@ -64,10 +70,7 @@ export class ScheduleModule {
     const useClass = options.useClass as Type<ScheduleModuleOptionsFactory>;
     return [
       this.createAsyncOptionsProvider(options),
-      {
-        provide: useClass,
-        useClass: useClass,
-      },
+      { provide: useClass, useClass },
     ];
   }
 
@@ -75,10 +78,11 @@ export class ScheduleModule {
     options: ScheduleModuleAsyncOptions,
   ): Provider {
     if (options.useFactory) {
+      const factory = options.useFactory;
       return {
         provide: SCHEDULE_MODULE_OPTIONS,
-        useFactory: async (...args: any[]) => {
-          const config = await options.useFactory!(...args);
+        useFactory: async (...args: unknown[]) => {
+          const config = await factory(...args);
           return {
             cronJobs: true,
             intervals: true,
@@ -86,17 +90,17 @@ export class ScheduleModule {
             ...config,
           };
         },
-        inject: options.inject || [],
+        inject: (options.inject ?? []) as never[],
       };
     }
     const inject = [
-      (options.useClass ||
+      (options.useClass ??
         options.useExisting) as Type<ScheduleModuleOptionsFactory>,
     ];
     return {
       provide: SCHEDULE_MODULE_OPTIONS,
-      useFactory: async (optionsFactory: ScheduleModuleOptionsFactory) => {
-        const config = await optionsFactory.createScheduleOptions();
+      useFactory: async (factory: ScheduleModuleOptionsFactory) => {
+        const config = await factory.createScheduleOptions();
         return {
           cronJobs: true,
           intervals: true,

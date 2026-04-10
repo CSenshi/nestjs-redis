@@ -1,9 +1,19 @@
-import { ModuleMetadata, Type } from '@nestjs/common';
+import type { ModuleMetadata, Type } from '@nestjs/common';
+import type {
+  RedisClientType,
+  RedisClusterType,
+  RedisSentinelType,
+} from 'redis';
+
+type RedisClientLike = RedisClientType | RedisClusterType | RedisSentinelType;
 
 /**
  * @publicApi
  */
 export interface ScheduleModuleOptions {
+  client: RedisClientLike;
+  keyPrefix?: string;
+  shutdownTimeout?: number;
   cronJobs?: boolean;
   intervals?: boolean;
   timeouts?: boolean;
@@ -28,7 +38,7 @@ export interface ScheduleModuleAsyncOptions extends Pick<
   useExisting?: Type<ScheduleModuleOptionsFactory>;
   useClass?: Type<ScheduleModuleOptionsFactory>;
   useFactory?: (
-    ...args: any[]
+    ...args: unknown[]
   ) => Promise<ScheduleModuleOptions> | ScheduleModuleOptions;
-  inject?: any[];
+  inject?: unknown[];
 }

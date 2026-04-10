@@ -68,9 +68,15 @@ export class ScheduleExplorer implements OnModuleInit {
           return;
         }
         const cronMetadata = this.metadataAccessor.getCronMetadata(methodRef);
+        if (!cronMetadata) return;
         const cronFn = this.wrapFunctionInTryCatchBlocks(methodRef, instance);
-
-        return this.schedulerOrchestrator.addCron(cronFn, cronMetadata!);
+        const resolvedName =
+          cronMetadata.name ??
+          `${(instance as { constructor?: { name?: string } }).constructor?.name ?? 'Unknown'}.${key}`;
+        return this.schedulerOrchestrator.addCron(cronFn, {
+          ...cronMetadata,
+          name: resolvedName,
+        });
       }
       case SchedulerType.TIMEOUT: {
         if (!this.moduleOptions.timeouts) {
@@ -78,7 +84,10 @@ export class ScheduleExplorer implements OnModuleInit {
         }
         const timeoutMetadata =
           this.metadataAccessor.getTimeoutMetadata(methodRef);
-        const name = this.metadataAccessor.getSchedulerName(methodRef);
+        if (!timeoutMetadata) return;
+        const name =
+          this.metadataAccessor.getSchedulerName(methodRef) ??
+          `${(instance as { constructor?: { name?: string } }).constructor?.name ?? 'Unknown'}.${key}`;
         const timeoutFn = this.wrapFunctionInTryCatchBlocks(
           methodRef,
           instance,
@@ -86,7 +95,7 @@ export class ScheduleExplorer implements OnModuleInit {
 
         return this.schedulerOrchestrator.addTimeout(
           timeoutFn,
-          timeoutMetadata!.timeout,
+          timeoutMetadata.timeout,
           name,
         );
       }
@@ -96,7 +105,10 @@ export class ScheduleExplorer implements OnModuleInit {
         }
         const intervalMetadata =
           this.metadataAccessor.getIntervalMetadata(methodRef);
-        const name = this.metadataAccessor.getSchedulerName(methodRef);
+        if (!intervalMetadata) return;
+        const name =
+          this.metadataAccessor.getSchedulerName(methodRef) ??
+          `${(instance as { constructor?: { name?: string } }).constructor?.name ?? 'Unknown'}.${key}`;
         const intervalFn = this.wrapFunctionInTryCatchBlocks(
           methodRef,
           instance,
@@ -104,7 +116,7 @@ export class ScheduleExplorer implements OnModuleInit {
 
         return this.schedulerOrchestrator.addInterval(
           intervalFn,
-          intervalMetadata!.timeout,
+          intervalMetadata.timeout,
           name,
         );
       }

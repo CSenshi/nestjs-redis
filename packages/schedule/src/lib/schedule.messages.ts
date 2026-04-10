@@ -1,7 +1,10 @@
-export const NO_SCHEDULER_FOUND = (schedulerName: string, name?: string) =>
-  name
-    ? `No ${schedulerName} was found with the given name (${name}). Check that you created one with a decorator or with the create API.`
-    : `No ${schedulerName} was found. Check your configuration.`;
+import type { SchedulerType } from './enums/scheduler-type.enum';
 
-export const DUPLICATE_SCHEDULER = (schedulerName: string, name: string) =>
-  `${schedulerName} with the given name (${name}) already exists. Ignored.`;
+export const NO_SCHEDULER_FOUND = (type: SchedulerType, name: string): string =>
+  `No scheduler with type "${type}" and name "${name}" was found.`;
+
+export const DUPLICATE_SCHEDULER = (
+  type: SchedulerType,
+  name: string,
+): string =>
+  `Scheduler with type "${type}" and name "${name}" already exists. Check your decorated methods.`;
