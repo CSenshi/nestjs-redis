@@ -33,7 +33,7 @@ export class RedisJobStore {
   private readonly client: RedisClientLike;
   private readonly jobsKey: string;
   private readonly metaKey: string;
-  private claimScriptSha?: string;
+  private readonly scriptShas = new Map<string, string>();
 
   constructor(@Inject(SCHEDULE_MODULE_OPTIONS) options: ScheduleModuleOptions) {
     this.client = options.client as RedisClientLike;
@@ -52,7 +52,7 @@ export class RedisJobStore {
     expression: string,
     nextTs: number,
   ): Promise<void> {
-    await this.client.eval(REGISTER_SCRIPT, {
+    await this.execScript(REGISTER_SCRIPT, {
       keys: [this.metaKey, this.jobsKey],
       arguments: [name, expression, nextTs.toString()],
     });
@@ -63,17 +63,11 @@ export class RedisJobStore {
    * Returns the job name if claimed, null otherwise.
    */
   async claimDueJob(nowMs: number): Promise<string | null> {
-    const sha = await this.loadClaimScript();
-
-    try {
-      return await this.execClaim(sha, nowMs);
-    } catch (error: unknown) {
-      if ((error as Error)?.message?.includes('NOSCRIPT')) {
-        this.claimScriptSha = undefined;
-        return await this.execClaim(CLAIM_SCRIPT, nowMs);
-      }
-      throw error;
-    }
+    const result = await this.execScript(CLAIM_SCRIPT, {
+      keys: [this.jobsKey],
+      arguments: [nowMs.toString()],
+    });
+    return (result as string | null) ?? null;
   }
 
   /**
@@ -112,29 +106,23 @@ export class RedisJobStore {
     ]);
   }
 
-  private async loadClaimScript(): Promise<string> {
-    if (this.claimScriptSha) return this.claimScriptSha;
-    this.claimScriptSha = await this.client.scriptLoad(CLAIM_SCRIPT);
-    return this.claimScriptSha;
-  }
-
-  private async execClaim(
-    scriptOrSha: string,
-    nowMs: number,
-  ): Promise<string | null> {
-    const options = {
-      keys: [this.jobsKey],
-      arguments: [nowMs.toString()],
-    };
-
-    const result = this.isSha1(scriptOrSha)
-      ? await this.client.evalSha(scriptOrSha, options)
-      : await this.client.eval(scriptOrSha, options);
-
-    return (result as string | null) ?? null;
-  }
-
-  private isSha1(value: string): boolean {
-    return /^[a-f0-9]{40}$/i.test(value);
+  private async execScript(
+    script: string,
+    options: { keys: string[]; arguments: string[] },
+  ): Promise<unknown> {
+    let sha = this.scriptShas.get(script);
+    if (!sha) {
+      sha = await this.client.scriptLoad(script);
+      this.scriptShas.set(script, sha);
+    }
+    try {
+      return await this.client.evalSha(sha, options);
+    } catch (error: unknown) {
+      if ((error as Error)?.message?.includes('NOSCRIPT')) {
+        this.scriptShas.delete(script);
+        return await this.client.eval(script, options);
+      }
+      throw error;
+    }
   }
 }
