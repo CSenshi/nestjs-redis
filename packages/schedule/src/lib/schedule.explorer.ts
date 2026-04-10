@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { DiscoveryService, MetadataScanner } from '@nestjs/core';
 import { InstanceWrapper } from '@nestjs/core/injector/instance-wrapper';
 import { SchedulerType } from './enums/scheduler-type.enum';
-import { ScheduleModuleOptions } from './interfaces/schedule-module-options.interface';
+import type { ScheduleModuleOptions } from './interfaces/schedule-module-options.interface';
 import { SchedulerMetadataAccessor } from './schedule-metadata.accessor';
 import { SCHEDULE_MODULE_OPTIONS } from './schedule.constants';
 import { SchedulerOrchestrator } from './scheduler.orchestrator';

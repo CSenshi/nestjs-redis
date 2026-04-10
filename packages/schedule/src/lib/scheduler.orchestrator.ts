@@ -15,8 +15,8 @@ type CronOptionsHost = {
   options: CronOptions & Record<'cronTime', CronJobParams['cronTime']>;
 };
 
-type IntervalOptions = TargetHost & TimeoutHost & RefHost<number>;
-type TimeoutOptions = TargetHost & TimeoutHost & RefHost<number>;
+type IntervalOptions = TargetHost & TimeoutHost & RefHost<NodeJS.Timeout>;
+type TimeoutOptions = TargetHost & TimeoutHost & RefHost<NodeJS.Timeout>;
 type CronJobOptions = TargetHost & CronOptionsHost & RefHost<CronJob>;
 
 @Injectable()
@@ -45,7 +45,10 @@ export class SchedulerOrchestrator
     const intervalKeys = Object.keys(this.intervals);
     intervalKeys.forEach((key) => {
       const options = this.intervals[key];
-      const intervalRef = setInterval(options.target, options.timeout);
+      const intervalRef = setInterval(
+        options.target as () => void,
+        options.timeout,
+      );
 
       options.ref = intervalRef;
       this.schedulerRegistry.addInterval(key, intervalRef);
@@ -56,7 +59,10 @@ export class SchedulerOrchestrator
     const timeoutKeys = Object.keys(this.timeouts);
     timeoutKeys.forEach((key) => {
       const options = this.timeouts[key];
-      const timeoutRef = setTimeout(options.target, options.timeout);
+      const timeoutRef = setTimeout(
+        options.target as () => void,
+        options.timeout,
+      );
 
       options.ref = timeoutRef;
       this.schedulerRegistry.addTimeout(key, timeoutRef);

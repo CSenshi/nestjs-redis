@@ -3,6 +3,11 @@ import baseConfig from '../../eslint.config.mjs';
 export default [
   ...baseConfig,
   {
+    rules: {
+      '@typescript-eslint/no-unsafe-function-type': 'off',
+    },
+  },
+  {
     files: ['**/*.json'],
     rules: {
       '@nx/dependency-checks': [
