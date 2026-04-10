@@ -16,24 +16,13 @@ export type CronOptions = {
   name?: string;
 
   /**
-   * Specify the timezone for the execution. This will modify the actual time relative to your timezone. If the timezone is invalid, an error is thrown. You can check all timezones available at [Moment Timezone Website](http://momentjs.com/timezone/). Probably don't use both ```timeZone``` and ```utcOffset``` together or weird things may happen.
+   * Specify the timezone for the execution. This will modify the actual time relative to your timezone. If the timezone is invalid, an error is thrown. You can check all timezones available at [Moment Timezone Website](http://momentjs.com/timezone/).
    */
   timeZone?: unknown;
   /**
-   * This allows you to specify the offset of your timezone rather than using the ```timeZone``` param. Probably don't use both ```timeZone``` and ```utcOffset``` together or weird things may happen.
+   * Specify the offset of your timezone in minutes rather than using the `timeZone` param.
    */
   utcOffset?: unknown;
-
-  /**
-   * If you have code that keeps the event loop running and want to stop the node process when that finishes regardless of the state of your cronjob, you can do so making use of this parameter. This is off by default and cron will run as if it needs to control the event loop. For more information take a look at [timers#timers_timeout_unref](https://nodejs.org/api/timers.html#timers_timeout_unref) from the NodeJS docs.
-   */
-  unrefTimeout?: boolean;
-
-  /**
-   * If true, no additional instances of cronjob will run until the current onTick callback has completed.
-   * Any new scheduled executions that occur while the current cronjob is running will be skipped entirely.
-   */
-  waitForCompletion?: boolean;
 
   /**
    * This flag indicates whether the job will be executed at all.

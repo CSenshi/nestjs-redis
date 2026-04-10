@@ -1,10 +1,48 @@
-import { Type } from '@nestjs/common';
+import { Injectable, Type } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { createClient } from 'redis';
 import type { RedisClientType } from 'redis';
+import { Cron } from './decorators/cron.decorator.js';
+import { CronExpression } from './enums/cron-expression.enum.js';
 import { ScheduleModule } from './schedule.module.js';
 import { MultiCronService } from './test-utils/multi-cron.service.js';
 import { TestService } from './test-utils/test.service.js';
+
+@Injectable()
+class IanaTzService {
+  callCount = 0;
+  @Cron(CronExpression.EVERY_SECOND, {
+    name: 'tz-iana-job',
+    timeZone: 'America/New_York',
+  })
+  handle() {
+    this.callCount++;
+  }
+}
+
+@Injectable()
+class UtcOffsetWholeService {
+  callCount = 0;
+  @Cron(CronExpression.EVERY_SECOND, {
+    name: 'tz-utcoffset-whole-job',
+    utcOffset: -300,
+  })
+  handle() {
+    this.callCount++;
+  }
+}
+
+@Injectable()
+class UtcOffsetFractionalService {
+  callCount = 0;
+  @Cron(CronExpression.EVERY_SECOND, {
+    name: 'tz-utcoffset-fractional-job',
+    utcOffset: 330,
+  })
+  handle() {
+    this.callCount++;
+  }
+}
 
 describe('@Cron decorator (integration)', () => {
   let client: RedisClientType;
@@ -111,4 +149,56 @@ describe('@Cron decorator (integration)', () => {
     expect(total).toBeGreaterThanOrEqual(3);
     expect(total).toBeLessThanOrEqual(4);
   }, 15_000);
+
+  describe('timezone options', () => {
+    it('fires every second with an IANA timeZone', async () => {
+      const mod = await makeModule([IanaTzService]);
+      const service = mod.get(IanaTzService);
+
+      await new Promise((r) => setTimeout(r, 2_500));
+      await mod.close();
+
+      expect(service.callCount).toBeGreaterThanOrEqual(2);
+      expect(service.callCount).toBeLessThanOrEqual(3);
+    }, 10_000);
+
+    it('fires every second with a whole-hour utcOffset (UTC-5)', async () => {
+      const mod = await makeModule([UtcOffsetWholeService]);
+      const service = mod.get(UtcOffsetWholeService);
+
+      await new Promise((r) => setTimeout(r, 2_500));
+      await mod.close();
+
+      expect(service.callCount).toBeGreaterThanOrEqual(2);
+      expect(service.callCount).toBeLessThanOrEqual(3);
+    }, 10_000);
+
+    it('fires every second with a fractional-hour utcOffset (UTC+5:30)', async () => {
+      const mod = await makeModule([UtcOffsetFractionalService]);
+      const service = mod.get(UtcOffsetFractionalService);
+
+      await new Promise((r) => setTimeout(r, 2_500));
+      await mod.close();
+
+      expect(service.callCount).toBeGreaterThanOrEqual(2);
+      expect(service.callCount).toBeLessThanOrEqual(3);
+    }, 10_000);
+
+    it('throws on an invalid timeZone during module init', async () => {
+      @Injectable()
+      class BadTzService {
+        @Cron(CronExpression.EVERY_SECOND, {
+          name: 'bad-tz-job',
+          timeZone: 'Not/ATimezone',
+        })
+        handle() {
+          /* intentionally empty */
+        }
+      }
+
+      await expect(makeModule([BadTzService])).rejects.toThrow(
+        'Invalid timezone "Not/ATimezone"',
+      );
+    });
+  });
 });

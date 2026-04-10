@@ -3,12 +3,28 @@ import { CronExpressionParser } from 'cron-parser';
 import { RedisJobStore } from './redis-job-store.service';
 
 const DEFAULT_EMPTY_SLEEP_MS = 1000;
+
+function resolveTimezone(
+  timeZone?: string,
+  utcOffset?: number,
+): string | undefined {
+  if (timeZone) return timeZone;
+  if (utcOffset === undefined) return undefined;
+  const sign = utcOffset >= 0 ? '+' : '-';
+  const abs = Math.abs(utcOffset);
+  const hours = Math.floor(abs / 60);
+  const mins = abs % 60;
+  return mins === 0
+    ? `UTC${sign}${hours}`
+    : `UTC${sign}${hours}:${String(mins).padStart(2, '0')}`;
+}
 const MAX_POLL_INTERVAL_MS = 60_000;
 
 export interface CronJobEntry {
   name: string;
   expression: string;
   timeZone?: string;
+  utcOffset?: number;
   threshold: number;
   handler: () => unknown;
 }
@@ -116,8 +132,11 @@ export class RedisPollLoop {
   }
 
   private computeNextOccurrence(entry: CronJobEntry): number {
-    const options = entry.timeZone ? { tz: entry.timeZone } : undefined;
-    const interval = CronExpressionParser.parse(entry.expression, options);
+    const tz = resolveTimezone(entry.timeZone, entry.utcOffset);
+    const interval = CronExpressionParser.parse(
+      entry.expression,
+      tz ? { tz } : undefined,
+    );
     return interval.next().toDate().getTime();
   }
 

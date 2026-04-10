@@ -16,6 +16,21 @@ import { type CronJobHandle, SchedulerRegistry } from './scheduler.registry';
 const DEFAULT_THRESHOLD_MS = 250;
 const DEFAULT_SHUTDOWN_TIMEOUT_MS = 5000;
 
+function resolveTimezone(
+  timeZone?: string,
+  utcOffset?: number,
+): string | undefined {
+  if (timeZone) return timeZone;
+  if (utcOffset === undefined) return undefined;
+  const sign = utcOffset >= 0 ? '+' : '-';
+  const abs = Math.abs(utcOffset);
+  const hours = Math.floor(abs / 60);
+  const mins = abs % 60;
+  return mins === 0
+    ? `UTC${sign}${hours}`
+    : `UTC${sign}${hours}:${String(mins).padStart(2, '0')}`;
+}
+
 interface CronJobDef {
   handler: () => unknown;
   options: CronOptions & { cronTime: string };
@@ -42,6 +57,16 @@ export class SchedulerOrchestrator
     fn: () => unknown,
     options: CronOptions & { cronTime: string },
   ): void {
+    const timeZone = options.timeZone as string | undefined;
+    if (timeZone) {
+      try {
+        Intl.DateTimeFormat(undefined, { timeZone });
+      } catch {
+        throw new Error(
+          `Invalid timezone "${timeZone}" for cron job "${options.name ?? options.cronTime}"`,
+        );
+      }
+    }
     const name = this.resolveCronName(options);
     this.cronDefs.set(name, { handler: fn, options });
   }
@@ -86,13 +111,15 @@ export class SchedulerOrchestrator
       const expression = def.options.cronTime as string;
       const threshold = def.options.threshold ?? DEFAULT_THRESHOLD_MS;
       const timeZone = def.options.timeZone as string | undefined;
+      const utcOffset = def.options.utcOffset as number | undefined;
 
-      const nextTs = this.computeNext(expression, timeZone);
+      const nextTs = this.computeNext(expression, timeZone, utcOffset);
 
       const handle = this.createCronJobHandle(
         name,
         expression,
         timeZone,
+        utcOffset,
         nextTs,
       );
       this.registry.addCronJob(name, handle);
@@ -100,6 +127,7 @@ export class SchedulerOrchestrator
         name,
         expression,
         timeZone,
+        utcOffset,
         threshold,
         handler: def.handler,
       });
@@ -125,9 +153,13 @@ export class SchedulerOrchestrator
     }
   }
 
-  private computeNext(expression: string, timeZone?: string): number {
-    const opts = timeZone ? { tz: timeZone } : undefined;
-    return CronExpressionParser.parse(expression, opts)
+  private computeNext(
+    expression: string,
+    timeZone?: string,
+    utcOffset?: number,
+  ): number {
+    const tz = resolveTimezone(timeZone, utcOffset);
+    return CronExpressionParser.parse(expression, tz ? { tz } : undefined)
       .next()
       .toDate()
       .getTime();
@@ -137,6 +169,7 @@ export class SchedulerOrchestrator
     name: string,
     expression: string,
     timeZone: string | undefined,
+    utcOffset: number | undefined,
     initialNextTs: number,
   ): CronJobHandle {
     let nextTs = initialNextTs;
@@ -150,7 +183,7 @@ export class SchedulerOrchestrator
         return nextTs;
       },
       async start() {
-        const newNext = computeNext(expression, timeZone);
+        const newNext = computeNext(expression, timeZone, utcOffset);
         nextTs = newNext;
         await store.enqueueJob(name, newNext);
       },
@@ -160,9 +193,7 @@ export class SchedulerOrchestrator
     };
   }
 
-  private resolveCronName(
-    options: CronOptions & { cronTime: string },
-  ): string {
+  private resolveCronName(options: CronOptions & { cronTime: string }): string {
     return options.name ?? options.cronTime.toString();
   }
 }
