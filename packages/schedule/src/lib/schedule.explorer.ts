@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { DiscoveryService, MetadataScanner } from '@nestjs/core';
 import { InstanceWrapper } from '@nestjs/core/injector/instance-wrapper';
+import type { CronOptions } from './decorators/cron.decorator.js';
 import { SchedulerType } from './enums/scheduler-type.enum';
 import type { ScheduleModuleOptions } from './interfaces/schedule-module-options.interface';
 import { SchedulerMetadataAccessor } from './schedule-metadata.accessor';
@@ -76,7 +77,7 @@ export class ScheduleExplorer implements OnModuleInit {
         return this.schedulerOrchestrator.addCron(cronFn, {
           ...cronMetadata,
           name: resolvedName,
-        });
+        } as CronOptions & { cronTime: string });
       }
       case SchedulerType.TIMEOUT: {
         if (!this.moduleOptions.timeouts) {
