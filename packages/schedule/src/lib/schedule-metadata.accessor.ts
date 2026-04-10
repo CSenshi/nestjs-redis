@@ -34,7 +34,7 @@ export class SchedulerMetadataAccessor {
 
   getCronMetadata(
     target: Function,
-  ): (CronOptions & Record<'cronTime', string | Date | any>) | undefined {
+  ): (CronOptions & Record<'cronTime', string | Date>) | undefined {
     return this.getMetadata(SCHEDULE_CRON_OPTIONS, target);
   }
 

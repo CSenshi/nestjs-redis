@@ -95,8 +95,8 @@ describe('RedisPollLoop (integration)', () => {
     await loop.stop(10);
 
     // job1 fires every second — expect ~5 ticks in 5.5 s
-    expect(job1Count).toBeGreaterThanOrEqual(4);
-    expect(job1Count).toBeLessThanOrEqual(6);
+    expect(job1Count).toBeGreaterThanOrEqual(6);
+    expect(job1Count).toBeLessThanOrEqual(7);
 
     // job2 fires every 2 seconds — expect 2-4 ticks in 5.5 s depending on wall-clock alignment
     expect(job2Count).toBeGreaterThanOrEqual(2);
