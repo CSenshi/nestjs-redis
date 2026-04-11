@@ -25,7 +25,7 @@ pnpm exec nx format:check --all
 git log $(git describe --tags --abbrev=0)..HEAD --oneline
 ```
 
-Confirm all commits follow conventional commit format — the release tooling uses these for version bumps and changelog generation.
+Confirm all commits follow conventional commit format - the release tooling uses these for version bumps and changelog generation.
 
 ## 4. Bump version and push
 

@@ -22,7 +22,7 @@ Redis-backed storage for NestJS Throttler enabling distributed rate limiting acr
 - Drop-in replacement for in-memory storage
 - Works with existing `@nestjs-redis/client` connections
 - Client, Cluster, and Sentinel support
-- Does not manage Redis connection lifecycle — pass an existing, managed client
+- Does not manage Redis connection lifecycle - pass an existing, managed client
 
 ## Installation
 

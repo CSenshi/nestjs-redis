@@ -20,7 +20,7 @@ Drop-in replacement for `@nestjs/schedule` with Redis-backed distributed cron ex
 
 - Drop-in replacement - Same `@Cron`, `@Interval`, `@Timeout` decorators and other APIs as `@nestjs/schedule`
 - Distributed cron execution - Redis locking guarantees a job fires on exactly one instance per tick
-- Redis persistence for cron jobs — schedules survive process restarts
+- Redis persistence for cron jobs - schedules survive process restarts
 - Works with existing `@nestjs-redis/client` connections
 
 ## Installation

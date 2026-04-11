@@ -6,7 +6,7 @@ import { ScheduleModule } from './schedule.module.js';
 import { DisabledCronService } from './test-utils/disabled-cron.service.js';
 import { TestService } from './test-utils/test.service.js';
 
-describe('SchedulerOrchestrator — disabled cron jobs', () => {
+describe('SchedulerOrchestrator - disabled cron jobs', () => {
   let client: RedisClientType;
 
   beforeAll(async () => {
