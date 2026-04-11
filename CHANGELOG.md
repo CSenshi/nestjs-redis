@@ -1,3 +1,27 @@
+## 1.1.0 (2026-04-11)
+
+### 🚀 Features
+
+- init schedule package ([38d155f](https://github.com/CSenshi/nestjs-redis/commit/38d155f))
+- **examples/full:** add schedule package ([b114fe4](https://github.com/CSenshi/nestjs-redis/commit/b114fe4))
+- **schedule:** add official nestjs/schedule lib as starting point wip ([c3de89d](https://github.com/CSenshi/nestjs-redis/commit/c3de89d))
+- **schedule:** implement Redis-based job scheduling with polling loop ([278e5cf](https://github.com/CSenshi/nestjs-redis/commit/278e5cf))
+
+### 🩹 Fixes
+
+- **schedule:** fix invalid types from nestjs/cron ([361fd53](https://github.com/CSenshi/nestjs-redis/commit/361fd53))
+- **schedule:** remove unused cron dependency ([aebb9d4](https://github.com/CSenshi/nestjs-redis/commit/aebb9d4))
+- **schedule:** update cronTime type to string for consistency ([5fd3f12](https://github.com/CSenshi/nestjs-redis/commit/5fd3f12))
+- **schedule:** remove unused params and add timezone handling ([1587021](https://github.com/CSenshi/nestjs-redis/commit/1587021))
+- **schedule:** fix disabled cron jobs handling ([53c3c05](https://github.com/CSenshi/nestjs-redis/commit/53c3c05))
+- **schedule:** fix timezone type ([56d1ce0](https://github.com/CSenshi/nestjs-redis/commit/56d1ce0))
+- **schedule:** update tsconfig to exclude test-utils directory ([84ee10e](https://github.com/CSenshi/nestjs-redis/commit/84ee10e))
+- **schedule:** fix argument types in module interface ([9282c42](https://github.com/CSenshi/nestjs-redis/commit/9282c42))
+
+### ❤️ Thank You
+
+- CSenshi
+
 # 1.0.0 (2026-02-02)
 
 ### ⚠️ Breaking changes
