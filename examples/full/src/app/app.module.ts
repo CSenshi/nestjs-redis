@@ -5,9 +5,11 @@ import { ThrottlerModule, seconds } from '@nestjs/throttler';
 import { RedisModule, RedisToken } from '@nestjs-redis/client';
 import { RedisHealthIndicator } from '@nestjs-redis/health-indicator';
 import { RedlockModule } from '@nestjs-redis/lock';
+import { ScheduleModule } from '@nestjs-redis/schedule';
 import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
 import type { RedisClientType } from 'redis';
 import { AppController } from './app.controller';
+import { AppCron } from './app.cron';
 import { AppService } from './app.service';
 import { HealthController } from './health.controller';
 
@@ -33,6 +35,12 @@ import { HealthController } from './health.controller';
       }),
     }),
 
+    // Scheduling
+    ScheduleModule.forRootAsync({
+      inject: [RedisToken()],
+      useFactory: (client: RedisClientType) => ({ client }),
+    }),
+
     // Throttling
     ThrottlerModule.forRootAsync({
       inject: [RedisToken()],
@@ -46,6 +54,6 @@ import { HealthController } from './health.controller';
     TerminusModule,
   ],
   controllers: [AppController, HealthController],
-  providers: [RedisHealthIndicator, AppService],
+  providers: [RedisHealthIndicator, AppService, AppCron],
 })
 export class AppModule {}

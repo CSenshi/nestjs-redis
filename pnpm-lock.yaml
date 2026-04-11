@@ -147,6 +147,9 @@ importers:
       '@nestjs-redis/lock':
         specifier: workspace:*
         version: link:../../packages/lock
+      '@nestjs-redis/schedule':
+        specifier: workspace:*
+        version: link:../../packages/schedule
       '@nestjs-redis/socket.io-adapter':
         specifier: workspace:*
         version: link:../../packages/socket.io-adapter

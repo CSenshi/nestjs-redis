@@ -86,6 +86,7 @@
     "@nestjs-redis/throttler-storage": "workspace:*",
     "@nestjs-redis/lock": "workspace:*",
     "@nestjs-redis/socket.io-adapter": "workspace:*",
+    "@nestjs-redis/schedule": "workspace:*",
     "redis": "^5.0.0"
   }
 }

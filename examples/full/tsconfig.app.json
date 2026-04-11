@@ -13,6 +13,9 @@
   "exclude": ["eslint.config.js", "eslint.config.cjs", "eslint.config.mjs"],
   "references": [
     {
+      "path": "../../packages/schedule/tsconfig.lib.json"
+    },
+    {
       "path": "../../packages/socket.io-adapter/tsconfig.lib.json"
     },
     {
