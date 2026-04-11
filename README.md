@@ -31,12 +31,13 @@ Curious about the story behind this toolkit and how it simplifies Redis in NestJ
 
 ## Packages
 
-- [@nestjs-redis/client](packages/client/README.md) — Redis client module with multi-connection support
-- [@nestjs-redis/lock](packages/lock/README.md) — Distributed locking via Redlock
-- [@nestjs-redis/throttler-storage](packages/throttler-storage/README.md) — Redis storage for NestJS Throttler
-- [@nestjs-redis/health-indicator](packages/health-indicator/README.md) — Redis health checks for Terminus
-- [@nestjs-redis/socket.io-adapter](packages/socket.io-adapter/README.md) — Redis-powered Socket.IO adapter for scalable WebSocket connections
-- [@nestjs-redis/streams-transporter](packages/streams-transporter/README.md) — Custom NestJS microservices transporter using Redis Streams
+- [@nestjs-redis/client](packages/client/README.md) - Redis client module with multi-connection support
+- [@nestjs-redis/lock](packages/lock/README.md) - Distributed locking via Redlock
+- [@nestjs-redis/schedule](packages/schedule/README.md) - Distributed cron execution, drop-in replacement for `@nestjs/schedule`
+- [@nestjs-redis/throttler-storage](packages/throttler-storage/README.md) - Redis storage for NestJS Throttler
+- [@nestjs-redis/health-indicator](packages/health-indicator/README.md) - Redis health checks for Terminus
+- [@nestjs-redis/socket.io-adapter](packages/socket.io-adapter/README.md) - Redis-powered Socket.IO adapter for scalable WebSocket connections
+- [@nestjs-redis/streams-transporter](packages/streams-transporter/README.md) - Custom NestJS microservices transporter using Redis Streams
 
 ## Quick Start
 
@@ -108,6 +109,7 @@ This provides comprehensive operational logging:
 | ------------------------------------------------------------------------------------------------------ | ------- | ------ | ----- |
 | [`@nestjs-redis/client`](https://www.npmjs.com/package/@nestjs-redis/client)                           | 18+     | 9+     | 5+    |
 | [`@nestjs-redis/lock`](https://www.npmjs.com/package/@nestjs-redis/lock)                               | 18+     | 9+     | 5+    |
+| [`@nestjs-redis/schedule`](https://www.npmjs.com/package/@nestjs-redis/schedule)                       | 18+     | 9+     | 5+    |
 | [`@nestjs-redis/throttler-storage`](https://www.npmjs.com/package/@nestjs-redis/throttler-storage)     | 18+     | 9+     | 5+    |
 | [`@nestjs-redis/health-indicator`](https://www.npmjs.com/package/@nestjs-redis/health-indicator)       | 18+     | 9+     | 5+    |
 | [`@nestjs-redis/socket.io-adapter`](https://www.npmjs.com/package/@nestjs-redis/socket.io-adapter)     | 18+     | 9+     | 5+    |

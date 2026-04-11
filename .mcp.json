@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "nx": {
+      "type": "stdio",
+      "command": "pnpm",
+      "args": ["exec", "nx", "mcp"],
+      "env": {}
+    }
+  }
+}
