@@ -1,6 +1,20 @@
 {
   "name": "@nestjs-redis/schedule",
   "version": "1.1.0",
+  "license": "MIT",
+  "author": "Saba Pochkhua <saba.pochkhua@gmail.com> (https://github.com/CSenshi)",
+  "description": "Drop-in replacement for @nestjs/schedule with Redis-backed distributed cron execution",
+  "keywords": [
+    "nestjs",
+    "redis",
+    "schedule",
+    "cron",
+    "distributed",
+    "typescript",
+    "node-redis",
+    "scheduler"
+  ],
+  "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/schedule",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -31,5 +45,14 @@
   "dependencies": {
     "tslib": "^2.3.0",
     "cron-parser": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CSenshi/nestjs-redis",
+    "directory": "packages/schedule"
   }
 }
