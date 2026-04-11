@@ -46,3 +46,6 @@ Thumbs.db
 .github/instructions/nx.instructions.md
 
 test-output
+
+.claude/worktrees
+.claude/settings.local.json
