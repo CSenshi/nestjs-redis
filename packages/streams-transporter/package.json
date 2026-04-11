@@ -40,7 +40,10 @@
     "!**/*.tsbuildinfo"
   ],
   "nx": {
-    "name": "streams-transporter"
+    "name": "streams-transporter",
+    "tags": [
+      "type:lib"
+    ]
   },
   "dependencies": {
     "@nestjs/microservices": "^11.1.12",

@@ -18,7 +18,10 @@
     "!**/*.tsbuildinfo"
   ],
   "nx": {
-    "name": "schedule"
+    "name": "schedule",
+    "tags": [
+      "type:lib"
+    ]
   },
   "peerDependencies": {
     "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0",

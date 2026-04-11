@@ -42,7 +42,7 @@ jobs:
         shell: bash
 
       - name: Build packages
-        run: pnpm exec nx run-many -t build
+        run: pnpm exec nx run-many -t build --exclude='*,!tag:type:lib'
         shell: bash
 
       - name: Publish packages

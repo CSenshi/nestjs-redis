@@ -32,7 +32,10 @@
     "!**/*.tsbuildinfo"
   ],
   "nx": {
-    "name": "socket.io-adapter"
+    "name": "socket.io-adapter",
+    "tags": [
+      "type:lib"
+    ]
   },
   "dependencies": {
     "@nestjs/platform-socket.io": "^11.1.6",

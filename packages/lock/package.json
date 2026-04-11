@@ -31,7 +31,10 @@
     "!**/*.tsbuildinfo"
   ],
   "nx": {
-    "name": "lock"
+    "name": "lock",
+    "tags": [
+      "type:lib"
+    ]
   },
   "dependencies": {
     "tslib": "^2.8.0",

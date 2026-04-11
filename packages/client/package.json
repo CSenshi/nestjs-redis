@@ -32,7 +32,10 @@
     "!**/*.tsbuildinfo"
   ],
   "nx": {
-    "name": "client"
+    "name": "client",
+    "tags": [
+      "type:lib"
+    ]
   },
   "dependencies": {
     "tslib": "^2.8.0"

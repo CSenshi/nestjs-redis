@@ -32,7 +32,10 @@
     "!**/*.tsbuildinfo"
   ],
   "nx": {
-    "name": "throttler-storage"
+    "name": "throttler-storage",
+    "tags": [
+      "type:lib"
+    ]
   },
   "dependencies": {
     "tslib": "^2.3.0"
