@@ -38,7 +38,7 @@ export interface ScheduleModuleAsyncOptions extends Pick<
   useExisting?: Type<ScheduleModuleOptionsFactory>;
   useClass?: Type<ScheduleModuleOptionsFactory>;
   useFactory?: (
-    ...args: unknown[]
+    ...args: any[]
   ) => Promise<ScheduleModuleOptions> | ScheduleModuleOptions;
-  inject?: unknown[];
+  inject?: any[];
 }
