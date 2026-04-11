@@ -68,8 +68,9 @@
     }
   },
   "release": {
+    "projects": ["tag:type:lib"],
     "version": {
-      "preVersionCommand": "pnpm dlx nx run-many -t build"
+      "preVersionCommand": "pnpm dlx nx run-many -t build --exclude='*,!tag:type:lib'"
     },
     "changelog": {
       "workspaceChangelog": {
