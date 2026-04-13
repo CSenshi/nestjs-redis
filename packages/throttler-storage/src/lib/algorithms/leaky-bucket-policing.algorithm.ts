@@ -16,9 +16,12 @@ import type { ThrottlerAlgorithm } from '../throttler-algorithm.interface.js';
 export const LeakyBucketPolicingAlgorithm: ThrottlerAlgorithm = {
   script: `
     local key = KEYS[1]
-    local window_ms = tonumber(ARGV[1])
-    local capacity = tonumber(ARGV[2])
-    local leak_rate = capacity / (window_ms / 1000)
+    local block_key = KEYS[2]
+    local ttl_ms = tonumber(ARGV[1])
+    local limit = tonumber(ARGV[2])
+    local block_duration_ms = tonumber(ARGV[3])
+
+    local leak_rate = limit / (ttl_ms / 1000)
 
     local time = redis.call('TIME')
     local now = tonumber(time[1]) + tonumber(time[2]) / 1000000
@@ -39,9 +42,9 @@ export const LeakyBucketPolicingAlgorithm: ThrottlerAlgorithm = {
     local elapsed = now - last_leak
     level = math.max(0, level - elapsed * leak_rate)
 
-    local expire_ms = math.ceil(capacity / leak_rate) * 1000 + 1000
+    local expire_ms = math.ceil(limit / leak_rate) * 1000 + 1000
 
-    if level + 1 <= capacity then
+    if level + 1 <= limit then
       level = level + 1
       redis.call('HSET', key, 'level', tostring(level), 'last_leak', tostring(now))
       redis.call('PEXPIRE', key, expire_ms)
@@ -51,6 +54,6 @@ export const LeakyBucketPolicingAlgorithm: ThrottlerAlgorithm = {
     redis.call('HSET', key, 'level', tostring(level), 'last_leak', tostring(now))
     redis.call('PEXPIRE', key, expire_ms)
     local retry_ms = math.ceil(1000 / leak_rate)
-    return { capacity + 1, retry_ms, -1, 0 }
+    return { limit + 1, retry_ms, -1, 0 }
   `,
 };

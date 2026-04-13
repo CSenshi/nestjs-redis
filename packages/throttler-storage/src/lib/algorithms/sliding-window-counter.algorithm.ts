@@ -18,10 +18,13 @@ import type { ThrottlerAlgorithm } from '../throttler-algorithm.interface.js';
  */
 export const SlidingWindowCounterAlgorithm: ThrottlerAlgorithm = {
   script: `
-    local base_key = KEYS[1]
-    local window_ms = tonumber(ARGV[1])
-    local max_requests = tonumber(ARGV[2])
-    local window_seconds = math.floor(window_ms / 1000)
+    local key = KEYS[1]
+    local block_key = KEYS[2]
+    local ttl_ms = tonumber(ARGV[1])
+    local limit = tonumber(ARGV[2])
+    local block_duration_ms = tonumber(ARGV[3])
+
+    local window_seconds = math.floor(ttl_ms / 1000)
 
     local time = redis.call('TIME')
     local now_seconds = tonumber(time[1])
@@ -30,8 +33,8 @@ export const SlidingWindowCounterAlgorithm: ThrottlerAlgorithm = {
     local previous_window = current_window - 1
     local elapsed = (now_seconds % window_seconds) / window_seconds
 
-    local current_key = base_key .. ':' .. current_window
-    local previous_key = base_key .. ':' .. previous_window
+    local current_key = key .. ':' .. current_window
+    local previous_key = key .. ':' .. previous_window
 
     local prev_count = tonumber(redis.call('GET', previous_key) or '0') or 0
     local current_count = tonumber(redis.call('GET', current_key) or '0') or 0
@@ -39,15 +42,15 @@ export const SlidingWindowCounterAlgorithm: ThrottlerAlgorithm = {
     local weighted_prev = prev_count * (1 - elapsed)
     local estimated = weighted_prev + current_count
 
-    if estimated >= max_requests then
-      local retry_ms = math.ceil(window_ms * (1 - elapsed))
-      return { max_requests + 1, retry_ms, -1, 0 }
+    if estimated >= limit then
+      local retry_ms = math.ceil(ttl_ms * (1 - elapsed))
+      return { limit + 1, retry_ms, -1, 0 }
     end
 
     local new_count = redis.call('INCR', current_key)
 
     if new_count == 1 then
-      redis.call('PEXPIRE', current_key, window_ms * 2)
+      redis.call('PEXPIRE', current_key, ttl_ms * 2)
     end
 
     return { new_count, redis.call('PTTL', current_key), -1, 0 }

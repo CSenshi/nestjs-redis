@@ -13,13 +13,15 @@ import type { ThrottlerAlgorithm } from '../throttler-algorithm.interface.js';
 export const FixedWindowAlgorithm: ThrottlerAlgorithm = {
   script: `
     local key = KEYS[1]
-    local window_ms = tonumber(ARGV[1])
-    local max_requests = tonumber(ARGV[2])
+    local block_key = KEYS[2]
+    local ttl_ms = tonumber(ARGV[1])
+    local limit = tonumber(ARGV[2])
+    local block_duration_ms = tonumber(ARGV[3])
 
     local count = redis.call('INCR', key)
 
     if count == 1 then
-      redis.call('PEXPIRE', key, window_ms)
+      redis.call('PEXPIRE', key, ttl_ms)
     end
 
     local pttl = redis.call('PTTL', key)

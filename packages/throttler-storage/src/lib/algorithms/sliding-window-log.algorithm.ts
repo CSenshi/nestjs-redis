@@ -15,31 +15,33 @@ import type { ThrottlerAlgorithm } from '../throttler-algorithm.interface.js';
 export const SlidingWindowLogAlgorithm: ThrottlerAlgorithm = {
   script: `
     local key = KEYS[1]
-    local window_ms = tonumber(ARGV[1])
-    local max_requests = tonumber(ARGV[2])
+    local block_key = KEYS[2]
+    local ttl_ms = tonumber(ARGV[1])
+    local limit = tonumber(ARGV[2])
+    local block_duration_ms = tonumber(ARGV[3])
 
     local time = redis.call('TIME')
     local now_ms = time[1] * 1000 + math.floor(time[2] / 1000)
     local member = time[1] .. ':' .. time[2]
 
-    local window_start = now_ms - window_ms
+    local window_start = now_ms - ttl_ms
 
     redis.call('ZREMRANGEBYSCORE', key, 0, window_start)
 
     local count = redis.call('ZCARD', key)
 
-    if count < max_requests then
+    if count < limit then
       redis.call('ZADD', key, now_ms, member)
-      redis.call('PEXPIRE', key, window_ms)
+      redis.call('PEXPIRE', key, ttl_ms)
       return { count + 1, redis.call('PTTL', key), -1, 0 }
     end
 
     local oldest = redis.call('ZRANGE', key, 0, 0, 'WITHSCORES')
-    local retry_ms = window_ms
+    local retry_ms = ttl_ms
     if #oldest >= 2 then
-      retry_ms = tonumber(oldest[2]) + window_ms - now_ms
+      retry_ms = tonumber(oldest[2]) + ttl_ms - now_ms
     end
 
-    return { max_requests + 1, retry_ms, -1, 0 }
+    return { limit + 1, retry_ms, -1, 0 }
   `,
 };

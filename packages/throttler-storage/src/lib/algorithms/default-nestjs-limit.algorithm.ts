@@ -11,22 +11,22 @@ import type { ThrottlerAlgorithm } from '../throttler-algorithm.interface.js';
 export const DefaultNestjsLimit: ThrottlerAlgorithm = {
   script: `
     local key = KEYS[1]
-    local blockKey = KEYS[2]
-    local ttlMs = tonumber(ARGV[1])
+    local block_key = KEYS[2]
+    local ttl_ms = tonumber(ARGV[1])
     local limit = tonumber(ARGV[2])
-    local blockDurationMs = tonumber(ARGV[3])
+    local block_duration_ms = tonumber(ARGV[3])
 
     -- 1. Check if already blocked
-    if redis.call("EXISTS", blockKey) == 1 then
-      return { limit + 1, -1, redis.call("PTTL", blockKey), 1 }
+    if redis.call("EXISTS", block_key) == 1 then
+      return { limit + 1, -1, redis.call("PTTL", block_key), 1 }
     end
 
     -- 2. If not blocked: Increment hit count
     local hits = redis.call("INCR", key)
 
-    -- 3. If new key: set TTL (only if ttlMs > 0)
-    if redis.call("PTTL", key) <= 0 and ttlMs > 0 then
-      redis.call("PEXPIRE", key, ttlMs)
+    -- 3. If new key: set TTL (only if ttl_ms > 0)
+    if redis.call("PTTL", key) <= 0 and ttl_ms > 0 then
+      redis.call("PEXPIRE", key, ttl_ms)
     end
 
     -- 4. If under limit: return normal response
@@ -34,10 +34,10 @@ export const DefaultNestjsLimit: ThrottlerAlgorithm = {
       return { hits, redis.call("PTTL", key), -1, 0 }
     end
 
-    -- 5. If over limit: set block flag (only if blockDurationMs > 0)
-    if blockDurationMs > 0 then
-      redis.call("SET", blockKey, "1", "PX", blockDurationMs)
-      return { hits, redis.call("PTTL", key), blockDurationMs, 1 }
+    -- 5. If over limit: set block flag (only if block_duration_ms > 0)
+    if block_duration_ms > 0 then
+      redis.call("SET", block_key, "1", "PX", block_duration_ms)
+      return { hits, redis.call("PTTL", key), block_duration_ms, 1 }
     else
       return { hits, redis.call("PTTL", key), -1, 0 }
     end

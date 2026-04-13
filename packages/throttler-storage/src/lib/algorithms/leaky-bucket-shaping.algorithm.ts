@@ -17,9 +17,12 @@ import type { ThrottlerAlgorithm } from '../throttler-algorithm.interface.js';
 export const LeakyBucketShapingAlgorithm: ThrottlerAlgorithm = {
   script: `
     local key = KEYS[1]
-    local window_ms = tonumber(ARGV[1])
-    local capacity = tonumber(ARGV[2])
-    local leak_rate = capacity / (window_ms / 1000)
+    local block_key = KEYS[2]
+    local ttl_ms = tonumber(ARGV[1])
+    local limit = tonumber(ARGV[2])
+    local block_duration_ms = tonumber(ARGV[3])
+
+    local leak_rate = limit / (ttl_ms / 1000)
 
     local time = redis.call('TIME')
     local now = tonumber(time[1]) + tonumber(time[2]) / 1000000
@@ -42,9 +45,9 @@ export const LeakyBucketShapingAlgorithm: ThrottlerAlgorithm = {
     local delay = next_free - now
     local queue_depth = delay * leak_rate
 
-    local expire_ms = math.ceil(capacity / leak_rate) * 1000 + 1000
+    local expire_ms = math.ceil(limit / leak_rate) * 1000 + 1000
 
-    if queue_depth + 1 <= capacity then
+    if queue_depth + 1 <= limit then
       local delay_ms = math.floor(delay * 1000)
       next_free = next_free + (1 / leak_rate)
       queue_depth = queue_depth + 1
@@ -56,6 +59,6 @@ export const LeakyBucketShapingAlgorithm: ThrottlerAlgorithm = {
     redis.call('HSET', key, 'next_free', tostring(next_free))
     redis.call('PEXPIRE', key, expire_ms)
     local retry_ms = math.ceil(1000 / leak_rate)
-    return { capacity + 1, retry_ms, -1, 0 }
+    return { limit + 1, retry_ms, -1, 0 }
   `,
 };
