@@ -8,7 +8,7 @@ import type { ThrottlerAlgorithm } from '../throttler-algorithm.interface.js';
  *
  * This is the default algorithm used by `RedisThrottlerStorage`.
  */
-export const FixedWindow: ThrottlerAlgorithm = {
+export const DefaultNestjsLimit: ThrottlerAlgorithm = {
   script: `
     local key = KEYS[1]
     local blockKey = KEYS[2]

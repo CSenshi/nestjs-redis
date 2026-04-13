@@ -9,7 +9,7 @@ import type {
   RedisSentinelType,
 } from 'redis';
 
-import { FixedWindow } from './algorithms/fixed-window.algorithm.js';
+import { DefaultNestjsLimit } from './algorithms/default-nestjs-limit.algorithm.js';
 import type { ThrottlerAlgorithm } from './throttler-algorithm.interface.js';
 
 type RedisClientLike = RedisClientType | RedisClusterType | RedisSentinelType;
@@ -35,7 +35,7 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
    */
   constructor(
     private readonly client: RedisClientLike,
-    private readonly algorithm: ThrottlerAlgorithm = FixedWindow,
+    private readonly algorithm: ThrottlerAlgorithm = DefaultNestjsLimit,
   ) { }
 
   /**
