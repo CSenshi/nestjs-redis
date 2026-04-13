@@ -1,5 +1,3 @@
-import { randomUUID } from 'node:crypto';
-
 import { Injectable } from '@nestjs/common';
 import type { ThrottlerStorage } from '@nestjs/throttler';
 import type { ThrottlerStorageRecord } from '@nestjs/throttler/dist/throttler-storage-record.interface';
@@ -94,7 +92,6 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
       `${this.prefix}:{${key}}:block:${throttlerName}`,
     ];
     const args = [
-      throttlerName,
       ttlMs.toString(),
       limit.toString(),
       blockDurationMs.toString(),

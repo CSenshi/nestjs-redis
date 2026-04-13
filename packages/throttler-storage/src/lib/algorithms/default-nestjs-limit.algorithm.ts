@@ -12,9 +12,9 @@ export const DefaultNestjsLimit: ThrottlerAlgorithm = {
   script: `
     local key = KEYS[1]
     local blockKey = KEYS[2]
-    local ttlMs = tonumber(ARGV[2])
-    local limit = tonumber(ARGV[3])
-    local blockDurationMs = tonumber(ARGV[4])
+    local ttlMs = tonumber(ARGV[1])
+    local limit = tonumber(ARGV[2])
+    local blockDurationMs = tonumber(ARGV[3])
 
     -- 1. Check if already blocked
     if redis.call("EXISTS", blockKey) == 1 then
