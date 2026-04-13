@@ -4,3 +4,4 @@ export { DefaultNestjsLimit } from './lib/algorithms/default-nestjs-limit.algori
 export { FixedWindowAlgorithm } from './lib/algorithms/fixed-window.algorithm.js';
 export { SlidingWindowLogAlgorithm } from './lib/algorithms/sliding-window-log.algorithm.js';
 export { SlidingWindowCounterAlgorithm } from './lib/algorithms/sliding-window-counter.algorithm.js';
+export { TokenBucketAlgorithm } from './lib/algorithms/token-bucket.algorithm.js';
