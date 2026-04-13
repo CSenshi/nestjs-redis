@@ -6,8 +6,8 @@ import type {
   RedisClusterType,
   RedisSentinelType,
 } from 'redis';
-import { FixedWindowAlgorithm } from './algorithms/fixed-window.algorithm.js';
-import type { ThrottlerAlgorithm } from './throttler-algorithm.interface.js';
+import type { IThrottlerAlgorithm } from './throttler-algorithm.interface.js';
+import { ThrottlerAlgorithm } from './throttler-algorithms.js';
 
 type RedisClientLike = RedisClientType | RedisClusterType | RedisSentinelType;
 
@@ -32,7 +32,7 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
    */
   constructor(
     private readonly client: RedisClientLike,
-    private readonly algorithm: ThrottlerAlgorithm = FixedWindowAlgorithm,
+    private readonly algorithm: IThrottlerAlgorithm = ThrottlerAlgorithm.FixedWindow,
   ) {}
 
   /**

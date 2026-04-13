@@ -1,4 +1,4 @@
-import type { ThrottlerAlgorithm } from '../throttler-algorithm.interface.js';
+import type { IThrottlerAlgorithm } from '../throttler-algorithm.interface.js';
 
 /**
  * Leaky Bucket (Shaping mode) rate limiter.
@@ -14,7 +14,7 @@ import type { ThrottlerAlgorithm } from '../throttler-algorithm.interface.js';
  *
  * @see https://github.com/redis-developer/redis-ratelimiting-js/blob/main/server/components/rate-limiting/leaky-bucket.ts
  */
-export const LeakyBucketShapingAlgorithm: ThrottlerAlgorithm = {
+export const LeakyBucketShapingAlgorithm: IThrottlerAlgorithm = {
   script: `
     local key = KEYS[1]
     local block_key = key .. ':block'
