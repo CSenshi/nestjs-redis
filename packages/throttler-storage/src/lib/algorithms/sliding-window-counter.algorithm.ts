@@ -13,6 +13,8 @@ import type { ThrottlerAlgorithm } from '../throttler-algorithm.interface.js';
  * the same hash tag and map to the same slot in Redis Cluster.
  *
  * Redis commands: TIME, GET, INCR, PEXPIRE, PTTL
+ *
+ * @see https://github.com/redis-developer/redis-ratelimiting-js/blob/main/server/components/rate-limiting/sliding-window-counter.ts
  */
 export const SlidingWindowCounterAlgorithm: ThrottlerAlgorithm = {
   script: `

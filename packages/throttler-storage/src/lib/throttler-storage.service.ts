@@ -6,7 +6,6 @@ import type {
   RedisClusterType,
   RedisSentinelType,
 } from 'redis';
-
 import { DefaultNestjsLimit } from './algorithms/default-nestjs-limit.algorithm.js';
 import type { ThrottlerAlgorithm } from './throttler-algorithm.interface.js';
 
@@ -34,7 +33,7 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
   constructor(
     private readonly client: RedisClientLike,
     private readonly algorithm: ThrottlerAlgorithm = DefaultNestjsLimit,
-  ) { }
+  ) {}
 
   /**
    * Loads the Lua script into Redis and caches its SHA1 hash.

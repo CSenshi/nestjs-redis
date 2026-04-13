@@ -10,6 +10,8 @@ import type { ThrottlerAlgorithm } from '../throttler-algorithm.interface.js';
  * fully drains over one window.
  *
  * Redis commands: TIME, HGETALL, HSET, PEXPIRE, PTTL
+ *
+ * @see https://github.com/redis-developer/redis-ratelimiting-js/blob/main/server/components/rate-limiting/leaky-bucket.ts
  */
 export const LeakyBucketPolicingAlgorithm: ThrottlerAlgorithm = {
   script: `

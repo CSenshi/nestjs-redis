@@ -9,6 +9,8 @@ import type { ThrottlerAlgorithm } from '../throttler-algorithm.interface.js';
  * requests from both slipping past the limit.
  *
  * Redis commands: TIME, ZREMRANGEBYSCORE, ZCARD, ZADD, PEXPIRE, PTTL, ZRANGE
+ *
+ * @see https://github.com/redis-developer/redis-ratelimiting-js/blob/main/server/components/rate-limiting/sliding-window-log.ts
  */
 export const SlidingWindowLogAlgorithm: ThrottlerAlgorithm = {
   script: `

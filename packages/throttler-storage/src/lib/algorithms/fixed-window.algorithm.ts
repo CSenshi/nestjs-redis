@@ -7,6 +7,8 @@ import type { ThrottlerAlgorithm } from '../throttler-algorithm.interface.js';
  * Atomically increments the counter and sets the expiry on the first request.
  *
  * Redis commands: INCR, PEXPIRE, PTTL
+ *
+ * @see https://github.com/redis-developer/redis-ratelimiting-js/blob/main/server/components/rate-limiting/fixed-window.ts
  */
 export const FixedWindowAlgorithm: ThrottlerAlgorithm = {
   script: `

@@ -11,6 +11,8 @@ import type { ThrottlerAlgorithm } from '../throttler-algorithm.interface.js';
  * the time until the queued request should be processed.
  *
  * Redis commands: TIME, HGETALL, HSET, PEXPIRE
+ *
+ * @see https://github.com/redis-developer/redis-ratelimiting-js/blob/main/server/components/rate-limiting/leaky-bucket.ts
  */
 export const LeakyBucketShapingAlgorithm: ThrottlerAlgorithm = {
   script: `

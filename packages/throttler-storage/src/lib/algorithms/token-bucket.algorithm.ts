@@ -11,6 +11,8 @@ import type { ThrottlerAlgorithm } from '../throttler-algorithm.interface.js';
  * fully refills over one window.
  *
  * Redis commands: TIME, HGETALL, HSET, PEXPIRE, PTTL
+ *
+ * @see https://github.com/redis-developer/redis-ratelimiting-js/blob/main/server/components/rate-limiting/token-bucket.ts
  */
 export const TokenBucketAlgorithm: ThrottlerAlgorithm = {
   script: `
