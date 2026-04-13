@@ -87,10 +87,7 @@ export class RedisThrottlerStorage implements ThrottlerStorage {
     blockDurationMs: number,
     throttlerName: string,
   ): Promise<ThrottlerStorageRecord> {
-    const keys = [
-      `${this.prefix}:{${key}}:${throttlerName}`,
-      `${this.prefix}:{${key}}:block:${throttlerName}`,
-    ];
+    const keys = [`${this.prefix}:{${key}}:${throttlerName}`];
     const args = [
       ttlMs.toString(),
       limit.toString(),

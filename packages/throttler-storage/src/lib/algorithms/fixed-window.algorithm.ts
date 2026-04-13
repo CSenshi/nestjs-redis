@@ -13,7 +13,7 @@ import type { ThrottlerAlgorithm } from '../throttler-algorithm.interface.js';
 export const FixedWindowAlgorithm: ThrottlerAlgorithm = {
   script: `
     local key = KEYS[1]
-    local block_key = KEYS[2]
+    local block_key = key .. ':block'
     local ttl_ms = tonumber(ARGV[1])
     local limit = tonumber(ARGV[2])
     local block_duration_ms = tonumber(ARGV[3])
