@@ -22,6 +22,10 @@ export const TokenBucketAlgorithm: ThrottlerAlgorithm = {
     local limit = tonumber(ARGV[2])
     local block_duration_ms = tonumber(ARGV[3])
 
+    if redis.call('EXISTS', block_key) == 1 then
+      return { limit + 1, -1, redis.call('PTTL', block_key), 1 }
+    end
+
     local refill_rate = limit / (ttl_ms / 1000)
 
     local time = redis.call('TIME')
@@ -55,6 +59,12 @@ export const TokenBucketAlgorithm: ThrottlerAlgorithm = {
     redis.call('HSET', key, 'tokens', tostring(tokens), 'last_refill', tostring(now))
     redis.call('PEXPIRE', key, expire_ms)
     local retry_ms = math.ceil(1000 / refill_rate)
+
+    if block_duration_ms > 0 then
+      redis.call('SET', block_key, '1', 'PX', block_duration_ms)
+      return { limit + 1, retry_ms, block_duration_ms, 1 }
+    end
+
     return { limit + 1, retry_ms, -1, 0 }
   `,
 };

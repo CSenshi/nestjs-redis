@@ -20,6 +20,10 @@ export const SlidingWindowLogAlgorithm: ThrottlerAlgorithm = {
     local limit = tonumber(ARGV[2])
     local block_duration_ms = tonumber(ARGV[3])
 
+    if redis.call('EXISTS', block_key) == 1 then
+      return { limit + 1, -1, redis.call('PTTL', block_key), 1 }
+    end
+
     local time = redis.call('TIME')
     local now_ms = time[1] * 1000 + math.floor(time[2] / 1000)
     local member = time[1] .. ':' .. time[2]
@@ -40,6 +44,11 @@ export const SlidingWindowLogAlgorithm: ThrottlerAlgorithm = {
     local retry_ms = ttl_ms
     if #oldest >= 2 then
       retry_ms = tonumber(oldest[2]) + ttl_ms - now_ms
+    end
+
+    if block_duration_ms > 0 then
+      redis.call('SET', block_key, '1', 'PX', block_duration_ms)
+      return { limit + 1, retry_ms, block_duration_ms, 1 }
     end
 
     return { limit + 1, retry_ms, -1, 0 }
