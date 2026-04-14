@@ -1,3 +1,25 @@
+## 1.2.0 (2026-04-14)
+
+### 🚀 Features
+
+- **throttler-storage:** add fixed window algorithgm ([ddcf16f](https://github.com/CSenshi/nestjs-redis/commit/ddcf16f))
+- **throttler-storage:** implement sliding window log algorithm ([f22cc28](https://github.com/CSenshi/nestjs-redis/commit/f22cc28))
+- **throttler-storage:** add sliding window counter algorithm ([d7bffef](https://github.com/CSenshi/nestjs-redis/commit/d7bffef))
+- **throttler-storage:** add token bucket algorithm ([be703c4](https://github.com/CSenshi/nestjs-redis/commit/be703c4))
+- **throttler-storage:** add leaky bucket policing and shaping algorithms ([a94a3f4](https://github.com/CSenshi/nestjs-redis/commit/a94a3f4))
+- **throttler-storage:** add documentation links for rate limiting algorithms ([fadc505](https://github.com/CSenshi/nestjs-redis/commit/fadc505))
+- **throttler-storage:** standardize lua scripts ([b1fd849](https://github.com/CSenshi/nestjs-redis/commit/b1fd849))
+- **throttler-storage:** enhance algorithms with block key handling ([8e75fad](https://github.com/CSenshi/nestjs-redis/commit/8e75fad))
+- **throttler-storage:** remove block key passing ([1056c64](https://github.com/CSenshi/nestjs-redis/commit/1056c64))
+
+### 🩹 Fixes
+
+- **streams-transporter:** move core dependencies to peerDependencies ([39f8e13](https://github.com/CSenshi/nestjs-redis/commit/39f8e13))
+
+### ❤️ Thank You
+
+- CSenshi
+
 ## 1.1.1 (2026-04-11)
 
 This was a version bump only, there were no code changes.
