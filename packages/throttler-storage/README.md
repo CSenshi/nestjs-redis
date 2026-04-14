@@ -128,11 +128,13 @@ new RedisThrottlerStorage(redis, ThrottlerAlgorithm.TokenBucket);
 
 **`FixedWindow` is the default** because `@nestjs/throttler`'s built-in in-memory storage uses fixed window internally — making this a true drop-in replacement with identical behavior. For new projects, **`SlidingWindowCounter`** is the recommended general-purpose choice: near-exact accuracy, low memory and no burst-at-boundary problem.
 
-> **Learn more** — Each algorithm is based on the reference implementations in [redis-developer/redis-ratelimiting-js](https://github.com/redis-developer/redis-ratelimiting-js/tree/main/server/components/rate-limiting).
+> **Learn more** — Each algorithm is based on the reference implementations in the [Redis rate limiting tutorial](https://redis.io/tutorials/howtos/ratelimiting/).
 
 ### Custom algorithm
 
 You can also bring your own Lua script. The script receives `KEYS[1]` (the rate-limit key) and `ARGV[1..3]` (`ttlMs`, `limit`, `blockDurationMs`), and must return a 4-element array `[totalHits, timeToExpireMs, timeToBlockExpireMs, isBlocked]`.
+
+For a complete example, see [fixed-window.algorithm.ts](src/lib/algorithms/fixed-window.algorithm.ts).
 
 ```typescript
 new RedisThrottlerStorage(redis, {
