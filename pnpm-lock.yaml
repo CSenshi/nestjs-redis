@@ -112,8 +112,8 @@ importers:
         specifier: ^3.8.2
         version: 3.8.2
       redis:
-        specifier: ^5.11.0
-        version: 5.12.1
+        specifier: ^6.0.0
+        version: 6.0.0
       ts-jest:
         specifier: ^29.4.9
         version: 29.4.9(@babel/core@7.29.0)(@jest/transform@30.3.0)(@jest/types@30.3.0)(babel-jest@30.3.0(@babel/core@7.29.0))(jest-util@30.3.0)(jest@30.3.0(@types/node@25.6.0)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@swc/core@1.15.24(@swc/helpers@0.5.21))(@types/node@25.6.0)(typescript@6.0.2)))(typescript@6.0.2)
@@ -169,8 +169,8 @@ importers:
         specifier: ^9.0.0 || ^10.0.0 || ^11.0.0
         version: 11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/microservices@11.1.19)(@nestjs/platform-express@11.1.19)(@nestjs/websockets@11.1.19)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       redis:
-        specifier: ^5.0.0
-        version: 5.12.1
+        specifier: ^5.0.0 || ^6.0.0
+        version: 6.0.0
       tslib:
         specifier: ^2.8.0
         version: 2.8.1
@@ -192,8 +192,8 @@ importers:
         specifier: ^11.0.0
         version: 11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19)(@nestjs/microservices@11.1.19)(@nestjs/platform-express@11.1.19)
       redis:
-        specifier: ^5.0.0
-        version: 5.12.1
+        specifier: ^6.0.0
+        version: 6.0.0
 
   packages/lock:
     dependencies:
@@ -202,7 +202,7 @@ importers:
         version: 11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@redis-kit/lock':
         specifier: ^0.1.0-3
-        version: 0.1.0-3(redis@5.12.1)
+        version: 0.1.0-3(redis@6.0.0)
       tslib:
         specifier: ^2.8.0
         version: 2.8.1
@@ -223,8 +223,8 @@ importers:
         specifier: ^5.0.0
         version: 5.5.0
       redis:
-        specifier: ^5.0.0
-        version: 5.12.1
+        specifier: ^5.0.0 || ^6.0.0
+        version: 6.0.0
       tslib:
         specifier: ^2.3.0
         version: 2.8.1
@@ -254,8 +254,8 @@ importers:
         specifier: ^11.1.6
         version: 11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19)(@nestjs/platform-socket.io@11.1.19)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       redis:
-        specifier: ^5.0.0
-        version: 5.12.1
+        specifier: ^6.0.0
+        version: 6.0.0
       socket.io-client:
         specifier: ^4.0.0
         version: 4.8.3
@@ -273,8 +273,8 @@ importers:
         specifier: ^11.1.12
         version: 11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19)(@nestjs/websockets@11.1.19)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       redis:
-        specifier: ^5.0.0
-        version: 5.12.1
+        specifier: ^6.0.0
+        version: 6.0.0
 
   packages/throttler-storage:
     dependencies:
@@ -289,8 +289,8 @@ importers:
         specifier: ^6.5.0
         version: 6.5.0(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19)(reflect-metadata@0.2.2)
       redis:
-        specifier: ^5.12.0
-        version: 5.12.1
+        specifier: ^6.0.0
+        version: 6.0.0
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@swc/core@1.15.24(@swc/helpers@0.5.21))(@types/node@25.6.0)(typescript@6.0.2)
@@ -1793,9 +1793,27 @@ packages:
     peerDependencies:
       '@redis/client': ^5.12.1
 
+  '@redis/bloom@6.0.0':
+    resolution: {integrity: sha512-P0n5NkV9IIdT6nYXOfMHG83sho8pE7Nay7yw27wOGVLv4DthgvzebpGz6m7VuMTizeJmw3LPw2Xek5wFUhGpVw==}
+    engines: {node: '>= 20.0.0'}
+    peerDependencies:
+      '@redis/client': ^6.0.0
+
   '@redis/client@5.12.1':
     resolution: {integrity: sha512-7aPGWeqA3uFm43o19umzdl16CEjK/JQGtSXVPevplTaOU3VJA/rseBC1QvYUz9lLDIMBimc4SW/zrW4S89BaCA==}
     engines: {node: '>= 18.19.0'}
+    peerDependencies:
+      '@node-rs/xxhash': ^1.1.0
+      '@opentelemetry/api': '>=1 <2'
+    peerDependenciesMeta:
+      '@node-rs/xxhash':
+        optional: true
+      '@opentelemetry/api':
+        optional: true
+
+  '@redis/client@6.0.0':
+    resolution: {integrity: sha512-NS4iIT25r24sAjNQ2nSRdCW5jPJoV0rxkBee27oTeR+RXaOu89cjIsrww5rPBaYVGVdL1QCx9uz9141gZiSKdQ==}
+    engines: {node: '>= 20.0.0'}
     peerDependencies:
       '@node-rs/xxhash': ^1.1.0
       '@opentelemetry/api': '>=1 <2'
@@ -1811,17 +1829,35 @@ packages:
     peerDependencies:
       '@redis/client': ^5.12.1
 
+  '@redis/json@6.0.0':
+    resolution: {integrity: sha512-F+eqFfgPcy57Zs1KW7UtLnBtRk6lxAUIoe7dyZerpm6e+ssYXG/dWJrbrHFYs0b7tt6QBtYpVuukBuM9XqhUAg==}
+    engines: {node: '>= 20.0.0'}
+    peerDependencies:
+      '@redis/client': ^6.0.0
+
   '@redis/search@5.12.1':
     resolution: {integrity: sha512-ItlxbxC9cKI6IU1TLWoczwJCRb6TdmkEpWv05UrPawqaAnWGRu3rcIqsc5vN483T2fSociuyV1UkWIL5I4//2w==}
     engines: {node: '>= 18.19.0'}
     peerDependencies:
       '@redis/client': ^5.12.1
 
+  '@redis/search@6.0.0':
+    resolution: {integrity: sha512-VHuCJ2W0YWFixGZh/l//8JiyOsD4gN+NhjdRAGIoUe0UQ4mtq1NyY2ZJ973XT+vYhaU21XdK8r8oNrd5n7wbzQ==}
+    engines: {node: '>= 20.0.0'}
+    peerDependencies:
+      '@redis/client': ^6.0.0
+
   '@redis/time-series@5.12.1':
     resolution: {integrity: sha512-c6JL6E3EcZJuNqKFz+KM+l9l5mpcQiKvTwgA3blt5glWJ8hjDk0yeHN3beE/MpqYIQ8UEX44ItQzgkE/gCBELQ==}
     engines: {node: '>= 18.19.0'}
     peerDependencies:
       '@redis/client': ^5.12.1
+
+  '@redis/time-series@6.0.0':
+    resolution: {integrity: sha512-QWhkYsg+3lhBrBf+cbzybtV8LQcSrk7iXIgTaGU+pHNFTkql7TpVRE24ROS6M2ybVIV6O/zxTqfxgxxYiqyw0Q==}
+    engines: {node: '>= 20.0.0'}
+    peerDependencies:
+      '@redis/client': ^6.0.0
 
   '@sinclair/typebox@0.34.49':
     resolution: {integrity: sha512-brySQQs7Jtn0joV8Xh9ZV/hZb9Ozb0pmazDIASBkYKCjXrXU3mpcFahmK/z4YDhGkQvP9mWJbVyahdtU5wQA+A==}
@@ -5355,6 +5391,10 @@ packages:
     resolution: {integrity: sha512-LDsoVvb/CpoV9EN3FXvgvSHNJWuCIzl9MiO3ppOevuGLpSGJhwfQjpEwfFJcQvNSddHADDdZaWx0HnmMxRXG7g==}
     engines: {node: '>= 18.19.0'}
 
+  redis@6.0.0:
+    resolution: {integrity: sha512-n9Thfc39OXleEoPT2k5gwKsqY+HfCww3YS71ofcr9KKbkn89bpjU9dToIlD+JRdM3/GYQkwMtVgTxLyed+LptQ==}
+    engines: {node: '>= 20.0.0'}
+
   reflect-metadata@0.2.2:
     resolution: {integrity: sha512-urBwgfrvVP/eAyXx4hluJivBKzuEbSQs9rKWCrCkbSxNv8mxPcUZKeuoF3Uy4mJl3Lwprp6yy5/39VWigZ4K6Q==}
 
@@ -8409,16 +8449,24 @@ snapshots:
 
   '@pkgr/core@0.2.9': {}
 
-  '@redis-kit/lock@0.1.0-3(redis@5.12.1)':
+  '@redis-kit/lock@0.1.0-3(redis@6.0.0)':
     dependencies:
-      redis: 5.12.1
+      redis: 6.0.0
       tslib: 2.8.1
 
   '@redis/bloom@5.12.1(@redis/client@5.12.1)':
     dependencies:
       '@redis/client': 5.12.1
 
+  '@redis/bloom@6.0.0(@redis/client@6.0.0)':
+    dependencies:
+      '@redis/client': 6.0.0
+
   '@redis/client@5.12.1':
+    dependencies:
+      cluster-key-slot: 1.1.2
+
+  '@redis/client@6.0.0':
     dependencies:
       cluster-key-slot: 1.1.2
 
@@ -8426,13 +8474,25 @@ snapshots:
     dependencies:
       '@redis/client': 5.12.1
 
+  '@redis/json@6.0.0(@redis/client@6.0.0)':
+    dependencies:
+      '@redis/client': 6.0.0
+
   '@redis/search@5.12.1(@redis/client@5.12.1)':
     dependencies:
       '@redis/client': 5.12.1
 
+  '@redis/search@6.0.0(@redis/client@6.0.0)':
+    dependencies:
+      '@redis/client': 6.0.0
+
   '@redis/time-series@5.12.1(@redis/client@5.12.1)':
     dependencies:
       '@redis/client': 5.12.1
+
+  '@redis/time-series@6.0.0(@redis/client@6.0.0)':
+    dependencies:
+      '@redis/client': 6.0.0
 
   '@sinclair/typebox@0.34.49': {}
 
@@ -12377,6 +12437,17 @@ snapshots:
       '@redis/json': 5.12.1(@redis/client@5.12.1)
       '@redis/search': 5.12.1(@redis/client@5.12.1)
       '@redis/time-series': 5.12.1(@redis/client@5.12.1)
+    transitivePeerDependencies:
+      - '@node-rs/xxhash'
+      - '@opentelemetry/api'
+
+  redis@6.0.0:
+    dependencies:
+      '@redis/bloom': 6.0.0(@redis/client@6.0.0)
+      '@redis/client': 6.0.0
+      '@redis/json': 6.0.0(@redis/client@6.0.0)
+      '@redis/search': 6.0.0(@redis/client@6.0.0)
+      '@redis/time-series': 6.0.0(@redis/client@6.0.0)
     transitivePeerDependencies:
       - '@node-rs/xxhash'
       - '@opentelemetry/api'

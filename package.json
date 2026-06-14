@@ -33,7 +33,7 @@
     "jsonc-eslint-parser": "^3.1.0",
     "nx": "22.6.5",
     "prettier": "^3.8.2",
-    "redis": "^5.11.0",
+    "redis": "^6.0.0",
     "ts-jest": "^29.4.9",
     "ts-node": "10.9.2",
     "tslib": "^2.8.1",
