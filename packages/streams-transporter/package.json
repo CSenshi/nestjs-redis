@@ -38,11 +38,11 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@nestjs/microservices": "^11.1.12",
-    "redis": "^6.0.0"
+    "@nestjs/microservices": "^11.1.28",
+    "redis": "^6.1.0"
   },
   "peerDependencies": {
     "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0",

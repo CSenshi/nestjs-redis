@@ -98,7 +98,10 @@ export class RedisPollLoop {
           this.logger.warn(`Claimed unknown job: ${jobName}`);
           continue;
         }
-        const nextTs = this.computeNextOccurrence(entry);
+        // Anchor next run to Redis time (same clock as claimDueJob), not
+        // Date.now() — host clock skew makes next() land in the past and
+        // the job re-fires in a tight loop.
+        const nextTs = this.computeNextOccurrence(entry, claimedAt);
         await this.store.enqueueJob(jobName, nextTs);
 
         if (claimedAt - next.score > entry.threshold) {
@@ -131,12 +134,12 @@ export class RedisPollLoop {
     this.inFlight.add(promise);
   }
 
-  private computeNextOccurrence(entry: CronJobEntry): number {
+  private computeNextOccurrence(entry: CronJobEntry, fromMs: number): number {
     const tz = resolveTimezone(entry.timeZone, entry.utcOffset);
-    const interval = CronExpressionParser.parse(
-      entry.expression,
-      tz ? { tz } : undefined,
-    );
+    const interval = CronExpressionParser.parse(entry.expression, {
+      currentDate: new Date(fromMs),
+      ...(tz ? { tz } : {}),
+    });
     return interval.next().toDate().getTime();
   }
 

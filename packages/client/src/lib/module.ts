@@ -15,10 +15,14 @@ import {
 import { RedisToken } from './tokens';
 import { RedisModuleForRootOptions, RedisModuleOptions } from './types';
 
-type RedisInstance =
-  | ReturnType<typeof createClient>
-  | ReturnType<typeof createCluster>
-  | ReturnType<typeof createSentinel>;
+// redis package generics (RespVersions, TypeMapping, …) vary by call site; use a
+// structural client surface so createClient/createCluster/createSentinel all fit.
+// redis v6 prefers close() over quit() across client/cluster/sentinel.
+type RedisInstance = {
+  connect: () => Promise<unknown>;
+  close: () => Promise<unknown>;
+  on: (event: string, listener: (...args: unknown[]) => void) => unknown;
+};
 
 @Module({})
 export class RedisModule
@@ -80,11 +84,11 @@ export class RedisModule
           switch (config?.type) {
             case 'client':
             case undefined:
-              return createClient(config?.options);
+              return createClient(config?.options) as RedisInstance;
             case 'cluster':
-              return createCluster(config.options);
+              return createCluster(config.options) as RedisInstance;
             case 'sentinel':
-              return createSentinel(config.options);
+              return createSentinel(config.options) as RedisInstance;
             default:
               throw new Error(
                 // @ts-expect-error check for config type
@@ -126,8 +130,9 @@ export class RedisModule
           });
 
           client.on('error', (err) => {
+            const message = err instanceof Error ? err.message : String(err);
             RedisModule.err(
-              `[Event=error] Redis connection error (network issue): ${err.message}`,
+              `[Event=error] Redis connection error (network issue): ${message}`,
               connectionName,
             );
           });
@@ -149,7 +154,7 @@ export class RedisModule
     RedisModule.log(`Closing Redis connection...`, this.connectionName);
     await this.moduleRef
       .get<RedisInstance>(RedisToken(this.connectionName))
-      .quit();
+      .close();
     RedisModule.log(`Redis connection closed`, this.connectionName);
   }
 

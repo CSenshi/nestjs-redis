@@ -20,22 +20,22 @@
     "@eslint/js": "^10.0.1",
     "@nestjs/config": "^4.0.4",
     "@nestjs/terminus": "^11.1.1",
-    "@nestjs/testing": "^11.1.18",
+    "@nestjs/testing": "^11.1.28",
     "@nestjs/throttler": "^6.5.0",
-    "@swc/core": "1.15.24",
-    "@swc/helpers": "0.5.21",
+    "@swc/core": "1.15.46",
+    "@swc/helpers": "0.5.23",
     "@swc/jest": "0.2.39",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/jest": "30.0.0",
-    "@types/node": "^25.6.0",
-    "eslint": "^10.2.0",
+    "@types/node": "^26.1.1",
+    "eslint": "^10.7.0",
     "eslint-config-prettier": "^10.1.8",
-    "jest": "30.3.0",
-    "jest-environment-node": "^30.3.0",
-    "prettier": "^3.8.2",
-    "redis": "^6.0.0",
-    "typescript": "^6.0.2",
-    "typescript-eslint": "^8.58.1"
+    "jest": "30.4.2",
+    "jest-environment-node": "^30.4.1",
+    "prettier": "^3.9.6",
+    "redis": "^6.1.0",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.65.0"
   },
   "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977",
   "repository": {
@@ -43,10 +43,18 @@
     "url": "https://github.com/CSenshi/nestjs-redis"
   },
   "dependencies": {
-    "@nestjs/common": "^11.1.18",
-    "@nestjs/core": "^11.1.18",
-    "@nestjs/platform-express": "^11.1.18",
+    "@nestjs/common": "^11.1.28",
+    "@nestjs/core": "^11.1.28",
+    "@nestjs/platform-express": "^11.1.28",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "@nestjs/common": "$@nestjs/common",
+      "@nestjs/core": "$@nestjs/core",
+      "@nestjs/platform-express": "$@nestjs/platform-express",
+      "redis": "$redis"
+    }
   }
 }
