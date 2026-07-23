@@ -1,6 +1,5 @@
 /dist
 /coverage
-/.nx
 /tmp
 /test-output
 .scratch

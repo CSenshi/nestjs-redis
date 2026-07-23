@@ -115,8 +115,6 @@ Use `@InjectRedis(connectionName?)` or `Inject(RedisToken(connectionName?))` to 
 
 10. **`forRoot`/`forRootAsync` return an anonymous subclass**: The `module` field is `class extends RedisModule { override connectionName = ... }`. The module class is not `RedisModule` itself; do not reference it by name in that context.
 
-11. **Do not use Nx**: There is no `nx` CLI. Use package.json scripts and `pnpm --filter` only.
-
 ## Verification Checklist
 
 Before submitting changes to any package:

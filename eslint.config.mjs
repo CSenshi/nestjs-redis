@@ -9,7 +9,6 @@ export default tseslint.config(
       '**/out-tsc',
       '**/coverage',
       '**/node_modules',
-      '**/.nx',
       '**/test-output',
     ],
   },
