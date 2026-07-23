@@ -31,20 +31,24 @@
     "dist",
     "!**/*.tsbuildinfo"
   ],
+  "scripts": {
+    "build": "tsc --build tsconfig.lib.json",
+    "typecheck": "tsc -p tsconfig.lib.json --noEmit"
+  },
   "nx": {
     "name": "schedule",
     "tags": [
       "type:lib"
     ]
   },
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "cron-parser": "^5.0.0"
+  },
   "peerDependencies": {
     "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0",
     "@nestjs/core": "^9.0.0 || ^10.0.0 || ^11.0.0",
     "redis": "^5.0.0 || ^6.0.0"
-  },
-  "dependencies": {
-    "tslib": "^2.3.0",
-    "cron-parser": "^5.0.0"
   },
   "engines": {
     "node": ">=18.0.0",

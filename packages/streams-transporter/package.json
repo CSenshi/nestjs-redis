@@ -14,15 +14,6 @@
     "node-redis"
   ],
   "homepage": "https://github.com/CSenshi/nestjs-redis/tree/main/packages/streams-transporter",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/CSenshi/nestjs-redis",
-    "directory": "packages/streams-transporter"
-  },
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=8.0.0"
-  },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -39,6 +30,10 @@
     "dist",
     "!**/*.tsbuildinfo"
   ],
+  "scripts": {
+    "build": "tsc --build tsconfig.lib.json",
+    "typecheck": "tsc -p tsconfig.lib.json --noEmit"
+  },
   "nx": {
     "name": "streams-transporter",
     "tags": [
@@ -56,5 +51,14 @@
     "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0",
     "@nestjs/microservices": "^9.0.0 || ^10.0.0 || ^11.0.0",
     "redis": "^5.0.0 || ^6.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CSenshi/nestjs-redis",
+    "directory": "packages/streams-transporter"
   }
 }

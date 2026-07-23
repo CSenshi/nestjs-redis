@@ -31,6 +31,10 @@
     "dist",
     "!**/*.tsbuildinfo"
   ],
+  "scripts": {
+    "build": "tsc --build tsconfig.lib.json",
+    "typecheck": "tsc -p tsconfig.lib.json --noEmit"
+  },
   "nx": {
     "name": "client",
     "tags": [
