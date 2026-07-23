@@ -12,44 +12,40 @@ No uncommitted changes should be present.
 
 ## 2. Lint, typecheck, and test
 
-Redis must be running (`docker compose up redis -d`):
+Redis must be running (`docker compose up redis -d`; cluster suites need `redis-cluster` too):
 
 ```bash
-pnpm exec nx run-many -t lint typecheck test
-pnpm exec nx format:check --all
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm format:check
 ```
 
-## 3. Review commits since last release
+## 3. Review commits / pending changesets
 
 ```bash
 git log $(git describe --tags --abbrev=0)..HEAD --oneline
+ls .changeset/
 ```
 
-Confirm all commits follow conventional commit format - the release tooling uses these for version bumps and changelog generation.
+Confirm conventional commits and that pending `.changeset/*.md` notes describe the release.
 
-## 4. Bump version and push
-
-Choose the appropriate bump:
+## 4. Bump version, tag, and push
 
 ```bash
-pnpm exec nx release major --skipPublish
-pnpm exec nx release minor --skipPublish
-pnpm exec nx release patch --skipPublish
-# or a specific version:
-pnpm exec nx release 1.2.3 --skipPublish
-```
-
-Then push the tag to trigger CI publish:
-
-```bash
+pnpm release:version   # lockstep bump + root CHANGELOG.md
+git add -A
+git commit -m "chore(release): X.Y.Z"
+git tag vX.Y.Z
 git push --follow-tags
 ```
+
+Tag `v*.*.*` triggers the Publish workflow (build + npm publish with provenance). There is no Version Packages bot PR.
 
 ## Checklist
 
 - [ ] Clean working tree
 - [ ] Lint, typecheck, tests pass
 - [ ] Formatting clean
-- [ ] Commit history follows conventional commits
-- [ ] Version bump confirmed
+- [ ] Changeset notes reviewed / applied via `release:version`
 - [ ] Tag pushed (CI handles publish)
