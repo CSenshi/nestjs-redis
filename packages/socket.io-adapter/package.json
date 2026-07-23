@@ -35,7 +35,8 @@
     "build": "tsc --build tsconfig.lib.json",
     "typecheck": "tsc -p tsconfig.lib.json --noEmit",
     "test": "jest --passWithNoTests",
-    "test:int": "jest --passWithNoTests --testMatch '**/*.int.spec.ts'"
+    "test:int": "jest --passWithNoTests --testMatch '**/*.int.spec.ts'",
+    "lint": "eslint ."
   },
   "nx": {
     "name": "socket.io-adapter",
