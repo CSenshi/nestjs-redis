@@ -33,30 +33,17 @@ Thank you for contributing! This project adheres to the [Contributor Covenant Co
 1. **Create a branch:** `git checkout -b feature/your-feature-name`
 2. **Make changes** following our standards (TypeScript, ESLint, Prettier, NestJS patterns)
 3. **Add tests** for new functionality
-4. **Add a Changeset** when you change a publishable package under `packages/`:
-
-   ```bash
-   pnpm changeset
-   ```
-
-   For tooling-only PRs that must not publish, use an empty Changeset instead:
-
-   ```bash
-   pnpm exec changeset add --empty
-   ```
-
-5. **Run CI checks locally:**
+4. **Run CI checks locally:**
 
    ```bash
    pnpm lint
    pnpm test
    pnpm build
    pnpm format:check
-   pnpm check:changeset
    ```
 
-6. **Commit** using [Conventional Commits](https://conventionalcommits.org/)
-7. **Create PR** with clear description and issue references
+5. **Commit** using [Conventional Commits](https://conventionalcommits.org/)
+6. **Create PR** with clear description and issue references
 
 ## Package Structure
 
@@ -88,22 +75,17 @@ pnpm --filter @nestjs-redis/client test -- path/to/file.spec.ts
 pnpm --filter @examples/full build
 ```
 
-## Changesets and release
+## Release (maintainers)
 
-All `@nestjs-redis/*` packages share one **fixed** suite version. Each package gets its own `CHANGELOG.md` from `changeset version`. The root `CHANGELOG.md` keeps historical suite notes from before Changesets.
-
-**On a code PR:** run `pnpm changeset` (or `pnpm exec changeset add --empty` for no-release). CI runs `changeset status` and fails package-touching PRs without one.
-
-**When ready to publish (maintainers):**
+All `@nestjs-redis/*` packages share one suite version. Publishing is tag-gated.
 
 ```bash
-pnpm release:version   # bumps all packages lockstep + package CHANGELOG.md files
-git add -A && git commit -m "chore(release): X.Y.Z"
-git tag vX.Y.Z
-git push --follow-tags   # tag triggers CI publish to npm with provenance
+pnpm release          # interactive: bump packages/*/package.json, commit, tag vX.Y.Z, push
 ```
 
-There is no “Version Packages” bot PR; tagging is the publish gate.
+The `v*.*.*` tag push triggers CI to build and publish to npm with provenance.
+
+You can pass a version explicitly, e.g. `pnpm release patch` / `pnpm release 1.4.0`.
 
 ## Adding a new library
 
@@ -112,7 +94,7 @@ Copy an existing package (e.g. `packages/client`) as a scaffold—no generators 
 1. Copy the folder to `packages/<name>` and rename package fields in `package.json` (`name`, `description`, `repository.directory`, etc.).
 2. Keep the same layout: `src/`, `tsconfig*.json`, `jest.config.ts`, `.spec.swcrc`, `eslint.config.mjs`, and scripts (`build`, `typecheck`, `test`, `test:int`, `lint`).
 3. Register the package in the root `tsconfig.json` project references if needed.
-4. Add the package name to `.changeset/config.json` under `fixed[0]`.
+4. Match the current suite version in `package.json` with the other packages.
 5. Smoke-check: `pnpm --filter @nestjs-redis/<name> build && pnpm --filter @nestjs-redis/<name> test`.
 
 ## Commit Format

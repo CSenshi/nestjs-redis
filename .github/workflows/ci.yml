@@ -46,10 +46,6 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Require Changeset for package changes
-        if: github.event_name == 'pull_request'
-        run: pnpm exec changeset status --since=origin/${{ github.base_ref }}
-
       - run: pnpm lint
       - run: pnpm test
       - run: pnpm build

@@ -27,12 +27,8 @@ pnpm --filter @nestjs-redis/client test -- path/to/file.spec.ts
 # Integration tests only
 pnpm --filter @nestjs-redis/client test:int
 
-# Changesets (required on PRs that touch packages/*)
-pnpm changeset
-pnpm check:changeset
-
-# Release (fixed mode: all packages same version; tag triggers publish CI)
-pnpm release:version   # then commit, tag vX.Y.Z, push --follow-tags
+# Release (lockstep packages/*/ version, tag vX.Y.Z, push → publish CI)
+pnpm release
 ```
 
 Start Redis before running any tests: `docker compose up redis -d`  
@@ -90,7 +86,7 @@ Use `@InjectRedis(connectionName?)` or `Inject(RedisToken(connectionName?))` to 
 - **No barrel re-exports inside lib/**: `index.ts` at `src/` level only. Internal imports use direct paths.
 - **Client lifecycle**: `RedisModule` connects on startup, disconnects on `onApplicationShutdown`. Other services (e.g., `RedisThrottlerStorage`) do **not** manage their client's lifecycle.
 - **Lua scripts** in `throttler-storage`: loaded lazily, SHA cached, NOSCRIPT fallback re-runs with raw script.
-- **Conventional commits** required; Changesets + root `CHANGELOG.md` for releases (fixed suite version).
+- **Conventional commits** required. Releases: `pnpm release` (bumpp) then tag publish CI.
 - **Debug logging**: gated on `process.env['REDIS_MODULE_DEBUG'] === 'true'`; errors always log.
 
 ## What Claude Often Gets Wrong
@@ -123,7 +119,6 @@ Before submitting changes to any package:
 - [ ] `pnpm --filter @nestjs-redis/<package> typecheck` passes
 - [ ] `pnpm --filter @nestjs-redis/<package> test` passes (Redis must be running)
 - [ ] Public API changes reflected in `packages/<pkg>/src/index.ts`
-- [ ] Changeset note (or empty Changeset via `changeset add --empty`) when packages change
 - [ ] Commit message follows conventional commit format (`feat:`, `fix:`, `chore:`, etc.)
 
 ## Reference Files
@@ -138,4 +133,3 @@ Before submitting changes to any package:
 | `packages/throttler-storage/src/lib/throttler-storage.service.ts` | Lua script pattern, `evalSha` + NOSCRIPT fallback                          |
 | `packages/lock/src/lib/redlock/`                                  | Redlock module/service/decorator                                           |
 | `tsconfig.base.json`                                              | Shared TS compiler options                                                 |
-| `.changeset/config.json`                                          | Fixed-mode Changesets config                                               |
