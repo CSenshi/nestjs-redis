@@ -38,12 +38,6 @@
     "test:int": "jest --passWithNoTests --testMatch '**/*.int.spec.ts'",
     "lint": "eslint ."
   },
-  "nx": {
-    "name": "schedule",
-    "tags": [
-      "type:lib"
-    ]
-  },
   "dependencies": {
     "tslib": "^2.3.0",
     "cron-parser": "^5.0.0"

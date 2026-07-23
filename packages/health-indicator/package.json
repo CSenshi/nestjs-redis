@@ -36,12 +36,6 @@
     "test:int": "jest --passWithNoTests --testMatch '**/*.int.spec.ts'",
     "lint": "eslint ."
   },
-  "nx": {
-    "name": "health-indicator",
-    "tags": [
-      "type:lib"
-    ]
-  },
   "dependencies": {
     "tslib": "^2.3.0"
   },
