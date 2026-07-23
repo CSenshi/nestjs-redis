@@ -1,0 +1,21 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "fixed": [
+    [
+      "@nestjs-redis/client",
+      "@nestjs-redis/health-indicator",
+      "@nestjs-redis/lock",
+      "@nestjs-redis/schedule",
+      "@nestjs-redis/socket.io-adapter",
+      "@nestjs-redis/streams-transporter",
+      "@nestjs-redis/throttler-storage"
+    ]
+  ],
+  "linked": [],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": []
+}

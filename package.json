@@ -10,9 +10,13 @@
     "test:int": "pnpm -r --filter \"./packages/**\" run test:int",
     "lint": "pnpm -r --filter \"./packages/**\" run lint",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "changeset": "changeset",
+    "release:version": "changeset version && node tools/scripts/consolidate-changelog.mjs",
+    "check:changeset": "node tools/scripts/check-changeset.mjs"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.31.1",
     "@eslint/js": "^10.0.1",
     "@nestjs/config": "^4.0.4",
     "@nestjs/schematics": "^11.0.10",
