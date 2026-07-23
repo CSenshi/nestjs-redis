@@ -24,7 +24,7 @@ describe('RedisPollLoop (integration)', () => {
   beforeAll(async () => {
     client = createClient({
       url: process.env['REDIS_URL'] ?? 'redis://localhost:6379',
-      database: 4,
+      database: 6, // schedule package
     });
     await client.connect();
   });

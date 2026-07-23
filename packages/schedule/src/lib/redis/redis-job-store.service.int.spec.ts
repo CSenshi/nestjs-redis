@@ -11,7 +11,7 @@ describe('RedisJobStore (integration)', () => {
   beforeAll(async () => {
     client = createClient({
       url: process.env['REDIS_URL'] ?? 'redis://localhost:6379',
-      database: 3,
+      database: 5, // schedule package
     });
     await client.connect();
   });

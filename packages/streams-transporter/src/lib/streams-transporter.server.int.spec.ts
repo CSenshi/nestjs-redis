@@ -8,7 +8,7 @@ describe('RedisStreamsTransporter - Server Integration', () => {
   let redisClient: RedisClientType;
   let client: RedisStreamClient;
   let server: RedisStreamServer;
-  const database = 2;
+  const database = 10; // streams-transporter package
 
   const startServer = async () => {
     await new Promise<void>((resolve, reject) => {

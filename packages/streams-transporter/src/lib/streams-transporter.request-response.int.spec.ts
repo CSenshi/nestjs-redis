@@ -5,7 +5,7 @@ import { RedisStreamServer } from './streams-transporter.server';
 describe('RedisStreamsTransporter - Request/Response Integration', () => {
   let client: RedisStreamClient;
   let server: RedisStreamServer;
-  const database = 3;
+  const database = 11; // streams-transporter package
 
   beforeEach(async () => {
     client = new RedisStreamClient({ database });
