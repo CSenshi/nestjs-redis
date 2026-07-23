@@ -10,16 +10,16 @@ When your PR changes a publishable package under `packages/`:
 pnpm changeset
 ```
 
-Or mark the PR as non-releasing:
+Or mark the PR as non-releasing (official empty Changeset):
 
 ```bash
-touch .changeset/no-release
+pnpm exec changeset add --empty
 ```
 
-CI fails package-touching PRs that lack either a `.changeset/*.md` note or the `no-release` marker.
+CI runs `changeset status --since=…` and fails when packages changed without a Changeset.
 
 ## For maintainers (release)
 
-1. `pnpm release:version` — bump all packages lockstep + update root `CHANGELOG.md`
-2. Commit the version + changelog
+1. `pnpm release:version` — bump all packages lockstep + update each package `CHANGELOG.md`
+2. Commit the version + changelog files
 3. Tag `vX.Y.Z` and push the tag (publish workflow handles npm)

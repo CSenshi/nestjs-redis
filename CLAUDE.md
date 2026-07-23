@@ -123,7 +123,7 @@ Before submitting changes to any package:
 - [ ] `pnpm --filter @nestjs-redis/<package> typecheck` passes
 - [ ] `pnpm --filter @nestjs-redis/<package> test` passes (Redis must be running)
 - [ ] Public API changes reflected in `packages/<pkg>/src/index.ts`
-- [ ] Changeset note (or `.changeset/no-release`) included when packages change
+- [ ] Changeset note (or empty Changeset via `changeset add --empty`) when packages change
 - [ ] Commit message follows conventional commit format (`feat:`, `fix:`, `chore:`, etc.)
 
 ## Reference Files

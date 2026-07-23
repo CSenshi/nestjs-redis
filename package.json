@@ -12,8 +12,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "changeset": "changeset",
-    "release:version": "changeset version && node tools/scripts/consolidate-changelog.mjs",
-    "check:changeset": "node tools/scripts/check-changeset.mjs"
+    "release:version": "changeset version",
+    "check:changeset": "changeset status --since=origin/main"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.1",

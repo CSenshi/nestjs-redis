@@ -48,9 +48,7 @@ jobs:
 
       - name: Require Changeset for package changes
         if: github.event_name == 'pull_request'
-        run: pnpm check:changeset
-        env:
-          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: pnpm exec changeset status --since=origin/${{ github.base_ref }}
 
       - run: pnpm lint
       - run: pnpm test

@@ -13,9 +13,7 @@
       "@nestjs-redis/throttler-storage"
     ]
   ],
-  "linked": [],
   "access": "public",
   "baseBranch": "main",
-  "updateInternalDependencies": "patch",
-  "ignore": []
+  "updateInternalDependencies": "patch"
 }

@@ -39,7 +39,11 @@ Thank you for contributing! This project adheres to the [Contributor Covenant Co
    pnpm changeset
    ```
 
-   For tooling-only PRs that must not publish, commit an empty `.changeset/no-release` marker instead.
+   For tooling-only PRs that must not publish, use an empty Changeset instead:
+
+   ```bash
+   pnpm exec changeset add --empty
+   ```
 
 5. **Run CI checks locally:**
 
@@ -86,14 +90,14 @@ pnpm --filter @examples/full build
 
 ## Changesets and release
 
-All `@nestjs-redis/*` packages share one **fixed** suite version. Release notes live in the root `CHANGELOG.md`.
+All `@nestjs-redis/*` packages share one **fixed** suite version. Each package gets its own `CHANGELOG.md` from `changeset version`. The root `CHANGELOG.md` keeps historical suite notes from before Changesets.
 
-**On a code PR:** run `pnpm changeset` (or add `.changeset/no-release`). CI fails package-touching PRs without one.
+**On a code PR:** run `pnpm changeset` (or `pnpm exec changeset add --empty` for no-release). CI runs `changeset status` and fails package-touching PRs without one.
 
 **When ready to publish (maintainers):**
 
 ```bash
-pnpm release:version   # bumps all packages lockstep + updates root CHANGELOG.md
+pnpm release:version   # bumps all packages lockstep + package CHANGELOG.md files
 git add -A && git commit -m "chore(release): X.Y.Z"
 git tag vX.Y.Z
 git push --follow-tags   # tag triggers CI publish to npm with provenance
