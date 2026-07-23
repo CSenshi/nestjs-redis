@@ -11,7 +11,7 @@
     "lint": "pnpm -r --filter './packages/**' run lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "release": "bumpp packages/*/package.json"
+    "release": "release-it"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -19,19 +19,20 @@
     "@nestjs/terminus": "^11.1.1",
     "@nestjs/testing": "^11.1.28",
     "@nestjs/throttler": "^6.5.0",
+    "@release-it/bumper": "^7.0.6",
     "@swc/core": "1.15.46",
     "@swc/helpers": "0.5.23",
     "@swc/jest": "0.2.39",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/jest": "30.0.0",
     "@types/node": "^26.1.1",
-    "bumpp": "^12.0.0",
     "eslint": "^10.7.0",
     "eslint-config-prettier": "^10.1.8",
     "jest": "30.4.2",
     "jest-environment-node": "^30.4.1",
     "prettier": "^3.9.6",
     "redis": "^6.1.0",
+    "release-it": "^20.2.1",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.65.0"
   },

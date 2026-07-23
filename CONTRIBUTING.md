@@ -80,12 +80,11 @@ pnpm --filter @examples/full build
 All `@nestjs-redis/*` packages share one suite version. Publishing is tag-gated.
 
 ```bash
-pnpm release          # interactive: bump packages/*/package.json, commit, tag vX.Y.Z, push
+pnpm release              # interactive (release-it)
+pnpm release patch        # or minor / major / 1.4.0
 ```
 
-The `v*.*.*` tag push triggers CI to build and publish to npm with provenance.
-
-You can pass a version explicitly, e.g. `pnpm release patch` / `pnpm release 1.4.0`.
+This bumps every `packages/*/package.json`, commits, tags `vX.Y.Z`, and pushes. The tag triggers CI to build and publish to npm with provenance (release-it does not publish to npm itself).
 
 ## Adding a new library
 
