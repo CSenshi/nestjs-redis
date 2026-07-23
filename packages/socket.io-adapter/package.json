@@ -33,7 +33,9 @@
   ],
   "scripts": {
     "build": "tsc --build tsconfig.lib.json",
-    "typecheck": "tsc -p tsconfig.lib.json --noEmit"
+    "typecheck": "tsc -p tsconfig.lib.json --noEmit",
+    "test": "jest --passWithNoTests",
+    "test:int": "jest --passWithNoTests --testMatch '**/*.int.spec.ts'"
   },
   "nx": {
     "name": "socket.io-adapter",

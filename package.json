@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "build": "pnpm -r --filter \"./packages/**\" run build",
-    "typecheck": "pnpm -r --filter \"./packages/**\" run typecheck"
+    "typecheck": "pnpm -r --filter \"./packages/**\" run typecheck",
+    "test": "pnpm -r --filter \"./packages/**\" run test",
+    "test:int": "pnpm -r --filter \"./packages/**\" run test:int"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
