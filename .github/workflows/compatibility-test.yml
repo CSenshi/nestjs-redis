@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
 
 permissions:
-  actions: read
   contents: read
 
 env:
@@ -32,10 +31,6 @@ jobs:
             'socket.io-adapter',
           ]
         nestjs-version: ['9', '10', '11']
-        include:
-          - nestjs-version: '9'
-          - nestjs-version: '10'
-          - nestjs-version: '11'
 
     name: Node${{ matrix.node-version }} - Nest${{ matrix.nestjs-version }} - ${{ matrix.package }}
 
@@ -60,16 +55,14 @@ jobs:
 
       - name: Install specific NestJS version for testing
         run: |
-          # Install specific versions for compatibility testing - install ALL NestJS packages at same version
           pnpm add -D @nestjs/common@${{ matrix.nestjs-version }} @nestjs/core@${{ matrix.nestjs-version }} @nestjs/platform-express@${{ matrix.nestjs-version }} -w
 
-          # Install package-specific dependencies
           if [ "${{ matrix.package }}" = "health-indicator" ]; then
             pnpm add -D @nestjs/terminus@${{ matrix.nestjs-version }} -w
           fi
 
       - name: Run unit tests
-        run: pnpm exec nx test ${{ matrix.package }}
+        run: pnpm --filter @nestjs-redis/${{ matrix.package }} test
 
   compatibility-summary:
     runs-on: ubuntu-latest
