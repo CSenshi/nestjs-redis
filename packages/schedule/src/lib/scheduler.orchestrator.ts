@@ -113,8 +113,7 @@ export class SchedulerOrchestrator
       const timeZone = def.options.timeZone as string | undefined;
       const utcOffset = def.options.utcOffset as number | undefined;
 
-      const now = await this.store.getTime();
-      const nextTs = this.computeNext(expression, timeZone, utcOffset, now);
+      const nextTs = this.computeNext(expression, timeZone, utcOffset);
 
       const handle = this.createCronJobHandle(
         name,
@@ -158,13 +157,9 @@ export class SchedulerOrchestrator
     expression: string,
     timeZone?: string,
     utcOffset?: number,
-    fromMs: number = Date.now(),
   ): number {
     const tz = resolveTimezone(timeZone, utcOffset);
-    return CronExpressionParser.parse(expression, {
-      currentDate: new Date(fromMs),
-      ...(tz ? { tz } : {}),
-    })
+    return CronExpressionParser.parse(expression, tz ? { tz } : undefined)
       .next()
       .toDate()
       .getTime();
@@ -188,8 +183,7 @@ export class SchedulerOrchestrator
         return nextTs;
       },
       async start() {
-        const now = await store.getTime();
-        const newNext = computeNext(expression, timeZone, utcOffset, now);
+        const newNext = computeNext(expression, timeZone, utcOffset);
         nextTs = newNext;
         await store.enqueueJob(name, newNext);
       },

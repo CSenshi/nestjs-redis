@@ -1,5 +1,5 @@
 import { CustomTransportStrategy, Server } from '@nestjs/microservices';
-import { createClient } from 'redis';
+import { type RedisClientType, createClient } from 'redis';
 import { firstValueFrom } from 'rxjs';
 import { RedisEvents, RedisStatus } from './redis.events';
 import { RedisStreamsContext } from './streams-transporter.context';
@@ -10,13 +10,12 @@ import {
 } from './streams-transporter.options';
 import { isEventPacket, isRequestPacket } from './types';
 
-type RedisStreamsClient = ReturnType<typeof createClient>;
-
 export class RedisStreamServer
   extends Server<RedisEvents, RedisStatus>
   implements CustomTransportStrategy
 {
-  private client: RedisStreamsClient | null = null;
+  private client: RedisClientType | ReturnType<typeof createClient> | null =
+    null;
   private isConsuming = false;
   private consumePromise: Promise<void> | null = null;
   private lastIds = new Map<string, string>();
@@ -105,7 +104,7 @@ export class RedisStreamServer
    * to be able to retrieve the underlying native server. Most custom implementations
    * will not need this.
    */
-  unwrap<T = RedisStreamsClient>(): T {
+  unwrap<T = RedisClientType>(): T {
     if (!this.client) {
       throw new Error(
         'Redis client is not initialized. Make sure to call "connect()" first.',

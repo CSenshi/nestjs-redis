@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { ClientProxy, ReadPacket, WritePacket } from '@nestjs/microservices';
 import { randomUUID } from 'crypto';
-import { createClient } from 'redis';
+import { RedisClientType, createClient } from 'redis';
 import { type RedisEvents, RedisStatus } from './redis.events';
 import {
   RedisStreamsOptions,
@@ -11,12 +11,12 @@ import {
 import { isResponsePacket } from './types';
 import { EventType } from './types';
 
-type RedisStreamsClient = ReturnType<typeof createClient>;
-
 export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
   protected readonly logger = new Logger(RedisStreamClient.name);
-  private client: RedisStreamsClient | null = null;
-  protected connectionPromise: Promise<RedisStreamsClient> | null = null;
+  private client: RedisClientType | ReturnType<typeof createClient> | null =
+    null;
+  protected connectionPromise: Promise<ReturnType<typeof createClient>> | null =
+    null;
   private readonly clientId = `client-${randomUUID()}`;
   private replyStreamName = '';
   private isListening = false;
@@ -35,23 +35,20 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
     this.initializeDeserializer({});
   }
 
-  async connect(): Promise<RedisStreamsClient> {
+  async connect(): Promise<ReturnType<typeof createClient>> {
     if (this.connectionPromise) {
       return this.connectionPromise;
     }
 
-    const client = createClient(this.options);
-    this.client = client;
+    this.client = createClient(this.options);
     this.registerEventListeners();
 
-    // Resolve to the created client so redis package type params stay consistent
-    const connectionPromise = client.connect().then(() => client);
-    this.connectionPromise = connectionPromise;
+    this.connectionPromise = this.client.connect();
 
-    await connectionPromise;
+    await this.connectionPromise;
     this.isListening = true;
     this.replyListenerPromise = this.listenForReplies();
-    return connectionPromise;
+    return this.connectionPromise;
   }
 
   private registerEventListeners(): void {
@@ -254,7 +251,7 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
     }
   }
 
-  unwrap<T = RedisStreamsClient>(): T {
+  unwrap<T = RedisClientType>(): T {
     if (!this.client) {
       throw new Error(
         'Not initialized. Please call the "connect" method first.',
