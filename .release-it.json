@@ -13,7 +13,7 @@
   },
   "plugins": {
     "@release-it/bumper": {
-      "in": "packages/client/package.json",
+      "in": "package.json",
       "out": "packages/*/package.json"
     }
   }
