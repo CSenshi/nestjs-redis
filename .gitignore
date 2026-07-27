@@ -38,14 +38,13 @@ testem.log
 .DS_Store
 Thumbs.db
 
-.nx/cache
-.nx/workspace-data
 .cursor
 .vscode
 .kiro
-.github/instructions/nx.instructions.md
 
 test-output
 
 .claude/worktrees
 .claude/settings.local.json
+
+.scratch

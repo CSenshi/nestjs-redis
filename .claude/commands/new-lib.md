@@ -1,27 +1,21 @@
-Generate a new NestJS library in this Nx monorepo.
+Generate a new NestJS library in this pnpm workspaces monorepo by copying an existing package (no generators).
 
 Usage: /new-lib <name>
 
 Steps:
 
-1. Run: `pnpm nx g @nx/nest:library --name=<lib-name> --directory=packages/<lib-name> --buildable --publishable --linter=eslint --unitTestRunner=jest`
+1. Copy an existing package scaffold, e.g. `packages/client` → `packages/<lib-name>`.
+2. Update `package.json`: `name` (`@nestjs-redis/<lib-name>`), description, keywords, `repository.directory`.
+3. Keep scripts: `build`, `typecheck`, `test`, `test:int`, `lint`.
+4. Clear `src/` and implement the library; export public API from `src/index.ts`.
+5. Add the package to `.changeset/config.json` `fixed[0]` array.
+6. Add a project reference in root `tsconfig.json` if other packages need it.
+7. Verify:
 
-CLAUDE.md template:
-
+```bash
+pnpm --filter @nestjs-redis/<lib-name> build
+pnpm --filter @nestjs-redis/<lib-name> test
+pnpm --filter @nestjs-redis/<lib-name> lint
 ```
-# CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-## Reference
-
-This library is part of @nestjs-redis/* packages.
-
-## Commands
-
-\`\`\`bash
-pnpm nx test <lib-name>
-pnpm nx build <lib-name>
-\`\`\`
-
-```
+8. Add a Changeset: `pnpm changeset`

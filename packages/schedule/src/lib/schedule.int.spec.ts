@@ -50,7 +50,7 @@ describe('@Cron decorator (integration)', () => {
   beforeAll(async () => {
     client = createClient({
       url: process.env['REDIS_URL'] ?? 'redis://localhost:6379',
-      database: 5,
+      database: 7, // schedule package
     });
     await client.connect();
   });

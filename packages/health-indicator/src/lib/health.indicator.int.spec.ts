@@ -43,7 +43,9 @@ describe('RedisHealthIndicator Integration Tests', () => {
   describe('with Redis client', () => {
     beforeAll(async () => {
       try {
-        // Use database 1 for health-indicator to avoid conflicts with other projects
+        // Redis DB map (one range per package for parallel pnpm test):
+        // client=0, health-indicator=1, lock=2-3, throttler=4,
+        // schedule=5-8, streams-transporter=9-11
         redisClient = createClient({
           url: REDIS_URL,
           database: 1,

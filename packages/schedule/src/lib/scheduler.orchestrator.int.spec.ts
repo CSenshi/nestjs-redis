@@ -12,7 +12,7 @@ describe('SchedulerOrchestrator - disabled cron jobs', () => {
   beforeAll(async () => {
     client = createClient({
       url: process.env['REDIS_URL'] ?? 'redis://localhost:6379',
-      database: 6,
+      database: 8, // schedule package
     });
     await client.connect();
   });

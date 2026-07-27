@@ -6,7 +6,7 @@ import { RedisStreamClient } from './streams-transporter.client';
 describe('RedisStreamsTransporter - Integration', () => {
   let redisClient: RedisClientType;
   let client: RedisStreamClient;
-  const database = 1;
+  const database = 9; // streams-transporter package
   const readAllEntries = async (streamName: string) =>
     redisClient.xRange(streamName, '-', '+');
 

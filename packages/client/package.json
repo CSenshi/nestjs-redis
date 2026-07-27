@@ -31,17 +31,18 @@
     "dist",
     "!**/*.tsbuildinfo"
   ],
-  "nx": {
-    "name": "client",
-    "tags": [
-      "type:lib"
-    ]
+  "scripts": {
+    "build": "tsc --build tsconfig.lib.json",
+    "typecheck": "tsc -p tsconfig.lib.json --noEmit",
+    "test": "jest --passWithNoTests",
+    "test:int": "jest --passWithNoTests --testMatch '**/*.int.spec.ts'",
+    "lint": "eslint ."
   },
   "dependencies": {
-    "tslib": "^2.8.0"
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@nestjs/testing": "^11.0.0"
+    "@nestjs/testing": "^11.1.28"
   },
   "peerDependencies": {
     "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0",

@@ -1,6 +1,14 @@
-import { getJestProjectsAsync } from '@nx/jest';
 import type { Config } from 'jest';
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
 
-export default async (): Promise<Config> => ({
-  projects: await getJestProjectsAsync(),
-});
+// Multi-project Jest config for all packages/* (no Nx discovery).
+const projects = readdirSync(join(__dirname, 'packages'), {
+  withFileTypes: true,
+})
+  .filter((d) => d.isDirectory())
+  .map((d) => `<rootDir>/packages/${d.name}`);
+
+export default {
+  projects,
+} satisfies Config;

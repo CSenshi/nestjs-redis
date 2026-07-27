@@ -7,11 +7,9 @@ on:
   pull_request:
 
 permissions:
-  actions: read
   contents: read
 
 env:
-  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
   NODE_OPTIONS: --max_old_space_size=4096
 
 jobs:
@@ -41,13 +39,6 @@ jobs:
         with:
           run_install: false
 
-      # This enables task distribution via Nx Cloud
-      # Run this command as early as possible, before dependencies are installed
-      # Learn more at https://nx.dev/ci/reference/nx-cloud-cli#npx-nxcloud-startcirun
-      # Uncomment this line to enable task distribution
-      # - run: pnpm dlx nx start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="build"
-
-      # Cache node_modules
       - uses: actions/setup-node@v6
         with:
           node-version: 24
@@ -55,26 +46,7 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v4
-
-      # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
-      # - run: pnpm exec nx-cloud record -- echo Hello World
-      - run: pnpm exec nx affected -t lint test build --exclude='*,!tag:type:lib'
-      # Nx Cloud recommends fixes for failures to help you get CI green faster. Learn more: https://nx.dev/ci/features/self-healing-ci
-
-      # - name: Upload coverage reports to Codecov
-      #   uses: codecov/codecov-action@v5
-      #   with:
-      #     token: ${{ secrets.CODECOV_TOKEN }}
-      #     directory: ./test-output
-      #     files: ./client/lcov.info,./health-indicator/lcov.info,./lock/lcov.info,./throttler-storage/lcov.info,./socket.io-adapter/lcov.info
-      #     flags: unittests
-      #     name: codecov-umbrella
-      #     fail_ci_if_error: false
-      #     verbose: true
-
-      - run: pnpm exec nx format:check --all
-
-      - run: pnpm exec nx fix-ci
-        if: always()
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm format:check

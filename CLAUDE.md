@@ -4,43 +4,46 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 
 ## Commands
 
-Nx monorepo using pnpm. Package names for nx targets: `client`, `health-indicator`, `lock`, `socket.io-adapter`, `streams-transporter`, `throttler-storage`.
+pnpm workspaces monorepo. Publishable packages live under `packages/*` (`@nestjs-redis/*`). Example app: `examples/full` (optional, not critical CI).
 
 ```bash
-# Build/lint/test all affected
-pnpm exec nx affected -t lint test build
+# All publishable packages
+pnpm build
+pnpm typecheck
+pnpm test
+pnpm lint
+pnpm format:check
+pnpm format
 
 # Single package
-pnpm nx build client
-pnpm nx test lock
-pnpm nx lint throttler-storage
+pnpm --filter @nestjs-redis/client build
+pnpm --filter @nestjs-redis/lock test
+pnpm --filter @nestjs-redis/throttler-storage lint
+pnpm --filter @nestjs-redis/client typecheck
 
 # Single test file
-pnpm nx test <package> --testFile=path/to/file.spec.ts
+pnpm --filter @nestjs-redis/client test -- path/to/file.spec.ts
 
-# Typecheck
-pnpm nx typecheck <package>
+# Integration tests only
+pnpm --filter @nestjs-redis/client test:int
 
-# Format
-pnpm exec nx format:check --all
-pnpm exec nx format:write --all
-
-# Release (bump locally, CI publishes after tag push)
-pnpm exec nx release minor --skipPublish   # or major / patch / 1.2.3
-git push --follow-tags
+# Release (lockstep packages/*/ version, tag vX.Y.Z, push → publish CI)
+pnpm release              # interactive; or: pnpm release patch|minor|major|1.4.0
 ```
 
-Start Redis before running any tests: `docker compose up redis -d`
+Start Redis before running any tests: `docker compose up redis -d`  
+(Cluster suites also need `docker compose up redis-cluster -d`.)
 
 ## Architecture
 
-Six independently installable NestJS packages under `packages/`, all `@nestjs-redis/*` scoped:
+Independently installable NestJS packages under `packages/`, all `@nestjs-redis/*` scoped:
 
 | Package               | Purpose                                                                                                |
 | --------------------- | ------------------------------------------------------------------------------------------------------ |
 | `client`              | Core. DI-managed Redis connections (Client/Cluster/Sentinel). All other packages depend on this.       |
 | `health-indicator`    | Terminus health check integration.                                                                     |
 | `lock`                | Distributed locking via `@redis-kit/lock` (`RedlockModule`, `RedlockService`, `@Redlock()` decorator). |
+| `schedule`            | Distributed cron execution, drop-in for `@nestjs/schedule`.                                            |
 | `socket.io-adapter`   | Redis adapter for Socket.IO horizontal scaling.                                                        |
 | `streams-transporter` | Redis Streams microservices transport with consumer groups.                                            |
 | `throttler-storage`   | `ThrottlerStorage` impl using Lua scripting for atomic rate limiting.                                  |
@@ -71,23 +74,24 @@ Use `@InjectRedis(connectionName?)` or `Inject(RedisToken(connectionName?))` to 
 
 ### Testing
 
-- Tests: `*.spec.ts` (unit) and `*.int.spec.ts` (integration) — Redis must be running for all tests
-- Runner: Jest with SWC compilation
+- Tests: `*.spec.ts` (unit) and `*.int.spec.ts` (integration) — Redis must be running for tests that need it
+- Runner: Jest with SWC compilation (no Nx)
+- Package scripts: `test` (all specs) and `test:int` (`*.int.spec.ts` only)
 - Start Redis: `docker compose up redis -d`
 
 ## Code Style & Conventions
 
-- **redis package**: node-redis v5 (`redis ^5.0.0`), **not** ioredis. Types: `RedisClientType`, `RedisClusterType`, `RedisSentinelType`.
+- **redis package**: node-redis v5+ (`redis ^5.0.0 || ^6.0.0`), **not** ioredis. Types: `RedisClientType`, `RedisClusterType`, `RedisSentinelType`.
 - **TypeScript**: strict mode, `target: ES2022`, `module: nodenext`, `moduleResolution: nodenext`, `customConditions: ["development"]`, `noUnusedLocals`, `noImplicitReturns`.
 - **No barrel re-exports inside lib/**: `index.ts` at `src/` level only. Internal imports use direct paths.
 - **Client lifecycle**: `RedisModule` connects on startup, disconnects on `onApplicationShutdown`. Other services (e.g., `RedisThrottlerStorage`) do **not** manage their client's lifecycle.
 - **Lua scripts** in `throttler-storage`: loaded lazily, SHA cached, NOSCRIPT fallback re-runs with raw script.
-- **Conventional commits** required; used by Nx release for changelogs.
+- **Conventional commits** required. Releases: `pnpm release` (release-it) then tag publish CI.
 - **Debug logging**: gated on `process.env['REDIS_MODULE_DEBUG'] === 'true'`; errors always log.
 
 ## What Claude Often Gets Wrong
 
-1. **Using ioredis types**: This repo uses `redis` (node-redis v5), not ioredis. Do not use `IORedis`, `Redis` from ioredis, or ioredis-style APIs.
+1. **Using ioredis types**: This repo uses `redis` (node-redis), not ioredis. Do not use `IORedis`, `Redis` from ioredis, or ioredis-style APIs.
 
 2. **`RedisModuleOptions` vs `RedisModuleForRootOptions`**: `useFactory` in `forRootAsync` must return `RedisModuleOptions` (connection config only — no `isGlobal`/`connectionName`). Those fields are on `RedisModuleForRootOptions` and `RedisModuleAsyncOptions` only.
 
@@ -103,7 +107,7 @@ Use `@InjectRedis(connectionName?)` or `Inject(RedisToken(connectionName?))` to 
 
 8. **`ConfigurableModuleBuilder` factory method name**: The factory interface method is `createRedisOptions` (set via `setFactoryMethodName`), not the builder default `create`. Implement this in `RedisOptionsFactory`.
 
-9. **Integration test file naming**: Must end in `.int.spec.ts` — run separately via `pnpm nx test:int <package>`.
+9. **Integration test file naming**: Must end in `.int.spec.ts` — run via `pnpm --filter @nestjs-redis/<pkg> test:int`.
 
 10. **`forRoot`/`forRootAsync` return an anonymous subclass**: The `module` field is `class extends RedisModule { override connectionName = ... }`. The module class is not `RedisModule` itself; do not reference it by name in that context.
 
@@ -111,9 +115,9 @@ Use `@InjectRedis(connectionName?)` or `Inject(RedisToken(connectionName?))` to 
 
 Before submitting changes to any package:
 
-- [ ] `pnpm nx lint <package>` passes
-- [ ] `pnpm nx typecheck <package>` passes
-- [ ] `pnpm nx test <package>` passes (Redis must be running)
+- [ ] `pnpm --filter @nestjs-redis/<package> lint` passes
+- [ ] `pnpm --filter @nestjs-redis/<package> typecheck` passes
+- [ ] `pnpm --filter @nestjs-redis/<package> test` passes (Redis must be running)
 - [ ] Public API changes reflected in `packages/<pkg>/src/index.ts`
 - [ ] Commit message follows conventional commit format (`feat:`, `fix:`, `chore:`, etc.)
 
@@ -129,4 +133,3 @@ Before submitting changes to any package:
 | `packages/throttler-storage/src/lib/throttler-storage.service.ts` | Lua script pattern, `evalSha` + NOSCRIPT fallback                          |
 | `packages/lock/src/lib/redlock/`                                  | Redlock module/service/decorator                                           |
 | `tsconfig.base.json`                                              | Shared TS compiler options                                                 |
-| `nx.json`                                                         | Nx targets, inputs, release config                                         |

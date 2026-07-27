@@ -18,12 +18,14 @@ Thank you for contributing! This project adheres to the [Contributor Covenant Co
 
    ```bash
    docker compose up redis -d
+   # Cluster tests also need: docker compose up redis-cluster -d
    ```
 
 3. Verify setup:
+
    ```bash
-   pnpm nx test client
-   pnpm nx test:int client
+   pnpm --filter @nestjs-redis/client test
+   pnpm --filter @nestjs-redis/client test:int
    ```
 
 ## Contributing Workflow
@@ -32,43 +34,67 @@ Thank you for contributing! This project adheres to the [Contributor Covenant Co
 2. **Make changes** following our standards (TypeScript, ESLint, Prettier, NestJS patterns)
 3. **Add tests** for new functionality
 4. **Run CI checks locally:**
+
    ```bash
-   pnpm exec nx affected -t lint test build
-   pnpm exec nx format:check --all
+   pnpm lint
+   pnpm test
+   pnpm build
+   pnpm format:check
    ```
+
 5. **Commit** using [Conventional Commits](https://conventionalcommits.org/)
 6. **Create PR** with clear description and issue references
 
 ## Package Structure
 
-This is a monorepo with multiple packages under `packages/`. Each package focuses on a specific Redis integration (client, locking, health checks, etc.). See the [Packages section](README.md#packages) in the main README for current packages.
+This is a **pnpm workspaces** monorepo with publishable packages under `packages/` and an optional demo under `examples/full` (not part of critical CI). See the [Packages section](README.md#packages) in the main README for current packages.
 
 ## Development Commands
 
 ```bash
-# Testing
-pnpm nx test <package>              # unit tests
-pnpm nx test:int <package>          # integration tests (requires Redis)
-pnpm nx run-many -t test            # all tests
+# All publishable packages
+pnpm build
+pnpm typecheck
+pnpm test
+pnpm test:int
+pnpm lint
+pnpm format:check
+pnpm format
 
-# Linting & Formatting
-pnpm nx run-many -t lint            # check linting
-pnpm nx run-many -t lint --fix      # fix linting issues
-pnpm exec nx format:write --all     # format code
+# Single package (filter by package name)
+pnpm --filter @nestjs-redis/client test
+pnpm --filter @nestjs-redis/client test:int   # integration specs (requires Redis)
+pnpm --filter @nestjs-redis/lock build
+pnpm --filter @nestjs-redis/lock lint
+pnpm --filter @nestjs-redis/lock typecheck
 
-# CI Checks (run before submitting PR)
-pnpm exec nx affected -t lint test build
-pnpm exec nx format:check --all
+# Single test file
+pnpm --filter @nestjs-redis/client test -- path/to/file.spec.ts
 
-# Create new library
-pnpm nx g @nx/nest:library \
-	--name=<name> \
-	--directory=packages/<name> \
-	--buildable \
-	--publishable \
-	--linter=eslint \
-	--unitTestRunner=jest
+# Example app (optional; not required for lib CI)
+pnpm --filter @examples/full build
 ```
+
+## Release (maintainers)
+
+All `@nestjs-redis/*` packages share one suite version. Publishing is tag-gated.
+
+```bash
+pnpm release              # interactive (release-it)
+pnpm release patch        # or minor / major / 1.4.0
+```
+
+This bumps every `packages/*/package.json`, commits, tags `vX.Y.Z`, and pushes. The tag triggers CI to build and publish to npm with provenance (release-it does not publish to npm itself).
+
+## Adding a new library
+
+Copy an existing package (e.g. `packages/client`) as a scaffold—no generators required:
+
+1. Copy the folder to `packages/<name>` and rename package fields in `package.json` (`name`, `description`, `repository.directory`, etc.).
+2. Keep the same layout: `src/`, `tsconfig*.json`, `jest.config.ts`, `.spec.swcrc`, `eslint.config.mjs`, and scripts (`build`, `typecheck`, `test`, `test:int`, `lint`).
+3. Register the package in the root `tsconfig.json` project references if needed.
+4. Match the current suite version in `package.json` with the other packages.
+5. Smoke-check: `pnpm --filter @nestjs-redis/<name> build && pnpm --filter @nestjs-redis/<name> test`.
 
 ## Commit Format
 

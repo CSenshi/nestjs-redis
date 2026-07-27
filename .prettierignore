@@ -1,6 +1,6 @@
-# Add files here to ignore them from prettier formatting
 /dist
 /coverage
-/.nx/cache
-/.nx/workspace-data
+/tmp
+/test-output
+.scratch
 pnpm-lock.yaml

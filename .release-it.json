@@ -1,0 +1,20 @@
+{
+  "git": {
+    "commitMessage": "chore(release): ${version}",
+    "tagName": "v${version}",
+    "requireCleanWorkingDir": true,
+    "push": true
+  },
+  "npm": {
+    "publish": false
+  },
+  "github": {
+    "release": false
+  },
+  "plugins": {
+    "@release-it/bumper": {
+      "in": "package.json",
+      "out": "packages/*/package.json"
+    }
+  }
+}
