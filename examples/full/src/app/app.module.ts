@@ -22,7 +22,8 @@ import { HealthController } from './health.controller';
     }),
     RedisModule.forRoot({
       isGlobal: true,
-      options: { url: 'redis://localhost:6380' },
+      type: 'cluster',
+      options: { rootNodes: [{ url: 'redis://localhost:7010' }] },
       connectionName: 'cluster',
     }),
 
