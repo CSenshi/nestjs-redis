@@ -1,6 +1,6 @@
 {
   "name": "@nestjs-redis/source",
-  "version": "1.4.0-rc1",
+  "version": "1.4.0",
   "license": "MIT",
   "private": true,
   "scripts": {
