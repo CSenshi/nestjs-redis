@@ -29,14 +29,15 @@ export async function getIoAdapterCls(): Promise<RedisIoAdapterConstructor> {
       this.adapterConstructor = createAdapter(this.pubClient, this.subClient);
     }
 
-    override createIOServer(port: number, options?: any): any {
+    override createIOServer(port: number, options?: unknown): unknown {
       const server = super.createIOServer(port, options);
       server.adapter(this.adapterConstructor);
       return server;
     }
 
-    override async close(server: any): Promise<void> {
-      super.close(server);
+    override async close(server: object): Promise<void> {
+      // IoAdapter.close expects a Socket.IO Server; keep the override loose.
+      super.close(server as never);
 
       if (this.subClient) {
         await this.subClient.close();

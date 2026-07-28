@@ -13,7 +13,7 @@ export type HealthIndicatorStatus = 'up' | 'down';
 export type HealthIndicatorResult<
   Key extends string = string,
   Status extends HealthIndicatorStatus = HealthIndicatorStatus,
-  OptionalData extends Record<string, any> = Record<string, any>,
+  OptionalData extends Record<string, unknown> = Record<string, unknown>,
 > = Record<Key, { status: Status } & OptionalData>;
 
 /**

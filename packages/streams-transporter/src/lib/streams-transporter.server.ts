@@ -250,9 +250,9 @@ export class RedisStreamServer
     }
   }
 
-  public parseMessage(content: any): Record<string, any> {
+  public parseMessage(content: string): unknown {
     try {
-      return JSON.parse(content);
+      return JSON.parse(content) as unknown;
     } catch {
       return content;
     }
@@ -264,7 +264,7 @@ export class RedisStreamServer
 
   private async handleRequest(
     pattern: string,
-    data: any,
+    data: unknown,
     rawMessage: Record<string, string>,
     context: RedisStreamsContext,
   ): Promise<void> {

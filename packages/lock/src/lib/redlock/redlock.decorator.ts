@@ -1,17 +1,16 @@
 import { Inject } from '@nestjs/common';
 import { RedlockService } from './redlock.service';
 
-// 7. Better TypeScript types
-export function Redlock<T extends (...args: any[]) => any>(
+export function Redlock<T extends (...args: never[]) => unknown>(
   key: string | string[],
   ttl = 100,
 ): (
-  target: any,
+  target: object,
   propertyKey: string | symbol,
   descriptor: TypedPropertyDescriptor<T>,
 ) => void {
   return (
-    target: any,
+    target: object,
     propertyKey: string | symbol,
     descriptor: TypedPropertyDescriptor<T>,
   ) => {
@@ -28,11 +27,13 @@ export function Redlock<T extends (...args: any[]) => any>(
     const originalMethod = descriptor.value;
 
     // Create wrapper method (always async since redlock operations are async)
-    const wrappedMethod = async function (this: any, ...args: any[]) {
-      // 9. Dependency injection edge case handling
-      const redlockService = (this as any)[
-        RedlockService.name
-      ] as RedlockService;
+    const wrappedMethod = async function (
+      this: Record<string, unknown>,
+      ...args: Parameters<T>
+    ) {
+      const redlockService = this[RedlockService.name] as
+        | RedlockService
+        | undefined;
 
       if (!redlockService) {
         throw new Error(
@@ -41,7 +42,7 @@ export function Redlock<T extends (...args: any[]) => any>(
       }
 
       return await redlockService.withLock(keys, ttl, () =>
-        originalMethod.apply(this, args),
+        Promise.resolve(originalMethod.apply(this, args)),
       );
     };
 

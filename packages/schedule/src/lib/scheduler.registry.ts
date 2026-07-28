@@ -15,8 +15,8 @@ export interface CronJobHandle {
 @Injectable()
 export class SchedulerRegistry {
   private readonly cronJobs = new Map<string, CronJobHandle>();
-  private readonly intervals = new Map<string, any>();
-  private readonly timeouts = new Map<string, any>();
+  private readonly intervals = new Map<string, NodeJS.Timeout>();
+  private readonly timeouts = new Map<string, NodeJS.Timeout>();
 
   constructor(
     private readonly store: RedisJobStore,
@@ -77,7 +77,7 @@ export class SchedulerRegistry {
     if (this.intervals.has(name)) {
       throw new Error(DUPLICATE_SCHEDULER(SchedulerType.INTERVAL, name));
     }
-    this.intervals.set(name, intervalId);
+    this.intervals.set(name, intervalId as NodeJS.Timeout);
   }
 
   deleteInterval(name: string): void {
@@ -102,7 +102,7 @@ export class SchedulerRegistry {
     if (this.timeouts.has(name)) {
       throw new Error(DUPLICATE_SCHEDULER(SchedulerType.TIMEOUT, name));
     }
-    this.timeouts.set(name, timeoutId);
+    this.timeouts.set(name, timeoutId as NodeJS.Timeout);
   }
 
   deleteTimeout(name: string): void {

@@ -22,7 +22,7 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
   private readonly options: RedisStreamsResolvedOptions;
   private pendingEventListeners: Array<{
     event: string;
-    callback: (...args: any[]) => void;
+    callback: (...args: unknown[]) => void;
   }> = [];
 
   constructor(options: RedisStreamsOptions = {}) {
@@ -70,7 +70,7 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
     if (this.pendingEventListeners.length > 0) {
       this.pendingEventListeners.forEach(({ event, callback }) => {
         if (!this.client) return;
-        this.client.on(event, callback);
+        this.client.on(event, callback as never);
       });
       this.pendingEventListeners = [];
     }
@@ -98,7 +98,8 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
     this.pendingEventListeners = [];
   }
 
-  async dispatchEvent(packet: ReadPacket): Promise<any> {
+  // Nest ClientProxy requires Promise<T>; this path has no payload to return.
+  async dispatchEvent<T = unknown>(packet: ReadPacket): Promise<T> {
     if (!this.client) {
       throw new Error('Client not connected. Call connect() first.');
     }
@@ -119,6 +120,7 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
         threshold: this.options.maxStreamLength,
       },
     });
+    return undefined as T;
   }
 
   publish(
@@ -180,7 +182,10 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
     if (this.client) {
       this.client.on(event, callback);
     } else {
-      this.pendingEventListeners.push({ event, callback });
+      this.pendingEventListeners.push({
+        event,
+        callback: callback as (...args: unknown[]) => void,
+      });
     }
   }
 

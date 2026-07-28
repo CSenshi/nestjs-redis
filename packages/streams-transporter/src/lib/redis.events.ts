@@ -1,6 +1,6 @@
 type VoidCallback = () => void;
 type OnErrorCallback = (error: Error) => void;
-type OnWarningCallback = (warning: any) => void;
+type OnWarningCallback = (warning: unknown) => void;
 
 export const enum RedisStatus {
   CONNECT = 'connect',
