@@ -13,10 +13,8 @@ import { EventType } from './types';
 
 export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
   protected readonly logger = new Logger(RedisStreamClient.name);
-  private client: RedisClientType | ReturnType<typeof createClient> | null =
-    null;
-  protected connectionPromise: Promise<ReturnType<typeof createClient>> | null =
-    null;
+  private client: RedisClientType | null = null;
+  protected connectionPromise: Promise<RedisClientType> | null = null;
   private readonly clientId = `client-${randomUUID()}`;
   private replyStreamName = '';
   private isListening = false;
@@ -35,7 +33,7 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
     this.initializeDeserializer({});
   }
 
-  async connect(): Promise<ReturnType<typeof createClient>> {
+  async connect(): Promise<RedisClientType> {
     if (this.connectionPromise) {
       return this.connectionPromise;
     }

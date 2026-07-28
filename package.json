@@ -28,7 +28,7 @@
     "jest-environment-node": "^30.4.1",
     "oxfmt": "^0.61.0",
     "oxlint": "^1.76.0",
-    "redis": "^5.0.0",
+    "redis": "^6.0.0",
     "release-it": "^21.0.0",
     "typescript": "^7.0.0"
   },

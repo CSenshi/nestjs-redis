@@ -46,7 +46,7 @@
   "devDependencies": {
     "@nestjs/testing": "^11.1.28",
     "@nestjs/websockets": "^11.1.28",
-    "redis": "^5.0.0",
+    "redis": "^6.0.0",
     "socket.io-client": "^4.8.3"
   },
   "peerDependencies": {

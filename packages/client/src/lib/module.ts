@@ -15,10 +15,15 @@ import {
 import { RedisToken } from './tokens';
 import { RedisModuleForRootOptions, RedisModuleOptions } from './types';
 
-type RedisInstance =
-  | ReturnType<typeof createClient>
-  | ReturnType<typeof createCluster>
-  | ReturnType<typeof createSentinel>;
+// redis package generics (RespVersions, TypeMapping, …) vary by factory call site
+// under redis v6, so client | cluster | sentinel no longer form a clean union.
+// Only the lifecycle surface this module needs is required here; consumers still
+// type injections as RedisClientType / RedisClusterType / RedisSentinelType.
+type RedisInstance = {
+  connect: () => Promise<unknown>;
+  close: () => Promise<unknown>;
+  on: (event: string, listener: (...args: unknown[]) => void) => unknown;
+};
 
 @Module({})
 export class RedisModule
@@ -80,11 +85,11 @@ export class RedisModule
           switch (config?.type) {
             case 'client':
             case undefined:
-              return createClient(config?.options);
+              return createClient(config?.options) as RedisInstance;
             case 'cluster':
-              return createCluster(config.options);
+              return createCluster(config.options) as RedisInstance;
             case 'sentinel':
-              return createSentinel(config.options);
+              return createSentinel(config.options) as RedisInstance;
             default:
               throw new Error(
                 // @ts-expect-error check for config type
@@ -125,9 +130,10 @@ export class RedisModule
             );
           });
 
-          client.on('error', (err) => {
+          client.on('error', (err: unknown) => {
+            const message = err instanceof Error ? err.message : String(err);
             RedisModule.err(
-              `[Event=error] Redis connection error (network issue): ${err.message}`,
+              `[Event=error] Redis connection error (network issue): ${message}`,
               connectionName,
             );
           });

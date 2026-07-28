@@ -14,8 +14,7 @@ export class RedisStreamServer
   extends Server<RedisEvents, RedisStatus>
   implements CustomTransportStrategy
 {
-  private client: RedisClientType | ReturnType<typeof createClient> | null =
-    null;
+  private client: RedisClientType | null = null;
   private isConsuming = false;
   private consumePromise: Promise<void> | null = null;
   private lastIds = new Map<string, string>();

@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@nestjs/testing": "^11.1.28",
-    "redis": "^5.0.0"
+    "redis": "^6.0.0"
   },
   "peerDependencies": {
     "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0",
