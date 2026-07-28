@@ -27,7 +27,7 @@ pnpm --filter @nestjs-redis/client test -- path/to/file.spec.ts
 # Integration tests only
 pnpm --filter @nestjs-redis/client test:int
 
-# Release (lockstep packages/*/ version, tag vX.Y.Z, push → publish CI)
+# Release (lockstep packages/*/ version, tag vX.Y.Z, push → CI: npm + draft GH Release)
 pnpm release              # interactive; or: pnpm release patch|minor|major|1.4.0
 ```
 
@@ -86,7 +86,7 @@ Use `@InjectRedis(connectionName?)` or `Inject(RedisToken(connectionName?))` to 
 - **No barrel re-exports inside lib/**: `index.ts` at `src/` level only. Internal imports use direct paths.
 - **Client lifecycle**: `RedisModule` connects on startup, disconnects on `onApplicationShutdown`. Other services (e.g., `RedisThrottlerStorage`) do **not** manage their client's lifecycle.
 - **Lua scripts** in `throttler-storage`: loaded lazily, SHA cached, NOSCRIPT fallback re-runs with raw script.
-- **Conventional commits** required. Releases: `pnpm release` (release-it) then tag publish CI.
+- **Conventional commits** required. Releases: `pnpm release` (release-it tag/push) then publish CI (npm + draft GitHub Release; publish the draft after review).
 - **Debug logging**: gated on `process.env['REDIS_MODULE_DEBUG'] === 'true'`; errors always log.
 
 ## What Claude Often Gets Wrong

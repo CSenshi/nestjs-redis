@@ -10,8 +10,8 @@ jobs:
     name: Publish
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
-      contents: read
+      id-token: write # npm provenance
+      contents: write # GitHub Release
     timeout-minutes: 10
     steps:
       - name: Checkout repository
@@ -45,3 +45,13 @@ jobs:
         shell: bash
         env:
           NPM_CONFIG_PROVENANCE: true
+
+      - name: Create draft GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          ARGS=(--draft --generate-notes --verify-tag)
+
+          gh release create "$TAG" "${ARGS[@]}"
+        shell: bash

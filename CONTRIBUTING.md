@@ -84,7 +84,7 @@ pnpm release              # interactive (release-it)
 pnpm release patch        # or minor / major / 1.4.0
 ```
 
-This bumps every `packages/*/package.json`, commits, tags `vX.Y.Z`, and pushes. The tag triggers CI to build and publish to npm with provenance (release-it does not publish to npm itself).
+This bumps every `packages/*/package.json`, commits, tags `vX.Y.Z`, and pushes. The tag triggers CI to build, publish to npm with provenance, and open a **draft** GitHub Release (release-it does not publish to npm or create the GH release itself). Review the draft on GitHub, then click **Publish release** when ready
 
 ## Adding a new library
 
