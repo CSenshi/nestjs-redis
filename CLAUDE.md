@@ -24,9 +24,6 @@ pnpm --filter @nestjs-redis/client typecheck
 # Single test file
 pnpm --filter @nestjs-redis/client test -- path/to/file.spec.ts
 
-# Integration tests only
-pnpm --filter @nestjs-redis/client test:int
-
 # Release (lockstep packages/*/ version, tag vX.Y.Z, push → CI: npm + draft GH Release)
 pnpm release              # interactive; or: pnpm release patch|minor|major|1.4.0
 ```
@@ -74,9 +71,9 @@ Use `@InjectRedis(connectionName?)` or `Inject(RedisToken(connectionName?))` to 
 
 ### Testing
 
-- Tests: `*.spec.ts` (unit) and `*.int.spec.ts` (integration) — Redis must be running for tests that need it
-- Runner: Jest with SWC compilation (no Nx)
-- Package scripts: `test` (all specs) and `test:int` (`*.int.spec.ts` only)
+- Tests: `*.spec.ts` — Redis must be running for tests that need a live instance
+- Runner: Vitest with SWC (`unplugin-swc`) for decorator metadata
+- Package script: `test` (`vitest run`)
 - Start Redis: `docker compose up redis -d`
 
 ## Code Style & Conventions
@@ -107,9 +104,7 @@ Use `@InjectRedis(connectionName?)` or `Inject(RedisToken(connectionName?))` to 
 
 8. **`ConfigurableModuleBuilder` factory method name**: The factory interface method is `createRedisOptions` (set via `setFactoryMethodName`), not the builder default `create`. Implement this in `RedisOptionsFactory`.
 
-9. **Integration test file naming**: Must end in `.int.spec.ts` — run via `pnpm --filter @nestjs-redis/<pkg> test:int`.
-
-10. **`forRoot`/`forRootAsync` return an anonymous subclass**: The `module` field is `class extends RedisModule { override connectionName = ... }`. The module class is not `RedisModule` itself; do not reference it by name in that context.
+9. **`forRoot`/`forRootAsync` return an anonymous subclass**: The `module` field is `class extends RedisModule { override connectionName = ... }`. The module class is not `RedisModule` itself; do not reference it by name in that context.
 
 ## Verification Checklist
 

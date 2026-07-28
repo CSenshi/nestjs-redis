@@ -12,7 +12,7 @@ describe('RedisModule Integration forRoot', () => {
     redisClients = [
       createClient({
         url: process.env.REDIS_URL || 'redis://localhost:6379',
-        database: 2, // lock package; see health.indicator.int.spec.ts DB map
+        database: 2, // lock package; see health.indicator.spec.ts DB map
       }),
     ];
 

@@ -24,11 +24,11 @@ describe('RedisHealthIndicator Integration Tests', () => {
         {
           provide: HealthIndicatorService,
           useValue: {
-            check: jest.fn().mockReturnValue({
-              up: jest.fn().mockImplementation((data) => ({
+            check: vi.fn().mockReturnValue({
+              up: vi.fn().mockImplementation((data) => ({
                 redis: { status: 'up', ...data },
               })),
-              down: jest.fn().mockImplementation((data) => ({
+              down: vi.fn().mockImplementation((data) => ({
                 redis: { status: 'down', ...data },
               })),
             }),

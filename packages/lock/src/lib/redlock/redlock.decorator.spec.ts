@@ -8,12 +8,12 @@ import { RedlockService } from './redlock.service';
 
 // Mock RedlockService
 const mockRedlockService = {
-  withLock: jest.fn().mockImplementation((keys, ttl, callback) => callback()),
+  withLock: vi.fn().mockImplementation((keys, ttl, callback) => callback()),
 };
 
 describe('@Redlock Decorator Validations', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should preserve function name', () => {
@@ -242,7 +242,7 @@ describe('@Redlock Decorator', () => {
     redisClients = [
       createClient({
         url: process.env.REDIS_URL || 'redis://localhost:6379',
-        database: 3, // lock package; distinct from module.spec.ts for Jest file workers
+        database: 3, // lock package; distinct from module.spec.ts for Vitest file workers
       }),
     ];
 

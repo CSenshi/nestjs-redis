@@ -1,13 +1,14 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "./out-tsc/jest",
-    "types": ["jest", "node"],
-    "forceConsistentCasingInFileNames": true
+    "outDir": "./out-tsc/vitest",
+    "types": ["vitest/globals", "node"],
+    "forceConsistentCasingInFileNames": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
   "include": [
-    "jest.config.ts",
-    "jest.config.cts",
+    "vitest.config.ts",
     "src/**/*.test.ts",
     "src/**/*.spec.ts",
     "src/**/*.d.ts"

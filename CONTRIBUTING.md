@@ -14,7 +14,7 @@ Thank you for contributing! This project adheres to the [Contributor Covenant Co
    pnpm install
    ```
 
-2. Start Redis for integration tests:
+2. Start Redis for tests that need a live instance:
 
    ```bash
    docker compose up redis -d
@@ -25,7 +25,6 @@ Thank you for contributing! This project adheres to the [Contributor Covenant Co
 
    ```bash
    pnpm --filter @nestjs-redis/client test
-   pnpm --filter @nestjs-redis/client test:int
    ```
 
 ## Contributing Workflow
@@ -56,14 +55,12 @@ This is a **pnpm workspaces** monorepo with publishable packages under `packages
 pnpm build
 pnpm typecheck
 pnpm test
-pnpm test:int
 pnpm lint
 pnpm format:check
 pnpm format
 
 # Single package (filter by package name)
-pnpm --filter @nestjs-redis/client test
-pnpm --filter @nestjs-redis/client test:int   # integration specs (requires Redis)
+pnpm --filter @nestjs-redis/client test   # requires Redis for live-instance specs
 pnpm --filter @nestjs-redis/lock build
 pnpm --filter @nestjs-redis/lock lint
 pnpm --filter @nestjs-redis/lock typecheck
@@ -91,7 +88,7 @@ This bumps every `packages/*/package.json`, commits, tags `vX.Y.Z`, and pushes. 
 Copy an existing package (e.g. `packages/client`) as a scaffold—no generators required:
 
 1. Copy the folder to `packages/<name>` and rename package fields in `package.json` (`name`, `description`, `repository.directory`, etc.).
-2. Keep the same layout: `src/`, `tsconfig*.json`, `jest.config.ts`, `.spec.swcrc`, and scripts (`build`, `typecheck`, `test`, `test:int`, `lint`). Lint/format use root Oxlint/Oxfmt configs.
+2. Keep the same layout: `src/`, `tsconfig*.json`, `vitest.config.ts`, and scripts (`build`, `typecheck`, `test`, `lint`). Lint/format use root Oxlint/Oxfmt configs.
 3. Register the package in the root `tsconfig.json` project references if needed.
 4. Match the current suite version in `package.json` with the other packages.
 5. Smoke-check: `pnpm --filter @nestjs-redis/<name> build && pnpm --filter @nestjs-redis/<name> test`.

@@ -6,7 +6,7 @@ Steps:
 
 1. Copy an existing package scaffold, e.g. `packages/client` → `packages/<lib-name>`.
 2. Update `package.json`: `name` (`@nestjs-redis/<lib-name>`), description, keywords, `repository.directory`.
-3. Keep scripts: `build`, `typecheck`, `test`, `test:int`, `lint`.
+3. Keep scripts: `build`, `typecheck`, `test`, `lint`. Copy `vitest.config.ts` from an existing package.
 4. Clear `src/` and implement the library; export public API from `src/index.ts`.
 5. Add the package to `.changeset/config.json` `fixed[0]` array.
 6. Add a project reference in root `tsconfig.json` if other packages need it.
