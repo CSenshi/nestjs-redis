@@ -14,6 +14,5 @@
     "declarationMap": false,
     "emitDeclarationOnly": false
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["eslint.config.js", "eslint.config.cjs", "eslint.config.mjs"]
+  "include": ["src/**/*.ts"]
 }

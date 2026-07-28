@@ -24,7 +24,8 @@ export interface ScheduleModuleOptions {
  */
 export interface ScheduleModuleOptionsFactory {
   createScheduleOptions():
-    Promise<ScheduleModuleOptions> | ScheduleModuleOptions;
+    | Promise<ScheduleModuleOptions>
+    | ScheduleModuleOptions;
 }
 
 /**

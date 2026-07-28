@@ -1,0 +1,35 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "singleQuote": true,
+  "printWidth": 80,
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/coverage/**",
+    "**/tmp/**",
+    "**/test-output/**",
+    "**/out-tsc/**",
+    ".scratch/**",
+    "pnpm-lock.yaml"
+  ],
+  "sortImports": {
+    "newlinesBetween": false,
+    "customGroups": [
+      {
+        "groupName": "nestjs",
+        "elementNamePattern": ["@nestjs/**"]
+      },
+      {
+        "groupName": "app-aliases",
+        "elementNamePattern": ["@app/**", "@lib/**", "@libs/**"]
+      }
+    ],
+    "groups": [
+      "nestjs",
+      "app-aliases",
+      ["builtin", "external"],
+      ["internal", "parent", "sibling", "index"],
+      "unknown"
+    ]
+  }
+}

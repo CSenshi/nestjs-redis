@@ -8,13 +8,12 @@
     "typecheck": "pnpm -r --filter './packages/**' run typecheck",
     "test": "pnpm -r --filter './packages/**' run test",
     "test:int": "pnpm -r --filter './packages/**' run test:int",
-    "lint": "pnpm -r --filter './packages/**' run lint",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "lint": "oxlint",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
     "release": "release-it"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
     "@nestjs/config": "^4.0.4",
     "@nestjs/terminus": "^11.1.1",
     "@nestjs/testing": "^11.1.28",
@@ -23,20 +22,15 @@
     "@swc/core": "1.15.46",
     "@swc/helpers": "0.5.23",
     "@swc/jest": "0.2.39",
-    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/jest": "30.0.0",
     "@types/node": "^26.1.1",
-    "eslint": "^10.7.0",
-    "eslint-config-prettier": "^10.1.8",
     "jest": "30.4.2",
     "jest-environment-node": "^30.4.1",
     "oxfmt": "^0.61.0",
     "oxlint": "^1.76.0",
-    "prettier": "^3.9.6",
     "redis": "^5.0.0",
     "release-it": "^21.0.0",
-    "typescript": "^7.0.0",
-    "typescript-eslint": "^8.65.0"
+    "typescript": "^7.0.0"
   },
   "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977",
   "repository": {

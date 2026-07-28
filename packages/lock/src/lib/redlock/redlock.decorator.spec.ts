@@ -30,7 +30,6 @@ describe('@Redlock Decorator Validations', () => {
   it('should preserve function length (arity)', () => {
     class TestService {
       @Redlock(['testKey'], 200)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       async testMethod(_param1: string, _param2: number) {
         return 'locked';
       }

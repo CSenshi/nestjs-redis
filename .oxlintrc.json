@@ -1,0 +1,29 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript"],
+  "categories": {
+    "correctness": "error"
+  },
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/out-tsc/**",
+    "**/coverage/**",
+    "**/node_modules/**",
+    "**/test-output/**",
+    ".scratch/**"
+  ],
+  "rules": {
+    "typescript/no-explicit-any": "warn",
+    "no-unused-vars": "warn",
+    "typescript/no-non-null-assertion": "warn",
+    "typescript/no-require-imports": "off"
+  },
+  "overrides": [
+    {
+      "files": ["packages/schedule/**/*.{ts,tsx,cts,mts}"],
+      "rules": {
+        "typescript/no-unsafe-function-type": "off"
+      }
+    }
+  ]
+}

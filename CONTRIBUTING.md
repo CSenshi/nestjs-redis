@@ -31,7 +31,7 @@ Thank you for contributing! This project adheres to the [Contributor Covenant Co
 ## Contributing Workflow
 
 1. **Create a branch:** `git checkout -b feature/your-feature-name`
-2. **Make changes** following our standards (TypeScript, ESLint, Prettier, NestJS patterns)
+2. **Make changes** following our standards (TypeScript, Oxlint, Oxfmt, NestJS patterns)
 3. **Add tests** for new functionality
 4. **Run CI checks locally:**
 
@@ -91,7 +91,7 @@ This bumps every `packages/*/package.json`, commits, tags `vX.Y.Z`, and pushes. 
 Copy an existing package (e.g. `packages/client`) as a scaffold—no generators required:
 
 1. Copy the folder to `packages/<name>` and rename package fields in `package.json` (`name`, `description`, `repository.directory`, etc.).
-2. Keep the same layout: `src/`, `tsconfig*.json`, `jest.config.ts`, `.spec.swcrc`, `eslint.config.mjs`, and scripts (`build`, `typecheck`, `test`, `test:int`, `lint`).
+2. Keep the same layout: `src/`, `tsconfig*.json`, `jest.config.ts`, `.spec.swcrc`, and scripts (`build`, `typecheck`, `test`, `test:int`, `lint`). Lint/format use root Oxlint/Oxfmt configs.
 3. Register the package in the root `tsconfig.json` project references if needed.
 4. Match the current suite version in `package.json` with the other packages.
 5. Smoke-check: `pnpm --filter @nestjs-redis/<name> build && pnpm --filter @nestjs-redis/<name> test`.

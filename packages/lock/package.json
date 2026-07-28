@@ -35,7 +35,7 @@
     "typecheck": "tsc -p tsconfig.lib.json --noEmit",
     "test": "jest --passWithNoTests",
     "test:int": "jest --passWithNoTests --testMatch '**/*.int.spec.ts'",
-    "lint": "eslint ."
+    "lint": "oxlint"
   },
   "dependencies": {
     "@redis-kit/lock": "^0.1.0-3",

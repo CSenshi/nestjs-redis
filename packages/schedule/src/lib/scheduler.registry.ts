@@ -15,9 +15,7 @@ export interface CronJobHandle {
 @Injectable()
 export class SchedulerRegistry {
   private readonly cronJobs = new Map<string, CronJobHandle>();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly intervals = new Map<string, any>();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly timeouts = new Map<string, any>();
 
   constructor(

@@ -1,6 +1,0 @@
-/dist
-/coverage
-/tmp
-/test-output
-.scratch
-pnpm-lock.yaml

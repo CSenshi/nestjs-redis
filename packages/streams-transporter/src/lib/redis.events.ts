@@ -32,4 +32,3 @@ export type RedisEvents = {
   end: VoidCallback;
   warning: OnWarningCallback;
 };
-export {};

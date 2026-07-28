@@ -36,7 +36,7 @@
     "typecheck": "tsc -p tsconfig.lib.json --noEmit",
     "test": "jest --passWithNoTests",
     "test:int": "jest --passWithNoTests --testMatch '**/*.int.spec.ts'",
-    "lint": "eslint ."
+    "lint": "oxlint"
   },
   "dependencies": {
     "cron-parser": "^5.6.2",

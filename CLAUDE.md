@@ -11,9 +11,9 @@ pnpm workspaces monorepo. Publishable packages live under `packages/*` (`@nestjs
 pnpm build
 pnpm typecheck
 pnpm test
-pnpm lint
-pnpm format:check
-pnpm format
+pnpm lint          # oxlint (root .oxlintrc.json)
+pnpm format:check  # oxfmt --check
+pnpm format        # oxfmt
 
 # Single package
 pnpm --filter @nestjs-redis/client build

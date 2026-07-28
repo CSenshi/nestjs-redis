@@ -5,7 +5,9 @@ import type {
 } from 'redis';
 
 export type RedisOptions =
-  RedisClientOptions | RedisClusterOptions | RedisSentinelOptions;
+  | RedisClientOptions
+  | RedisClusterOptions
+  | RedisSentinelOptions;
 
 export type RedisConnectionConfig =
   | {

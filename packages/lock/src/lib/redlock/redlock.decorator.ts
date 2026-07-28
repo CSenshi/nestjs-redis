@@ -29,9 +29,6 @@ export function Redlock<T extends (...args: any[]) => any>(
 
     // Create wrapper method (always async since redlock operations are async)
     const wrappedMethod = async function (this: any, ...args: any[]) {
-      // eslint-disable-next-line @typescript-eslint/no-this-alias
-      const that = this;
-
       // 9. Dependency injection edge case handling
       const redlockService = (this as any)[
         RedlockService.name
@@ -44,7 +41,7 @@ export function Redlock<T extends (...args: any[]) => any>(
       }
 
       return await redlockService.withLock(keys, ttl, () =>
-        originalMethod.apply(that, args),
+        originalMethod.apply(this, args),
       );
     };
 
@@ -76,7 +73,7 @@ export function Redlock<T extends (...args: any[]) => any>(
           if (descriptor) {
             Object.defineProperty(wrappedMethod, key, descriptor);
           }
-        } catch (error) {
+        } catch {
           // 5. Some properties might not be configurable, skip them
           console.warn(`Could not copy property ${key} from original method`);
         }
