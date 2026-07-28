@@ -20,7 +20,7 @@ describe('RedisModule Integration forRoot', () => {
   });
 
   afterAll(async () => {
-    await Promise.all(redisClients.map((client) => client.quit()));
+    await Promise.all(redisClients.map((client) => client.close()));
   });
 
   describe('RedlockModule.forRoot', () => {

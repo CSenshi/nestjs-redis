@@ -93,7 +93,7 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
       } catch {
         // ignore
       }
-      await this.client.quit();
+      await this.client.close();
     }
     this.client = null;
     this.connectionPromise = null;

@@ -67,7 +67,7 @@ export class RedisStreamServer
     if (this.consumePromise) {
       await this.consumePromise;
     }
-    if (this.client) await this.client.quit();
+    if (this.client) await this.client.close();
     this.client = null;
     this.lastIds.clear();
   }

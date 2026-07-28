@@ -252,7 +252,7 @@ describe('@Redlock Decorator', () => {
   afterAll(async () => {
     // Close all Redis clients
     for (const client of redisClients) {
-      await client.quit();
+      await client.close();
     }
   });
 

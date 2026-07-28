@@ -80,7 +80,7 @@ describe('RedisThrottlerStorage - Exact Implementation Comparison', () => {
   });
 
   afterAll(async () => {
-    await redisClient.quit();
+    await redisClient.close();
   });
 
   beforeEach(async () => {
@@ -270,7 +270,7 @@ describe('RedisThrottlerStorage - Cluster Mode CROSSSLOT Issue', () => {
   });
 
   afterAll(async () => {
-    await clusterClient.quit();
+    await clusterClient.close();
   });
 
   it('should not fail with CROSSSLOT error when keys hash to different slots', async () => {
@@ -307,7 +307,7 @@ describe('RedisThrottlerStorage - Factory Methods Integration', () => {
     // Clean up active clients
     for (const client of activeClients) {
       if (client.isReady) {
-        await client.quit();
+        await client.close();
       }
     }
     activeClients = [];
@@ -319,7 +319,7 @@ describe('RedisThrottlerStorage - Factory Methods Integration', () => {
     });
     await cleanupClient.connect();
     await cleanupClient.flushDb();
-    await cleanupClient.quit();
+    await cleanupClient.close();
   });
 
   describe('from() - Existing client', () => {
@@ -394,7 +394,7 @@ describe('RedisThrottlerStorage - Cluster Mode Database Flush', () => {
   });
 
   afterAll(async () => {
-    await clusterClient.quit();
+    await clusterClient.close();
   });
 
   it('should reset throttling after database flush and work correctly again', async () => {

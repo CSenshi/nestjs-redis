@@ -149,7 +149,7 @@ export class RedisModule
     RedisModule.log(`Closing Redis connection...`, this.connectionName);
     await this.moduleRef
       .get<RedisInstance>(RedisToken(this.connectionName))
-      .quit();
+      .close();
     RedisModule.log(`Redis connection closed`, this.connectionName);
   }
 

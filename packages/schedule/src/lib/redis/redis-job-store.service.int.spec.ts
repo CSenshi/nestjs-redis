@@ -17,7 +17,7 @@ describe('RedisJobStore (integration)', () => {
   });
 
   afterAll(async () => {
-    await client.quit();
+    await client.close();
   });
 
   beforeEach(async () => {

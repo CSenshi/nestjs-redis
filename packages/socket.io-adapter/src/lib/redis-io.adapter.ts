@@ -39,7 +39,7 @@ export async function getIoAdapterCls(): Promise<RedisIoAdapterConstructor> {
       super.close(server);
 
       if (this.subClient) {
-        await this.subClient.quit();
+        await this.subClient.close();
       }
     }
   }

@@ -18,7 +18,7 @@ describe('SchedulerOrchestrator - disabled cron jobs', () => {
   });
 
   afterAll(async () => {
-    await client.quit();
+    await client.close();
   });
 
   beforeEach(async () => {

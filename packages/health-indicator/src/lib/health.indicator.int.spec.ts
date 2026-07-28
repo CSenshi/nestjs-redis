@@ -59,7 +59,7 @@ describe('RedisHealthIndicator Integration Tests', () => {
     afterAll(async () => {
       if (redisClient && 'isReady' in redisClient && redisClient.isReady) {
         if ('quit' in redisClient) {
-          await redisClient.quit();
+          await redisClient.close();
         }
       }
     });
@@ -93,7 +93,7 @@ describe('RedisHealthIndicator Integration Tests', () => {
       expect(result.redis.status).toBe('down');
 
       try {
-        await badClient.quit();
+        await badClient.close();
       } catch {
         // Ignore cleanup errors
       }

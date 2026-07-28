@@ -16,7 +16,7 @@ describe('RedisStreamsTransporter - Integration', () => {
   });
 
   afterAll(async () => {
-    await redisClient.quit();
+    await redisClient.close();
   });
 
   beforeEach(async () => {
