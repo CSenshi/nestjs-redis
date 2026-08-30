@@ -6,7 +6,7 @@ import type {
   RedisClusterType,
   RedisSentinelType,
 } from 'redis';
-import { RedisHealthIndicator } from './health.indicator';
+import { RedisHealthIndicator } from './health.indicator.js';
 
 type RedisInstance = RedisClientType | RedisClusterType | RedisSentinelType;
 
