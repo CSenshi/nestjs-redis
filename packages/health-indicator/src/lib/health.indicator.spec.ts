@@ -1,4 +1,3 @@
-import { HealthIndicatorService } from '@nestjs/terminus';
 import { Test, TestingModule } from '@nestjs/testing';
 import { createClient } from 'redis';
 import type {
@@ -19,22 +18,7 @@ describe('RedisHealthIndicator Integration Tests', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        RedisHealthIndicator,
-        {
-          provide: HealthIndicatorService,
-          useValue: {
-            check: vi.fn().mockReturnValue({
-              up: vi.fn().mockImplementation((data) => ({
-                redis: { status: 'up', ...data },
-              })),
-              down: vi.fn().mockImplementation((data) => ({
-                redis: { status: 'down', ...data },
-              })),
-            }),
-          },
-        },
-      ],
+      providers: [RedisHealthIndicator],
     }).compile();
 
     healthIndicator = module.get<RedisHealthIndicator>(RedisHealthIndicator);
