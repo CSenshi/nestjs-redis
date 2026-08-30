@@ -2,14 +2,14 @@ import { Logger } from '@nestjs/common';
 import { ClientProxy, ReadPacket, WritePacket } from '@nestjs/microservices';
 import { randomUUID } from 'crypto';
 import { RedisClientType, createClient } from 'redis';
-import { type RedisEvents, RedisStatus } from './redis.events';
+import { type RedisEvents, RedisStatus } from './redis.events.js';
 import {
   RedisStreamsOptions,
   RedisStreamsResolvedOptions,
   resolveRedisStreamsOptions,
-} from './streams-transporter.options';
-import { isResponsePacket } from './types';
-import { EventType } from './types';
+} from './streams-transporter.options.js';
+import { isResponsePacket } from './types.js';
+import { EventType } from './types.js';
 
 export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
   protected readonly logger = new Logger(RedisStreamClient.name);
