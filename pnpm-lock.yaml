@@ -161,6 +161,9 @@ importers:
       '@redis-kit/lock':
         specifier: ^0.1.0-3
         version: 0.1.0-3(redis@6.1.0)
+      redis:
+        specifier: ^6.0.0
+        version: 6.1.0
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
@@ -178,8 +181,8 @@ importers:
         specifier: ^12.0.0
         version: 12.0.1(@nestjs/common@12.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/microservices@12.0.1)(@nestjs/platform-express@12.0.1)(@nestjs/websockets@12.0.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       cron-parser:
-        specifier: ^5.6.2
-        version: 5.6.2
+        specifier: ^5.10.0
+        version: 5.10.0
       redis:
         specifier: ^6.0.0
         version: 6.1.0
@@ -1545,8 +1548,8 @@ packages:
     resolution: {integrity: sha512-tJtZBBHA6vjIAaF6EnIaq6laBBP9aq/Y3ouVJjEfoHbRBcHBAHYcMh/w8LDrk2PvIMMq8gmopa5D4V8RmbrxGw==}
     engines: {node: '>= 0.10'}
 
-  cron-parser@5.6.2:
-    resolution: {integrity: sha512-yJ/G1LVir6CnlkLI40CsampPLKl1SprGGlUagWtGJxewytRVYezv5xVyzzbT+Pvzx+VIRvZVF7/a0eEMTxdnTA==}
+  cron-parser@5.10.0:
+    resolution: {integrity: sha512-izNAxJyRWUP8ljBoDSub5WyrVOUlT4SLGShswE7eoRBpp6QUsSycYxLBMJlbshgPBMcPT/nrfgjNY2918ayv2A==}
     engines: {node: '>=18'}
 
   css-select@5.2.2:
@@ -3772,7 +3775,7 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cron-parser@5.6.2:
+  cron-parser@5.10.0:
     dependencies:
       luxon: 3.7.2
 

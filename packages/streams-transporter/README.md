@@ -10,7 +10,7 @@ Custom NestJS microservices transporter using Redis Streams with event and reque
 [![npm downloads](https://img.shields.io/npm/dm/@nestjs-redis/streams-transporter.svg)](https://www.npmjs.com/package/@nestjs-redis/streams-transporter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
-[![NestJS](https://img.shields.io/badge/NestJS-12%2B-red.svg)](https://nestjs.com/) [![Redis](https://img.shields.io/badge/Redis-5+-red.svg)](https://redis.io/)
+[![NestJS](https://img.shields.io/badge/NestJS-9--12-red.svg)](https://nestjs.com/) [![node-redis](https://img.shields.io/badge/node--redis-5--6-red.svg)](https://www.npmjs.com/package/redis)
 
 </div>
 
@@ -24,6 +24,8 @@ Custom NestJS microservices transporter using Redis Streams with event and reque
 - **Configurable options**: Stream prefix, consumer group/name, block timeout, batch size, max stream length (MAXLEN trim), retry delay
 - **NestJS integration**: `RedisStreamsContext` (stream name, message id, consumer group/name) passed to handlers; optional `onProcessingStartHook` / `onProcessingEndHook`
 - **Type-safe**: Event/request/response type guards and resolved options
+
+Requires Node.js `^20.19.0 || >=22.12.0` and NestJS 9–12. This package is ESM-only; synchronous CommonJS `require()` is supported on those Node.js versions.
 
 ## Installation
 
