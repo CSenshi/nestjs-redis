@@ -222,7 +222,7 @@ export class RedisStreamServer
       }
 
       if (isEventPacket(rawMessage)) {
-        this.onProcessingStartHook(
+        this.onProcessingStartHook?.(
           this.transportId,
           context,
           async () => void 0,
