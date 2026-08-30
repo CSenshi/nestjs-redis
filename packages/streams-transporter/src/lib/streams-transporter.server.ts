@@ -45,16 +45,16 @@ export class RedisStreamServer
     this.client.on('error', (err) => this.logger.error(err));
 
     this.client.on('connect', () => {
-      this._status$.next(RedisStatus.CONNECT);
+      this._status$?.next(RedisStatus.CONNECT);
     });
     this.client.on('ready', () => {
-      this._status$.next(RedisStatus.CONNECTED);
+      this._status$?.next(RedisStatus.CONNECTED);
     });
     this.client.on('reconnecting', () => {
-      this._status$.next(RedisStatus.RECONNECTING);
+      this._status$?.next(RedisStatus.RECONNECTING);
     });
     this.client.on('end', () => {
-      this._status$.next(RedisStatus.DISCONNECTED);
+      this._status$?.next(RedisStatus.DISCONNECTED);
     });
   }
 
