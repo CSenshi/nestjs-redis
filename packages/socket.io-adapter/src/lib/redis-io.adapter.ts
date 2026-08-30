@@ -1,9 +1,14 @@
 import type { INestApplication, WebSocketAdapter } from '@nestjs/common';
+import type { IoAdapter } from '@nestjs/platform-socket.io';
 import type { RedisClientType } from 'redis';
+
+type CreateIOServer = IoAdapter['createIOServer'];
 
 export interface RedisIoAdapterInstance extends WebSocketAdapter {
   connectToRedis(redisClient: RedisClientType): Promise<void>;
-  createIOServer(port: number, options?: unknown): unknown;
+  createIOServer(
+    ...args: Parameters<CreateIOServer>
+  ): ReturnType<CreateIOServer>;
 }
 
 export type RedisIoAdapterConstructor = new (
@@ -18,7 +23,7 @@ export async function getIoAdapterCls(): Promise<RedisIoAdapterConstructor> {
     public pubClient: RedisClientType | undefined;
     public subClient: RedisClientType | undefined;
 
-    public adapterConstructor: ReturnType<typeof createAdapter> | undefined;
+    public adapterConstructor!: ReturnType<typeof createAdapter>;
 
     async connectToRedis(redisClient: RedisClientType): Promise<void> {
       this.pubClient = redisClient;
@@ -29,8 +34,10 @@ export async function getIoAdapterCls(): Promise<RedisIoAdapterConstructor> {
       this.adapterConstructor = createAdapter(this.pubClient, this.subClient);
     }
 
-    override createIOServer(port: number, options?: unknown): unknown {
-      const server = super.createIOServer(port, options);
+    override createIOServer(
+      ...args: Parameters<CreateIOServer>
+    ): ReturnType<CreateIOServer> {
+      const server = super.createIOServer(...args);
       server.adapter(this.adapterConstructor);
       return server;
     }

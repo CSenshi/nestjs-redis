@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import type { RedisClientType } from 'redis';
-import type { RedlockModuleOptions } from './redlock.interfaces';
+import type { RedlockModuleOptions } from './redlock.interfaces.js';
 import {
   ConfigurableModuleClass,
   MODULE_OPTIONS_TOKEN,
-} from './redlock.module-definition';
-import { RedlockService } from './redlock.service';
+} from './redlock.module-definition.js';
+import { RedlockService } from './redlock.service.js';
 
 @Module({
   providers: [

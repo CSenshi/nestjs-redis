@@ -10,7 +10,7 @@ Custom NestJS microservices transporter using Redis Streams with event and reque
 [![npm downloads](https://img.shields.io/npm/dm/@nestjs-redis/streams-transporter.svg)](https://www.npmjs.com/package/@nestjs-redis/streams-transporter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
-[![NestJS](https://img.shields.io/badge/NestJS-9%2B-red.svg)](https://nestjs.com/) [![Redis](https://img.shields.io/badge/Redis-5+-red.svg)](https://redis.io/)
+[![NestJS](https://img.shields.io/badge/NestJS-12%2B-red.svg)](https://nestjs.com/) [![Redis](https://img.shields.io/badge/Redis-5+-red.svg)](https://redis.io/)
 
 </div>
 
@@ -28,7 +28,7 @@ Custom NestJS microservices transporter using Redis Streams with event and reque
 ## Installation
 
 ```bash
-npm install @nestjs-redis/streams-transporter redis
+npm install @nestjs-redis/streams-transporter @nestjs/microservices redis
 ```
 
 ## Quick Start

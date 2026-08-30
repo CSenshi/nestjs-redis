@@ -1,11 +1,11 @@
 import type { INestApplication } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { UnknownElementException } from '@nestjs/core/errors/exceptions/index.js';
+import { UnknownElementException } from '@nestjs/core/errors/exceptions/unknown-element.exception.js';
 import {
   RedisAdapterAlreadySetUpException,
   RedisClientNotFoundException,
-} from './exceptions';
-import { getIoAdapterCls } from './redis-io.adapter';
+} from './exceptions.js';
+import { getIoAdapterCls } from './redis-io.adapter.js';
 
 const appSet = new Set<INestApplication>();
 

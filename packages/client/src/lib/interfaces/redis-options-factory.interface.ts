@@ -1,4 +1,4 @@
-import { RedisModuleOptions } from '../types';
+import { RedisModuleOptions } from '../types.js';
 
 /**
  * Interface describing a `RedisOptionsFactory`. Providers supplying configuration

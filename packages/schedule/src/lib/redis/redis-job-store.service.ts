@@ -4,8 +4,8 @@ import type {
   RedisClusterType,
   RedisSentinelType,
 } from 'redis';
-import type { ScheduleModuleOptions } from '../interfaces/schedule-module-options.interface';
-import { SCHEDULE_MODULE_OPTIONS } from '../schedule.constants';
+import type { ScheduleModuleOptions } from '../interfaces/schedule-module-options.interface.js';
+import { SCHEDULE_MODULE_OPTIONS } from '../schedule.constants.js';
 
 type RedisClientLike = RedisClientType | RedisClusterType | RedisSentinelType;
 

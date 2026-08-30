@@ -9,7 +9,7 @@ Modern, production-ready Redis integration for NestJS. Unified APIs, type-safe, 
 [![Build Status](https://github.com/CSenshi/nestjs-redis/workflows/CI/badge.svg)](https://github.com/CSenshi/nestjs-redis/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
-[![NestJS](https://img.shields.io/badge/NestJS-9%2B-red.svg)](https://nestjs.com/)
+****[![NestJS](https://img.shields.io/badge/NestJS-12%2B-red.svg)](https://nestjs.com/)
 [![Redis](https://img.shields.io/badge/Redis-5+-red.svg)](https://redis.io/)
 
 </div>
@@ -107,13 +107,13 @@ This provides comprehensive operational logging:
 
 | Package                                                                                                | Node.js | NestJS | Redis |
 | ------------------------------------------------------------------------------------------------------ | ------- | ------ | ----- |
-| [`@nestjs-redis/client`](https://www.npmjs.com/package/@nestjs-redis/client)                           | 18+     | 9+     | 5+    |
-| [`@nestjs-redis/lock`](https://www.npmjs.com/package/@nestjs-redis/lock)                               | 18+     | 9+     | 5+    |
-| [`@nestjs-redis/schedule`](https://www.npmjs.com/package/@nestjs-redis/schedule)                       | 18+     | 9+     | 5+    |
-| [`@nestjs-redis/throttler-storage`](https://www.npmjs.com/package/@nestjs-redis/throttler-storage)     | 18+     | 9+     | 5+    |
-| [`@nestjs-redis/health-indicator`](https://www.npmjs.com/package/@nestjs-redis/health-indicator)       | 18+     | 9+     | 5+    |
-| [`@nestjs-redis/socket.io-adapter`](https://www.npmjs.com/package/@nestjs-redis/socket.io-adapter)     | 18+     | 9+     | 5+    |
-| [`@nestjs-redis/streams-transporter`](https://www.npmjs.com/package/@nestjs-redis/streams-transporter) | 18+     | 9+     | 5+    |
+| [`@nestjs-redis/client`](https://www.npmjs.com/package/@nestjs-redis/client)                           | 20+     | 12+    | 5+    |
+| [`@nestjs-redis/lock`](https://www.npmjs.com/package/@nestjs-redis/lock)                               | 20+     | 12+    | 5+    |
+| [`@nestjs-redis/schedule`](https://www.npmjs.com/package/@nestjs-redis/schedule)                       | 20+     | 12+    | 5+    |
+| [`@nestjs-redis/throttler-storage`](https://www.npmjs.com/package/@nestjs-redis/throttler-storage)     | 20+     | 12+    | 5+    |
+| [`@nestjs-redis/health-indicator`](https://www.npmjs.com/package/@nestjs-redis/health-indicator)       | 20+     | 12+    | 5+    |
+| [`@nestjs-redis/socket.io-adapter`](https://www.npmjs.com/package/@nestjs-redis/socket.io-adapter)     | 20+     | 12+    | 5+    |
+| [`@nestjs-redis/streams-transporter`](https://www.npmjs.com/package/@nestjs-redis/streams-transporter) | 20+     | 12+    | 5+    |
 
 All packages support NestJS 9.x, 10.x, and 11.x.
 

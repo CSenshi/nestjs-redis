@@ -1,4 +1,4 @@
-import { RedisToken } from './tokens';
+import { RedisToken } from './tokens.js';
 
 describe('RedisToken', () => {
   describe('token generation', () => {
