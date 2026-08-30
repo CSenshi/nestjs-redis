@@ -2,6 +2,7 @@
   "name": "@examples/full",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.app.json",
     "start": "node dist/main.js"
@@ -12,7 +13,9 @@
     "@nestjs-redis/lock": "workspace:*",
     "@nestjs-redis/schedule": "workspace:*",
     "@nestjs-redis/socket.io-adapter": "workspace:*",
+    "@nestjs-redis/streams-transporter": "workspace:*",
     "@nestjs-redis/throttler-storage": "workspace:*",
+    "@nestjs/microservices": "^12.0.0",
     "redis": "^6.0.0",
     "tslib": "^2.8.1"
   }

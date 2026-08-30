@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ThrottlerGuard } from '@nestjs/throttler';
-import { AppService } from './app.service';
+import { AppService } from './app.service.js';
 
 @Controller()
 export class AppController {
