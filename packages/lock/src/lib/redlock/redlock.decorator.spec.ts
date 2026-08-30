@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { createClient } from 'redis';
 import type { RedisClientType } from 'redis';
-import { Redlock } from './redlock.decorator';
-import { RedlockModule } from './redlock.module';
-import { RedlockService } from './redlock.service';
+import { Redlock } from './redlock.decorator.js';
+import { RedlockModule } from './redlock.module.js';
+import { RedlockService } from './redlock.service.js';
 
 // Mock RedlockService
 const mockRedlockService = {

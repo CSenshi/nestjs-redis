@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { RedlockService } from './redlock.service';
+import { RedlockService } from './redlock.service.js';
 
 export function Redlock<T extends (...args: never[]) => unknown>(
   key: string | string[],

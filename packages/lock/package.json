@@ -2,6 +2,7 @@
   "name": "@nestjs-redis/lock",
   "version": "1.4.0",
   "license": "MIT",
+  "type": "module",
   "author": "Saba Pochkhua <saba.pochkhua@gmail.com> (https://github.com/CSenshi)",
   "description": "Redis-based distributed lock module for NestJS, built on @redis-kit/lock",
   "keywords": [
@@ -41,13 +42,13 @@
     "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@nestjs/testing": "^11.1.28"
+    "@nestjs/testing": "^12.0.0"
   },
   "peerDependencies": {
-    "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0"
+    "@nestjs/common": "^12.0.0"
   },
   "engines": {
-    "node": ">=18.0.0",
+    "node": "^20.19.0 || >=22.12.0",
     "npm": ">=8.0.0"
   },
   "repository": {
