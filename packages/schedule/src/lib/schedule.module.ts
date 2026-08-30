@@ -4,14 +4,14 @@ import {
   ScheduleModuleAsyncOptions,
   ScheduleModuleOptions,
   ScheduleModuleOptionsFactory,
-} from './interfaces/schedule-module-options.interface';
-import { RedisJobStore } from './redis/redis-job-store.service';
-import { RedisPollLoop } from './redis/redis-poll-loop.service';
-import { SchedulerMetadataAccessor } from './schedule-metadata.accessor';
-import { SCHEDULE_MODULE_OPTIONS } from './schedule.constants';
-import { ScheduleExplorer } from './schedule.explorer';
-import { SchedulerOrchestrator } from './scheduler.orchestrator';
-import { SchedulerRegistry } from './scheduler.registry';
+} from './interfaces/schedule-module-options.interface.js';
+import { RedisJobStore } from './redis/redis-job-store.service.js';
+import { RedisPollLoop } from './redis/redis-poll-loop.service.js';
+import { SchedulerMetadataAccessor } from './schedule-metadata.accessor.js';
+import { SCHEDULE_MODULE_OPTIONS } from './schedule.constants.js';
+import { ScheduleExplorer } from './schedule.explorer.js';
+import { SchedulerOrchestrator } from './scheduler.orchestrator.js';
+import { SchedulerRegistry } from './scheduler.registry.js';
 
 const CORE_PROVIDERS: Type[] = [
   SchedulerMetadataAccessor,
