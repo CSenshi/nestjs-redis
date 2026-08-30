@@ -2,7 +2,6 @@ import {
   BeforeApplicationShutdown,
   Injectable,
   OnApplicationBootstrap,
-  OnApplicationShutdown,
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
@@ -474,14 +473,14 @@ describe('Multi-connection Integration', () => {
 });
 
 describe('RedisModule Service Lifecycle Integration', () => {
-  // Test service that implements all lifecycle hooks
+  // Keep Redis I/O before onApplicationShutdown: reverse shutdown ordering was
+  // only introduced in NestJS 11, so older versions may close Redis first.
   @Injectable()
   class TestLifecycleService
     implements
       OnModuleInit,
       OnApplicationBootstrap,
       OnModuleDestroy,
-      OnApplicationShutdown,
       BeforeApplicationShutdown
   {
     constructor(
@@ -514,13 +513,6 @@ describe('RedisModule Service Lifecycle Integration', () => {
       await this.redis.set(
         `${this.prefix}:lifecycle:destroy`,
         `module-destroyed`,
-      );
-    }
-
-    async onApplicationShutdown(signal?: string): Promise<void> {
-      await this.redis.set(
-        `${this.prefix}:lifecycle:shutdown`,
-        `application-shutdown-${signal || 'unknown'}`,
       );
     }
   }
