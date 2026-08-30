@@ -43,12 +43,12 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v5
+      - uses: pnpm/setup@v2
         name: Install pnpm
         with:
-          run_install: false
+          install: false
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 20.19.0
           cache: 'pnpm'
@@ -61,15 +61,7 @@ jobs:
 
       - name: Install NestJS ${{ matrix.nestjs-version }} for runtime tests
         run: |
-          pnpm pkg set \
-            'pnpm.overrides[@nestjs/common]=${{ matrix.nestjs-version }}' \
-            'pnpm.overrides[@nestjs/core]=${{ matrix.nestjs-version }}' \
-            'pnpm.overrides[@nestjs/microservices]=${{ matrix.nestjs-version }}' \
-            'pnpm.overrides[@nestjs/platform-express]=${{ matrix.nestjs-version }}' \
-            'pnpm.overrides[@nestjs/platform-socket.io]=${{ matrix.nestjs-version }}' \
-            'pnpm.overrides[@nestjs/testing]=${{ matrix.nestjs-version }}' \
-            'pnpm.overrides[@nestjs/websockets]=${{ matrix.nestjs-version }}' \
-            'pnpm.overrides[reflect-metadata]=${{ matrix.reflect-metadata-version }}'
+          pnpm config set --location=project --json overrides '{"@nestjs/common":"${{ matrix.nestjs-version }}","@nestjs/core":"${{ matrix.nestjs-version }}","@nestjs/microservices":"${{ matrix.nestjs-version }}","@nestjs/platform-express":"${{ matrix.nestjs-version }}","@nestjs/platform-socket.io":"${{ matrix.nestjs-version }}","@nestjs/testing":"${{ matrix.nestjs-version }}","@nestjs/websockets":"${{ matrix.nestjs-version }}","reflect-metadata":"${{ matrix.reflect-metadata-version }}"}'
           pnpm install --node-linker=hoisted --no-frozen-lockfile
 
       - name: Verify resolved NestJS versions

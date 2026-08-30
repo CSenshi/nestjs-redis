@@ -20,13 +20,13 @@ jobs:
           fetch-depth: 0
           filter: tree:0
 
-      - uses: pnpm/action-setup@v5
+      - uses: pnpm/setup@v2
         name: Install pnpm
         with:
-          run_install: false
+          install: false
 
       - name: Install Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: 'pnpm'
