@@ -107,13 +107,13 @@ This provides comprehensive operational logging:
 
 | Package                                                                                                | Node.js | NestJS | Redis |
 | ------------------------------------------------------------------------------------------------------ | ------- | ------ | ----- |
-| [`@nestjs-redis/client`](https://www.npmjs.com/package/@nestjs-redis/client)                           | 20+     | 12+     | 5+    |
-| [`@nestjs-redis/lock`](https://www.npmjs.com/package/@nestjs-redis/lock)                               | 20+     | 12+     | 5+    |
-| [`@nestjs-redis/schedule`](https://www.npmjs.com/package/@nestjs-redis/schedule)                       | 20+     | 12+     | 5+    |
-| [`@nestjs-redis/throttler-storage`](https://www.npmjs.com/package/@nestjs-redis/throttler-storage)     | 20+     | 12+     | 5+    |
-| [`@nestjs-redis/health-indicator`](https://www.npmjs.com/package/@nestjs-redis/health-indicator)       | 20+     | 12+     | 5+    |
-| [`@nestjs-redis/socket.io-adapter`](https://www.npmjs.com/package/@nestjs-redis/socket.io-adapter)     | 20+     | 12+     | 5+    |
-| [`@nestjs-redis/streams-transporter`](https://www.npmjs.com/package/@nestjs-redis/streams-transporter) | 20+     | 12+     | 5+    |
+| [`@nestjs-redis/client`](https://www.npmjs.com/package/@nestjs-redis/client)                           | 20+     | 12+    | 5+    |
+| [`@nestjs-redis/lock`](https://www.npmjs.com/package/@nestjs-redis/lock)                               | 20+     | 12+    | 5+    |
+| [`@nestjs-redis/schedule`](https://www.npmjs.com/package/@nestjs-redis/schedule)                       | 20+     | 12+    | 5+    |
+| [`@nestjs-redis/throttler-storage`](https://www.npmjs.com/package/@nestjs-redis/throttler-storage)     | 20+     | 12+    | 5+    |
+| [`@nestjs-redis/health-indicator`](https://www.npmjs.com/package/@nestjs-redis/health-indicator)       | 20+     | 12+    | 5+    |
+| [`@nestjs-redis/socket.io-adapter`](https://www.npmjs.com/package/@nestjs-redis/socket.io-adapter)     | 20+     | 12+    | 5+    |
+| [`@nestjs-redis/streams-transporter`](https://www.npmjs.com/package/@nestjs-redis/streams-transporter) | 20+     | 12+    | 5+    |
 
 All packages support NestJS 9.x, 10.x, and 11.x.
 

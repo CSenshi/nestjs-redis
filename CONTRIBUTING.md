@@ -4,7 +4,7 @@ Thank you for contributing! This project adheres to the [Contributor Covenant Co
 
 ## Getting Started
 
-**Prerequisites:** Node.js 18+, pnpm, Docker Compose
+**Prerequisites:** Node.js 20+, pnpm, Docker Compose
 
 1. Fork and clone the repository:
 
@@ -38,6 +38,8 @@ Thank you for contributing! This project adheres to the [Contributor Covenant Co
    pnpm lint
    pnpm test
    pnpm build
+   pnpm typecheck
+   pnpm build:example
    pnpm format:check
    ```
 
