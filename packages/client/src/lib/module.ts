@@ -7,13 +7,13 @@ import {
 } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { createClient, createCluster, createSentinel } from 'redis';
-import { RedisModuleAsyncOptions } from './interfaces';
+import { RedisModuleAsyncOptions } from './interfaces/index.js';
 import {
   ConfigurableModuleClass,
   MODULE_OPTIONS_TOKEN,
-} from './redis-client.module-definition';
-import { RedisToken } from './tokens';
-import { RedisModuleForRootOptions, RedisModuleOptions } from './types';
+} from './redis-client.module-definition.js';
+import { RedisToken } from './tokens.js';
+import { RedisModuleForRootOptions, RedisModuleOptions } from './types.js';
 
 // redis package generics (RespVersions, TypeMapping, …) vary by factory call site
 // under redis v6, so client | cluster | sentinel no longer form a clean union.

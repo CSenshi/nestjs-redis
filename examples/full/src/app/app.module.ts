@@ -8,10 +8,10 @@ import { RedlockModule } from '@nestjs-redis/lock';
 import { ScheduleModule } from '@nestjs-redis/schedule';
 import { RedisThrottlerStorage } from '@nestjs-redis/throttler-storage';
 import type { RedisClientType } from 'redis';
-import { AppController } from './app.controller';
-import { AppCron } from './app.cron';
-import { AppService } from './app.service';
-import { HealthController } from './health.controller';
+import { AppController } from './app.controller.js';
+import { AppCron } from './app.cron.js';
+import { AppService } from './app.service.js';
+import { HealthController } from './health.controller.js';
 
 @Module({
   imports: [
@@ -39,11 +39,14 @@ import { HealthController } from './health.controller';
     // Scheduling
     ScheduleModule.forRootAsync({
       inject: [RedisToken()],
-      useFactory: (client: RedisClientType) => ({ client }),
+      useFactory: (client) => ({
+        client: client as RedisClientType,
+      }),
     }),
 
     // Throttling
     ThrottlerModule.forRootAsync({
+      imports: [],
       inject: [RedisToken()],
       useFactory: (redis: RedisClientType) => ({
         throttlers: [{ limit: 5111, ttl: seconds(60) }],

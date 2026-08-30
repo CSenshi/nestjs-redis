@@ -1,8 +1,8 @@
 import { createClient } from 'redis';
 import type { RedisClientType } from 'redis';
 import { firstValueFrom } from 'rxjs';
-import { RedisStreamClient } from './streams-transporter.client';
-import { RedisStreamServer } from './streams-transporter.server';
+import { RedisStreamClient } from './streams-transporter.client.js';
+import { RedisStreamServer } from './streams-transporter.server.js';
 
 describe('RedisStreamsTransporter - Server Integration', () => {
   let redisClient: RedisClientType;

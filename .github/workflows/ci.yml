@@ -34,12 +34,12 @@ jobs:
           filter: tree:0
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v5
+      - uses: pnpm/setup@v2
         name: Install pnpm
         with:
-          run_install: false
+          install: false
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: 'pnpm'
@@ -47,6 +47,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - run: pnpm lint
+      - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+      - run: pnpm example:build
       - run: pnpm format:check

@@ -58,7 +58,7 @@ body:
     attributes:
       label: Environment
       placeholder: |
-        Node.js: 18.x
+        Node.js: 20.19.x
         NestJS: 10.x
         Redis: 7.x
       value: |

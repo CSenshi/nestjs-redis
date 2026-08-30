@@ -7,7 +7,7 @@ import type {
 import {
   HealthIndicatorResult,
   HealthIndicatorService,
-} from './nestjs-terminus';
+} from './nestjs-terminus/index.js';
 
 type Redis = RedisClientType | RedisClusterType | RedisSentinelType;
 

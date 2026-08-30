@@ -1,10 +1,10 @@
 import { SetMetadata, applyDecorators } from '@nestjs/common';
-import { SchedulerType } from '../enums/scheduler-type.enum';
+import { SchedulerType } from '../enums/scheduler-type.enum.js';
 import {
   SCHEDULER_NAME,
   SCHEDULER_TYPE,
   SCHEDULE_CRON_OPTIONS,
-} from '../schedule.constants';
+} from '../schedule.constants.js';
 
 /**
  * @publicApi

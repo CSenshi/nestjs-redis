@@ -1,4 +1,4 @@
-import type { SchedulerType } from './enums/scheduler-type.enum';
+import type { SchedulerType } from './enums/scheduler-type.enum.js';
 
 export const NO_SCHEDULER_FOUND = (type: SchedulerType, name: string): string =>
   `No scheduler with type "${type}" and name "${name}" was found.`;

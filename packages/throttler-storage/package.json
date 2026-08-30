@@ -1,7 +1,8 @@
 {
   "name": "@nestjs-redis/throttler-storage",
-  "version": "1.4.0",
+  "version": "2.0.0-2",
   "license": "MIT",
+  "type": "module",
   "author": "Saba Pochkhua <saba.pochkhua@gmail.com> (https://github.com/CSenshi)",
   "description": "Redis storage for NestJS Throttler enabling distributed rate limiting across multiple application instances",
   "keywords": [
@@ -45,10 +46,12 @@
     "redis": "^6.0.0"
   },
   "peerDependencies": {
-    "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0"
+    "@nestjs/common": "^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0",
+    "@nestjs/throttler": "^6.0.0",
+    "redis": "^5.0.0 || ^6.0.0"
   },
   "engines": {
-    "node": ">=18.0.0",
+    "node": "^20.19.0 || >=22.12.0",
     "npm": ">=8.0.0"
   },
   "repository": {

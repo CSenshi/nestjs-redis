@@ -2,7 +2,7 @@ import { ConfigurableModuleBuilder } from '@nestjs/common';
 import {
   RedlockModuleOptions,
   RedlockOptionsFactory,
-} from './redlock.interfaces';
+} from './redlock.interfaces.js';
 
 export const { ConfigurableModuleClass, MODULE_OPTIONS_TOKEN } =
   new ConfigurableModuleBuilder<RedlockModuleOptions>({

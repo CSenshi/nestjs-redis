@@ -1,22 +1,28 @@
 {
   "name": "@nestjs-redis/source",
-  "version": "1.4.0",
+  "version": "2.0.0-2",
   "license": "MIT",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "pnpm -r --filter './packages/**' run build",
     "typecheck": "pnpm -r --filter './packages/**' run typecheck",
     "test": "pnpm -r --filter './packages/**' run test",
+    "example:build": "pnpm --filter @examples/full build",
+    "example:serve": "pnpm --filter @examples/full start",
     "lint": "oxlint",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "release": "release-it"
   },
   "devDependencies": {
-    "@nestjs/config": "^4.0.4",
+    "@nestjs/config": "^12.0.0",
+    "@nestjs/microservices": "^12.0.0",
+    "@nestjs/platform-socket.io": "^12.0.0",
     "@nestjs/terminus": "^11.1.1",
-    "@nestjs/testing": "^11.1.28",
+    "@nestjs/testing": "^12.0.0",
     "@nestjs/throttler": "^6.5.0",
+    "@nestjs/websockets": "^12.0.0",
     "@release-it/bumper": "^8.0.0",
     "@swc/core": "1.15.46",
     "@swc/helpers": "0.5.23",
@@ -29,24 +35,16 @@
     "unplugin-swc": "^1.5.9",
     "vitest": "^4.1.10"
   },
-  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977",
+  "packageManager": "pnpm@12.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/CSenshi/nestjs-redis"
   },
   "dependencies": {
-    "@nestjs/common": "^11.1.28",
-    "@nestjs/core": "^11.1.28",
-    "@nestjs/platform-express": "^11.1.28",
+    "@nestjs/common": "^12.0.0",
+    "@nestjs/core": "^12.0.0",
+    "@nestjs/platform-express": "^12.0.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
-  },
-  "pnpm": {
-    "overrides": {
-      "@nestjs/common": "$@nestjs/common",
-      "@nestjs/core": "$@nestjs/core",
-      "@nestjs/platform-express": "$@nestjs/platform-express",
-      "redis": "$redis"
-    }
   }
 }

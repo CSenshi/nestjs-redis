@@ -1,3 +1,8 @@
 packages:
   - 'packages/*'
   - 'examples/*'
+
+allowBuilds:
+  # NestJS 9–10 run a nonessential opencollective postinstall; deny it so compatibility installs don't fail.
+  '@nestjs/core': false
+  '@swc/core': true

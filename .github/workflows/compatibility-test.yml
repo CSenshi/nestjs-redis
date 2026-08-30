@@ -18,62 +18,76 @@ jobs:
         image: redis:8-alpine
         ports: ['6379:6379']
 
+      redis-cluster:
+        image: grokzen/redis-cluster:7.0.10
+        ports: ['7010-7015:7010-7015']
+        env:
+          IP: 0.0.0.0
+          INITIAL_PORT: 7010
+
     strategy:
       fail-fast: false
       matrix:
-        node-version: ['24']
-        package:
-          [
-            'client',
-            'health-indicator',
-            'throttler-storage',
-            'lock',
-            'socket.io-adapter',
-          ]
-        nestjs-version: ['9', '10', '11']
+        include:
+          - nestjs-version: '9'
+            reflect-metadata-version: '0.1'
+          - nestjs-version: '10'
+            reflect-metadata-version: '0.2'
+          - nestjs-version: '11'
+            reflect-metadata-version: '0.2'
+          - nestjs-version: '12'
+            reflect-metadata-version: '0.2'
 
-    name: Node${{ matrix.node-version }} - Nest${{ matrix.nestjs-version }} - ${{ matrix.package }}
+    name: NestJS ${{ matrix.nestjs-version }}
 
     steps:
       - uses: actions/checkout@v6
-        with:
-          filter: tree:0
-          fetch-depth: 0
 
-      - uses: pnpm/action-setup@v5
+      - uses: pnpm/setup@v2
         name: Install pnpm
         with:
-          run_install: false
+          install: false
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20.19.0
           cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install specific NestJS version for testing
+      - name: Build packages
+        run: pnpm build
+
+      - name: Install NestJS ${{ matrix.nestjs-version }} for runtime tests
         run: |
-          pnpm add -D @nestjs/common@${{ matrix.nestjs-version }} @nestjs/core@${{ matrix.nestjs-version }} @nestjs/platform-express@${{ matrix.nestjs-version }} -w
+          pnpm config set --location=project --json overrides '{"@nestjs/common":"${{ matrix.nestjs-version }}","@nestjs/core":"${{ matrix.nestjs-version }}","@nestjs/microservices":"${{ matrix.nestjs-version }}","@nestjs/platform-express":"${{ matrix.nestjs-version }}","@nestjs/platform-socket.io":"${{ matrix.nestjs-version }}","@nestjs/testing":"${{ matrix.nestjs-version }}","@nestjs/websockets":"${{ matrix.nestjs-version }}","reflect-metadata":"${{ matrix.reflect-metadata-version }}"}'
+          pnpm install --node-linker=hoisted --no-frozen-lockfile
 
-          if [ "${{ matrix.package }}" = "health-indicator" ]; then
-            pnpm add -D @nestjs/terminus@${{ matrix.nestjs-version }} -w
-          fi
-
-      - name: Run unit tests
-        run: pnpm --filter @nestjs-redis/${{ matrix.package }} test
-
-  compatibility-summary:
-    runs-on: ubuntu-latest
-    needs: compatibility-test
-    if: always()
-    steps:
-      - name: Check compatibility test results
+      - name: Verify resolved NestJS versions
         run: |
-          if [ "${{ needs.compatibility-test.result }}" = "failure" ]; then
-            echo "❌ Some compatibility tests failed"
-            exit 1
-          else
-            echo "✅ All compatibility tests passed"
-          fi
+          pnpm list --json --depth Infinity \
+            @nestjs/common \
+            @nestjs/core \
+            @nestjs/microservices \
+            @nestjs/platform-express \
+            @nestjs/platform-socket.io \
+            @nestjs/testing \
+            @nestjs/websockets |
+          jq -e --arg major '${{ matrix.nestjs-version }}.' '
+            def target:
+              . == "@nestjs/common" or
+              . == "@nestjs/core" or
+              . == "@nestjs/microservices" or
+              . == "@nestjs/platform-express" or
+              . == "@nestjs/platform-socket.io" or
+              . == "@nestjs/testing" or
+              . == "@nestjs/websockets";
+            [.. | objects | select(.from? | target)] as $packages |
+            ($packages | map({ package: .from, version }) | unique) as $resolved |
+            $resolved,
+            (($packages | length) > 0 and all($packages[]; .version | startswith($major)))
+          '
+
+      - name: Test packages
+        run: pnpm test

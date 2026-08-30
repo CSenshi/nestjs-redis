@@ -10,7 +10,7 @@ Flexible, production-ready Redis client module for NestJS with multi-connection 
 [![npm downloads](https://img.shields.io/npm/dm/@nestjs-redis/client.svg)](https://www.npmjs.com/package/@nestjs-redis/client)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
-[![NestJS](https://img.shields.io/badge/NestJS-9%2B-red.svg)](https://nestjs.com/) [![Redis](https://img.shields.io/badge/Redis-5+-red.svg)](https://redis.io/)
+[![NestJS](https://img.shields.io/badge/NestJS-9--12-red.svg)](https://nestjs.com/) [![node-redis](https://img.shields.io/badge/node--redis-5--6-red.svg)](https://www.npmjs.com/package/redis)
 
 </div>
 
@@ -23,6 +23,8 @@ Flexible, production-ready Redis client module for NestJS with multi-connection 
 - NestJS DI integration and lifecycle management
 - Async configuration with `forRootAsync`
 - Type-safe, production-ready
+
+Requires Node.js `^20.19.0 || >=22.12.0` and NestJS 9–12. This package is ESM-only; synchronous CommonJS `require()` is supported on those Node.js versions.
 
 ## Installation
 

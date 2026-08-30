@@ -1,1 +1,1 @@
-export * from './health-indicator.service';
+export * from './health-indicator.service.js';

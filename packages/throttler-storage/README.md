@@ -10,7 +10,7 @@ Redis-backed storage for NestJS Throttler enabling distributed rate limiting acr
 [![npm downloads](https://img.shields.io/npm/dm/@nestjs-redis/throttler-storage.svg)](https://www.npmjs.com/package/@nestjs-redis/throttler-storage)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
-[![NestJS](https://img.shields.io/badge/NestJS-9%2B-red.svg)](https://nestjs.com/) [![Redis](https://img.shields.io/badge/Redis-5+-red.svg)](https://redis.io/)
+[![NestJS](https://img.shields.io/badge/NestJS-9--12-red.svg)](https://nestjs.com/) [![node-redis](https://img.shields.io/badge/node--redis-5--6-red.svg)](https://www.npmjs.com/package/redis)
 
 </div>
 
@@ -27,10 +27,12 @@ Redis-backed storage for NestJS Throttler enabling distributed rate limiting acr
 - All algorithms implemented as atomic Lua scripts (EVALSHA + NOSCRIPT fallback)
 - Optional block key support: lock out a client for a configurable duration after exceeding the limit
 
+Requires Node.js `^20.19.0 || >=22.12.0` and NestJS 9–12. This package is ESM-only; synchronous CommonJS `require()` is supported on those Node.js versions.
+
 ## Installation
 
 ```bash
-npm install @nestjs-redis/throttler-storage @nestjs-redis/client redis
+npm install @nestjs-redis/throttler-storage @nestjs-redis/client @nestjs/throttler redis
 ```
 
 The recommended approach is to use `RedisModule` from `@nestjs-redis/client` so Redis connections are lifecycle-managed by Nest (connect/disconnect with your app). Alternatively, you can pass your own Redis client (e.g. created with `createClient()` from `redis`) and manage its lifecycle yourself.

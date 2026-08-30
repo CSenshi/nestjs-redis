@@ -1,14 +1,14 @@
 import { CustomTransportStrategy, Server } from '@nestjs/microservices';
 import { type RedisClientType, createClient } from 'redis';
 import { firstValueFrom } from 'rxjs';
-import { RedisEvents, RedisStatus } from './redis.events';
-import { RedisStreamsContext } from './streams-transporter.context';
+import { RedisEvents, RedisStatus } from './redis.events.js';
+import { RedisStreamsContext } from './streams-transporter.context.js';
 import {
   RedisStreamsOptions,
   RedisStreamsResolvedOptions,
   resolveRedisStreamsOptions,
-} from './streams-transporter.options';
-import { isEventPacket, isRequestPacket } from './types';
+} from './streams-transporter.options.js';
+import { isEventPacket, isRequestPacket } from './types.js';
 
 export class RedisStreamServer
   extends Server<RedisEvents, RedisStatus>
@@ -45,16 +45,16 @@ export class RedisStreamServer
     this.client.on('error', (err) => this.logger.error(err));
 
     this.client.on('connect', () => {
-      this._status$.next(RedisStatus.CONNECT);
+      this._status$?.next(RedisStatus.CONNECT);
     });
     this.client.on('ready', () => {
-      this._status$.next(RedisStatus.CONNECTED);
+      this._status$?.next(RedisStatus.CONNECTED);
     });
     this.client.on('reconnecting', () => {
-      this._status$.next(RedisStatus.RECONNECTING);
+      this._status$?.next(RedisStatus.RECONNECTING);
     });
     this.client.on('end', () => {
-      this._status$.next(RedisStatus.DISCONNECTED);
+      this._status$?.next(RedisStatus.DISCONNECTED);
     });
   }
 

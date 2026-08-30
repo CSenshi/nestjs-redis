@@ -2,17 +2,16 @@ import {
   BeforeApplicationShutdown,
   Injectable,
   OnApplicationBootstrap,
-  OnApplicationShutdown,
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import type { RedisClientType } from 'redis';
-import { InjectRedis } from './decorators';
-import { RedisModule } from './module';
-import { RedisToken } from './tokens';
-import { RedisModuleOptions } from './types';
+import { InjectRedis } from './decorators.js';
+import { RedisModule } from './module.js';
+import { RedisToken } from './tokens.js';
+import { RedisModuleOptions } from './types.js';
 
 describe('RedisModule Integration forRoot', () => {
   let module: TestingModule;
@@ -474,14 +473,14 @@ describe('Multi-connection Integration', () => {
 });
 
 describe('RedisModule Service Lifecycle Integration', () => {
-  // Test service that implements all lifecycle hooks
+  // Keep Redis I/O before onApplicationShutdown: reverse shutdown ordering was
+  // only introduced in NestJS 11, so older versions may close Redis first.
   @Injectable()
   class TestLifecycleService
     implements
       OnModuleInit,
       OnApplicationBootstrap,
       OnModuleDestroy,
-      OnApplicationShutdown,
       BeforeApplicationShutdown
   {
     constructor(
@@ -514,13 +513,6 @@ describe('RedisModule Service Lifecycle Integration', () => {
       await this.redis.set(
         `${this.prefix}:lifecycle:destroy`,
         `module-destroyed`,
-      );
-    }
-
-    async onApplicationShutdown(signal?: string): Promise<void> {
-      await this.redis.set(
-        `${this.prefix}:lifecycle:shutdown`,
-        `application-shutdown-${signal || 'unknown'}`,
       );
     }
   }

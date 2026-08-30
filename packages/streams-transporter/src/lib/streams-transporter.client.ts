@@ -2,14 +2,14 @@ import { Logger } from '@nestjs/common';
 import { ClientProxy, ReadPacket, WritePacket } from '@nestjs/microservices';
 import { randomUUID } from 'crypto';
 import { RedisClientType, createClient } from 'redis';
-import { type RedisEvents, RedisStatus } from './redis.events';
+import { type RedisEvents, RedisStatus } from './redis.events.js';
 import {
   RedisStreamsOptions,
   RedisStreamsResolvedOptions,
   resolveRedisStreamsOptions,
-} from './streams-transporter.options';
-import { isResponsePacket } from './types';
-import { EventType } from './types';
+} from './streams-transporter.options.js';
+import { isResponsePacket } from './types.js';
+import { EventType } from './types.js';
 
 export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
   protected readonly logger = new Logger(RedisStreamClient.name);
@@ -55,16 +55,16 @@ export class RedisStreamClient extends ClientProxy<RedisEvents, RedisStatus> {
     this.client.on('error', (err) => this.logger.error(err));
 
     this.client.on('connect', () => {
-      this._status$.next(RedisStatus.CONNECT);
+      this._status$?.next(RedisStatus.CONNECT);
     });
     this.client.on('ready', () => {
-      this._status$.next(RedisStatus.CONNECTED);
+      this._status$?.next(RedisStatus.CONNECTED);
     });
     this.client.on('reconnecting', () => {
-      this._status$.next(RedisStatus.RECONNECTING);
+      this._status$?.next(RedisStatus.RECONNECTING);
     });
     this.client.on('end', () => {
-      this._status$.next(RedisStatus.DISCONNECTED);
+      this._status$?.next(RedisStatus.DISCONNECTED);
     });
 
     if (this.pendingEventListeners.length > 0) {
