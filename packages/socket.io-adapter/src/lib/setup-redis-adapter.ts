@@ -1,6 +1,6 @@
 import type { INestApplication } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { UnknownElementException } from '@nestjs/core/errors/exceptions/unknown-element.exception';
+import { UnknownElementException } from '@nestjs/core/errors/exceptions/unknown-element.exception.js';
 import {
   RedisAdapterAlreadySetUpException,
   RedisClientNotFoundException,
